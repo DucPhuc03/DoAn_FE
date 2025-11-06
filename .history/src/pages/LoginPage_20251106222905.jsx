@@ -1,17 +1,13 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { login as loginApi } from "../service/auth";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +27,10 @@ const LoginPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.username) {
-      newErrors.username = "Tên đăng nhập là bắt buộc";
+    if (!formData.email) {
+      newErrors.email = "Email là bắt buộc";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ";
     }
 
     if (!formData.password) {
@@ -45,28 +43,12 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    setSubmitting(true);
-    setErrors((prev) => ({ ...prev, general: "" }));
-    try {
-      const res = await loginApi({ username: formData.username, password: formData.password });
-      // Chuẩn hóa dữ liệu dựa theo response mẫu bạn cung cấp
-      const token = res?.accessToken || res?.token || res?.data?.accessToken || res?.data?.token;
-      const user = res?.user || res?.data?.user;
-      if (token) {
-        Cookies.set("access_token", token, { expires: 7 });
-      }
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
-      navigate("/");
-    } catch (err) {
-      const message = err?.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.";
-      setErrors((prev) => ({ ...prev, general: message }));
-    } finally {
-      setSubmitting(false);
+    if (validateForm()) {
+      // Handle login logic here
+      console.log("Login data:", formData);
+      alert("Đăng nhập thành công!");
     }
   };
 
@@ -91,30 +73,30 @@ const LoginPage = () => {
 
                 {/* Login Form */}
                 <form onSubmit={handleSubmit}>
-                  {/* Username Field */}
+                  {/* Email Field */}
                   <div className="mb-3">
-                    <label htmlFor="username" className="form-label fw-semibold">
+                    <label htmlFor="email" className="form-label fw-semibold">
                       Tên đăng nhập
                     </label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-end-0">
-                        <i className="bi bi-person text-muted"></i>
+                        <i className="bi bi-envelope text-muted"></i>
                       </span>
                       <input
-                        type="text"
+                        type="email"
                         className={`form-control border-start-0 ${
-                          errors.username ? "is-invalid" : ""
+                          errors.email ? "is-invalid" : ""
                         }`}
-                        id="username"
-                        name="username"
-                        value={formData.username}
+                        id="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        placeholder="Nhập tên đăng nhập"
+                        placeholder="Nhập email của bạn"
                       />
                     </div>
-                    {errors.username && (
+                    {errors.email && (
                       <div className="invalid-feedback d-block">
-                        {errors.username}
+                        {errors.email}
                       </div>
                     )}
                   </div>
@@ -185,17 +167,12 @@ const LoginPage = () => {
                   </div>
 
                   {/* Submit Button */}
-                  {errors.general && (
-                    <div className="alert alert-danger py-2" role="alert">{errors.general}</div>
-                  )}
-
                   <button
                     type="submit"
                     className="btn btn-primary w-100 py-2 fw-semibold rounded-3 mb-3"
                     style={{ fontSize: "1.1rem" }}
-                    disabled={submitting}
                   >
-                    {submitting ? "Đang đăng nhập..." : "Đăng Nhập"}
+                    Đăng Nhập
                   </button>
 
                   {/* Divider */}
