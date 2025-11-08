@@ -401,6 +401,28 @@ const Profile = () => {
               </button>
             ))}
             <div style={{ flex: 1 }} />
+            {/* <button
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                border: "none",
+                background: "transparent",
+                color: primary,
+                display: "grid",
+                placeItems: "center",
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f2f6fb";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
+            >
+              <FaCog />
+            </button> */}
           </div>
           <div
             style={{

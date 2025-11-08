@@ -635,29 +635,27 @@ const Chat = () => {
               >
                 <FaSmile />
               </button>
-
               <button
-                onClick={handleSend}
                 style={{
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
                   border: "none",
-                  background: primary,
-                  color: surface,
+                  background: "transparent",
+                  color: "#6b7280",
                   display: "grid",
                   placeItems: "center",
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#1d4ed8";
+                  e.currentTarget.style.background = "#f3f4f6";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = primary;
+                  e.currentTarget.style.background = "transparent";
                 }}
               >
-                <FaArrowUp />
+                <FaPaperclip />
               </button>
             </div>
           </div>

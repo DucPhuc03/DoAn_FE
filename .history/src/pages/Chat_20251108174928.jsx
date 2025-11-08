@@ -182,10 +182,7 @@ const Chat = () => {
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
-                borderBottom:
-                  leftTab === "chats"
-                    ? `2px solid ${primary}`
-                    : "2px solid transparent",
+                borderBottom: leftTab === "chats" ? `2px solid ${primary}` : "2px solid transparent",
                 transition: "all 0.2s",
               }}
             >
@@ -203,9 +200,7 @@ const Chat = () => {
                 fontSize: 14,
                 cursor: "pointer",
                 borderBottom:
-                  leftTab === "meetings"
-                    ? `2px solid ${primary}`
-                    : "2px solid transparent",
+                  leftTab === "meetings" ? `2px solid ${primary}` : "2px solid transparent",
                 transition: "all 0.2s",
               }}
             >
@@ -225,8 +220,7 @@ const Chat = () => {
                   gap: 12,
                   padding: "16px",
                   cursor: "pointer",
-                  background:
-                    selectedTradeId === trade.id ? "#f3f4f6" : surface,
+                  background: selectedTradeId === trade.id ? "#f3f4f6" : surface,
                   borderBottom: "1px solid #f3f4f6",
                   transition: "all 0.2s",
                 }}
@@ -330,14 +324,7 @@ const Chat = () => {
         </div>
 
         {/* Main Chat Area */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            background: surface,
-          }}
-        >
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", background: surface }}>
           {/* Chat Header */}
           <div
             style={{
@@ -472,8 +459,7 @@ const Chat = () => {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems:
-                      msg.type === "status" ? "flex-start" : "flex-end",
+                    alignItems: msg.type === "status" ? "flex-start" : "flex-end",
                     marginBottom: 16,
                   }}
                 >
@@ -488,9 +474,7 @@ const Chat = () => {
                         fontSize: 14,
                       }}
                     >
-                      <div style={{ fontWeight: 500, marginBottom: 4 }}>
-                        {msg.text}
-                      </div>
+                      <div style={{ fontWeight: 500, marginBottom: 4 }}>{msg.text}</div>
                       {msg.action && (
                         <div
                           style={{
@@ -535,9 +519,7 @@ const Chat = () => {
                       }}
                     >
                       <div>{msg.text}</div>
-                      <div
-                        style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}
-                      >
+                      <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
                         {msg.timestamp}
                       </div>
                     </div>
@@ -635,7 +617,50 @@ const Chat = () => {
               >
                 <FaSmile />
               </button>
-
+              <button
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "transparent",
+                  color: "#6b7280",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                <FaPaperclip />
+              </button>
+              <button
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "transparent",
+                  color: "#6b7280",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                <FaDollarSign />
+              </button>
               <button
                 onClick={handleSend}
                 style={{

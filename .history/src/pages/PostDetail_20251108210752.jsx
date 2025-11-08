@@ -89,7 +89,7 @@ const PostDetail = () => {
 
   if (loading) {
     return (
-      <div style={{ background: surface, minHeight: "100vh" }}>
+      <div style={{ background: "#eef2f7", minHeight: "100vh" }}>
         <Header />
         <div
           style={{
@@ -110,7 +110,7 @@ const PostDetail = () => {
 
   if (error || !postData) {
     return (
-      <div style={{ background: surface, minHeight: "100vh" }}>
+      <div style={{ background: "#eef2f7", minHeight: "100vh" }}>
         <Header />
         <div
           style={{
@@ -135,13 +135,15 @@ const PostDetail = () => {
       : [];
 
   return (
-    <div style={{ background: surface, minHeight: "100vh" }}>
+    <div style={{ background: "#eef2f7", minHeight: "100vh" }}>
       <Header />
       <div style={{ padding: "22px 14px 36px" }}>
         {/* Single seamless card */}
         <div
           style={{
             background: surface,
+            borderRadius: 16,
+            boxShadow: "0 10px 28px #00000012",
             padding: 16,
           }}
         >
@@ -150,19 +152,16 @@ const PostDetail = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               marginBottom: 10,
-              gap: 12,
             }}
           >
             <h1
               style={{
-                fontSize: 42,
+                fontSize: 30,
                 lineHeight: 1.2,
                 margin: 0,
                 color: "#1f2937",
-                textAlign: "right",
-                fontWeight: 800,
               }}
             >
               {postData.title}
@@ -180,7 +179,6 @@ const PostDetail = () => {
                 color: "#2b2b38",
                 boxShadow: "0 6px 18px #0000000a",
                 cursor: "pointer",
-                flexShrink: 0,
               }}
             >
               <FaShareAlt />
@@ -235,11 +233,11 @@ const PostDetail = () => {
                     width: "100%",
                     height: 96,
                     borderRadius: 14,
-                    background: surface,
+                    background: panel,
                     display: "grid",
                     placeItems: "center",
                     color: muted,
-                    fontSize: 16,
+                    fontSize: 12,
                   }}
                 >
                   No images
@@ -252,8 +250,9 @@ const PostDetail = () => {
               <div
                 style={{
                   borderRadius: 12,
-                  background: surface,
+                  background: panel,
                   padding: 10,
+                  boxShadow: "inset 0 0 0 1px #edf1f7",
                 }}
               >
                 {images.length > 0 ? (
@@ -273,11 +272,11 @@ const PostDetail = () => {
                       width: "100%",
                       height: 360,
                       borderRadius: 10,
-                      background: surface,
+                      background: panel,
                       display: "grid",
                       placeItems: "center",
                       color: muted,
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                   >
                     Không có hình ảnh
@@ -288,12 +287,13 @@ const PostDetail = () => {
               <div
                 style={{
                   borderRadius: 12,
-                  background: surface,
+                  background: panel,
                   padding: 10,
                   marginTop: 40,
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
+                  boxShadow: "inset 0 0 0 1px #edf1f7",
                 }}
               >
                 {postData.username ? (
@@ -307,7 +307,7 @@ const PostDetail = () => {
                       placeItems: "center",
                       color: surface,
                       fontWeight: 700,
-                      fontSize: 20,
+                      fontSize: 16,
                     }}
                   >
                     {postData.username.charAt(0).toUpperCase()}
@@ -318,23 +318,23 @@ const PostDetail = () => {
                       width: 40,
                       height: 40,
                       borderRadius: "50%",
-                      background: surface,
+                      background: panel,
                       display: "grid",
                       placeItems: "center",
                       color: muted,
                     }}
                   >
-                    <FaUser style={{ fontSize: 18 }} />
+                    <FaUser style={{ fontSize: 14 }} />
                   </div>
                 )}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 18 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>
                     {postData.username}
                   </div>
                   <div
                     style={{
                       color: muted,
-                      fontSize: 15,
+                      fontSize: 12,
                       display: "flex",
                       alignItems: "center",
                       gap: 6,
@@ -346,13 +346,12 @@ const PostDetail = () => {
                 <button
                   style={{
                     border: `1px solid ${primary}`,
-                    background: surface,
+                    background: panel,
                     color: primary,
                     padding: "6px 12px",
                     borderRadius: 8,
                     fontWeight: 700,
                     cursor: "pointer",
-                    fontSize: 15,
                   }}
                 >
                   Theo dõi
@@ -362,7 +361,7 @@ const PostDetail = () => {
                   onClick={handleLike}
                   style={{
                     border: "none",
-                    background: surface,
+                    background: panel,
                     color: liked ? "#ef4444" : primary,
                     width: 36,
                     height: 36,
@@ -385,8 +384,9 @@ const PostDetail = () => {
             <div>
               <div
                 style={{
-                  background: surface,
+                  background: panel,
                   borderRadius: 12,
+                  boxShadow: "inset 0 0 0 1px #e9edf5",
                   padding: 14,
                 }}
               >
@@ -408,7 +408,7 @@ const PostDetail = () => {
                       alignItems: "center",
                       gap: 6,
                       fontWeight: 700,
-                      fontSize: 20,
+                      fontSize: 16,
                     }}
                   >
                     <FaTag /> {postData.category?.name || "Chưa phân loại"}
@@ -417,7 +417,7 @@ const PostDetail = () => {
 
                 <Section title="Mô tả">
                   <p
-                    style={{ color: "#2f3645", lineHeight: 1.55, fontSize: 20 }}
+                    style={{ color: "#2f3645", lineHeight: 1.55, fontSize: 16 }}
                   >
                     {postData.description || "Chưa có mô tả"}
                   </p>
@@ -440,17 +440,28 @@ const PostDetail = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 8,
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                   >
-                    <span></span>
+                    <span
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background: "#eef4ff",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#2f3a5f",
+                        fontSize: 16,
+                      }}
+                    ></span>
                     Tình trạng
                   </div>
-                  <div style={{ color: "#2f3645", fontSize: 18 }}>
+                  <div style={{ color: "#2f3645", fontSize: 14 }}>
                     {postData.itemCondition || "Chưa xác định"}
                   </div>
                   {!postData.itemCondition && (
-                    <div style={{ color: muted, fontSize: 15 }}>
+                    <div style={{ color: muted, fontSize: 12 }}>
                       Condition is not specified.
                     </div>
                   )}
@@ -459,15 +470,14 @@ const PostDetail = () => {
                 <Section title="Điểm gặp mặt">
                   <div
                     style={{
-                      marginTop: 30,
                       height: 180,
                       borderRadius: 10,
-                      background: surface,
-                      border: "1px solid #e5e7eb",
+                      background: `linear-gradient(135deg, #dbeafe, #e9efff)`,
+                      border: "1px solid #dbe0ee",
                       display: "grid",
                       placeItems: "center",
                       color: "#334155",
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                   >
                     <div
@@ -493,7 +503,7 @@ const PostDetail = () => {
                     border: "none",
                     borderRadius: 10,
                     fontWeight: 800,
-                    fontSize: 18,
+                    fontSize: 15,
                     boxShadow: "0 6px 20px #2563eb35",
                     cursor: "pointer",
                     letterSpacing: 0.3,
@@ -506,11 +516,11 @@ const PostDetail = () => {
           </div>
 
           {/* Divider */}
-          <div style={{ height: 1, background: "#e5e7eb", margin: "16px 0" }} />
+          <div style={{ height: 1, background: "#edf1f7", margin: "16px 0" }} />
 
           {/* Comments Section */}
           <div style={{ maxWidth: 760 }}>
-            <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 10 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 10 }}>
               Bình luận
             </div>
             <div
@@ -526,7 +536,7 @@ const PostDetail = () => {
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  background: surface,
+                  background: panel,
                   display: "grid",
                   placeItems: "center",
                   color: muted,
@@ -545,9 +555,9 @@ const PostDetail = () => {
                     border: "1.5px solid #e4e9f2",
                     padding: 10,
                     minHeight: 50,
-                    fontSize: 18,
+                    fontSize: 14,
                     resize: "none",
-                    background: surface,
+                    background: panel,
                   }}
                 />
                 <div
@@ -570,7 +580,7 @@ const PostDetail = () => {
                       alignItems: "center",
                       gap: 8,
                       cursor: "pointer",
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                   >
                     <FaPaperPlane /> Gửi
@@ -613,7 +623,7 @@ const PostDetail = () => {
                         placeItems: "center",
                         color: surface,
                         fontWeight: 700,
-                        fontSize: 16,
+                        fontSize: 12,
                       }}
                     >
                       {c.fullName?.charAt(0).toUpperCase() || "U"}
@@ -621,21 +631,21 @@ const PostDetail = () => {
                   )}
                   <div
                     style={{
-                      background: surface,
+                      background: panel,
                       padding: "8px 10px",
                       borderRadius: 10,
                       maxWidth: 620,
                     }}
                   >
                     <div
-                      style={{ fontWeight: 700, fontSize: 17, marginBottom: 2 }}
+                      style={{ fontWeight: 700, fontSize: 13, marginBottom: 2 }}
                     >
                       {c.fullName}
                     </div>
                     <div
                       style={{
                         color: "#3b465b",
-                        fontSize: 18,
+                        fontSize: 14,
                         lineHeight: 1.45,
                       }}
                     >
@@ -644,14 +654,14 @@ const PostDetail = () => {
                     <div
                       style={{
                         color: muted,
-                        fontSize: 14,
+                        fontSize: 11,
                         marginTop: 4,
                         display: "flex",
                         alignItems: "center",
                         gap: 4,
                       }}
                     >
-                      <FaCalendarAlt style={{ fontSize: 12 }} />
+                      <FaCalendarAlt style={{ fontSize: 10 }} />
                       {formatDate(c.commentDate)}
                     </div>
                   </div>
@@ -663,7 +673,7 @@ const PostDetail = () => {
                   textAlign: "center",
                   padding: "20px",
                   color: muted,
-                  fontSize: 18,
+                  fontSize: 14,
                 }}
               >
                 Chưa có bình luận nào
@@ -684,7 +694,7 @@ const Section = ({ title, children }) => (
         textTransform: "uppercase",
         letterSpacing: 0.6,
         fontWeight: 800,
-        fontSize: 14,
+        fontSize: 11,
         marginBottom: 4,
       }}
     >

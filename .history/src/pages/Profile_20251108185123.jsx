@@ -115,9 +115,7 @@ const Profile = () => {
     <div style={{ background: bgProfile, minHeight: "100vh" }}>
       <Header />
       {/* Profile Container */}
-      <div
-        style={{ maxWidth: 980, margin: "0 auto", padding: "36px 12px 28px" }}
-      >
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "36px 12px 28px" }}>
         {/* Profile Card */}
         <div
           style={{
@@ -195,24 +193,10 @@ const Profile = () => {
 
             {/* Info */}
             <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: 26,
-                  color: secondary,
-                  marginBottom: 16,
-                }}
-              >
+              <div style={{ fontWeight: 700, fontSize: 26, color: secondary, marginBottom: 16 }}>
                 {profileData.fullName || profileData.username}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginBottom: 20,
-                  flexWrap: "wrap",
-                }}
-              >
+              <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
                 {profileData.address && (
                   <span
                     style={{
@@ -226,9 +210,7 @@ const Profile = () => {
                       fontSize: 14,
                     }}
                   >
-                    <FaMapMarkerAlt
-                      style={{ marginRight: 7, color: primary }}
-                    />{" "}
+                    <FaMapMarkerAlt style={{ marginRight: 7, color: primary }} />{" "}
                     {profileData.address}
                   </span>
                 )}
@@ -319,21 +301,8 @@ const Profile = () => {
             </div>
           </div>
           {/* Intro */}
-          <div
-            style={{
-              margin: "30px 2px 0 2px",
-              paddingTop: 14,
-              borderTop: "1px solid #edf0fb",
-            }}
-          >
-            <div
-              style={{
-                color: secondary,
-                fontWeight: 600,
-                fontSize: 16,
-                marginBottom: 8,
-              }}
-            >
+          <div style={{ margin: "30px 2px 0 2px", paddingTop: 14, borderTop: "1px solid #edf0fb" }}>
+            <div style={{ color: secondary, fontWeight: 600, fontSize: 16, marginBottom: 8 }}>
               Giới thiệu
             </div>
             <div
@@ -384,14 +353,8 @@ const Profile = () => {
                   fontWeight: 600,
                   fontSize: 16,
                   marginBottom: -1,
-                  boxShadow:
-                    tab === idx
-                      ? "0 2px 12px rgba(37, 99, 235, 0.2)"
-                      : undefined,
-                  borderBottom:
-                    tab === idx
-                      ? `4px solid ${primary}`
-                      : "4px solid transparent",
+                  boxShadow: tab === idx ? "0 2px 12px rgba(37, 99, 235, 0.2)" : undefined,
+                  borderBottom: tab === idx ? `4px solid ${primary}` : "4px solid transparent",
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
@@ -401,6 +364,28 @@ const Profile = () => {
               </button>
             ))}
             <div style={{ flex: 1 }} />
+            <button
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                border: "none",
+                background: "transparent",
+                color: primary,
+                display: "grid",
+                placeItems: "center",
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f2f6fb";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
+            >
+              <FaCog />
+            </button>
           </div>
           <div
             style={{
@@ -433,13 +418,11 @@ const Profile = () => {
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 24px rgba(0, 0, 0, 0.12)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)";
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.transform = "";
-                    e.currentTarget.style.boxShadow =
-                      "0 2px 8px rgba(0, 0, 0, 0.08)";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
                   }}
                 >
                   {post.imageUrls && post.imageUrls.length > 0 ? (
@@ -573,9 +556,7 @@ const Profile = () => {
             )}
           </div>
           {tab === 0 && profileData.posts && profileData.posts.length > 0 && (
-            <div
-              style={{ textAlign: "center", marginTop: 5, marginBottom: 20 }}
-            >
+            <div style={{ textAlign: "center", marginTop: 5, marginBottom: 20 }}>
               <button
                 style={{
                   padding: "13px 44px",
@@ -589,9 +570,7 @@ const Profile = () => {
                   cursor: "pointer",
                   transition: "background 0.2s",
                 }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.background = "#1d4ed8")
-                }
+                onMouseOver={(e) => (e.currentTarget.style.background = "#1d4ed8")}
                 onMouseOut={(e) => (e.currentTarget.style.background = primary)}
               >
                 Xem thêm
