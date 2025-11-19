@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Header from "../components/Header";
+import SockJS from "sockjs-client";
 import {
   FaEllipsisV,
   FaSmile,
@@ -9,144 +10,135 @@ import {
 } from "react-icons/fa";
 import SockJS from "sockjs-client";
 
-const sampleConversations = [
-  {
-    conversationId: 1,
-    itemTitle: "iPhone 16",
-    itemImage: null,
-    username: null,
-    userAvatar: null,
-    messages: [
-      {
-        id: 1,
-        senderId: 2,
-        senderName: "phucabc",
-        timestamp: "2025-11-06T15:52:35.540464",
-        avatarUrl:
-          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-        content: "hello",
-        read: false,
-        me: true,
-      },
-      {
-        id: 2,
-        senderId: 1,
-        senderName: null,
-        timestamp: "2025-11-06T17:29:01.105307",
-        avatarUrl:
-          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
-        content: "hello",
-        read: false,
-        me: true,
-      },
-      {
-        id: 3,
-        senderId: 2,
-        senderName: "phucabc",
-        timestamp: "2025-11-06T17:30:02.697978",
-        avatarUrl:
-          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-        content: "hello",
-        read: false,
-        me: false,
-      },
-    ],
-  },
-  {
-    conversationId: 2,
-    itemTitle: "Áo khoác Canada Goose",
-    itemImage: "https://via.placeholder.com/40x40.png?text=🧥",
-    username: "ThuHien",
-    userAvatar: "https://via.placeholder.com/48x48.png?text=TH",
-    messages: [
-      {
-        id: 11,
-        senderId: 9,
-        senderName: "ThuHien",
-        timestamp: "2025-11-10T08:11:00.000Z",
-        avatarUrl: "https://via.placeholder.com/48x48.png?text=TH",
-        content: "Áo còn nguyên tag chứ bạn?",
-        read: true,
-        me: false,
-      },
-      {
-        id: 12,
-        senderId: 1,
-        senderName: "Bạn",
-        timestamp: "2025-11-10T08:12:30.000Z",
-        avatarUrl: null,
-        content: "Nguyên tag và còn ấm lắm nha!",
-        read: true,
-        me: true,
-      },
-    ],
-  },
-  {
-    conversationId: 3,
-    itemTitle: "Bộ bàn học trẻ em",
-    itemImage: "https://via.placeholder.com/40x40.png?text=🪑",
-    username: "GreenHouse",
-    userAvatar: null,
-    messages: [
-      {
-        id: 21,
-        senderId: 6,
-        senderName: "GreenHouse",
-        timestamp: "2025-11-11T13:45:10.000Z",
-        avatarUrl: null,
-        content: "Bạn có thể gửi thêm ảnh bàn không?",
-        read: false,
-        me: false,
-      },
-    ],
-  },
-];
-
 const Chat = () => {
-  const socket = new SockJS("http://localhost:8080/ws");
-  const client = Stomp.over(socket);
   const [leftTab, setLeftTab] = useState("chats"); // chats | meetings
 
-  const [conversations, setConversations] = useState(sampleConversations);
+  const socket = new SockJS("http//localhost:8080/ws");
+  client = Stomp.over(socket);
 
-  const [selectedConversationId, setSelectedConversationId] = useState(
-    sampleConversations[0]?.conversationId
-  );
-  const selectedConversation = useMemo(
-    () =>
-      conversations.find((c) => c.conversationId === selectedConversationId) ||
-      conversations[0],
-    [conversations, selectedConversationId]
+  client.connect({}, (frame) => {
+    console.log("Connected: " + frame);
+    client.subscribe("/topic/messages", (message) => {
+      console.log("Received message: " + message.body);
+      // Handle incoming messages here
+    });
+  });
+
+  // Fake data - Trades (chỉ chat theo trade)
+  const [trades, setTrades] = useState([
+    {
+      id: "trade1",
+      tradeName: "Stehlampe Papier",
+      userName: "Stehlampe Papier",
+      preview: "You have made the first offer",
+      timestamp: "5:44 PM",
+      avatar: null,
+      itemImage: "https://via.placeholder.com/40x40.png?text=💡",
+      status: "New trade",
+      messages: [
+        {
+          id: 1,
+          type: "status",
+          text: "You have made the first offer",
+          timestamp: "5:44 PM",
+          user: "You",
+          action: "added Stehlampe Papier",
+        },
+      ],
+    },
+    {
+      id: "trade2",
+      tradeName: "Celine J Trade",
+      userName: "Celine J",
+      preview: "You have marked trade as completed",
+      timestamp: "11:39 PM",
+      avatar: "https://via.placeholder.com/40x40.png?text=CJ",
+      itemImage: "https://via.placeholder.com/40x40.png?text=📱",
+      status: "Completed",
+      messages: [
+        {
+          id: 1,
+          type: "status",
+          text: "You have marked trade as completed",
+          timestamp: "11:39 PM",
+        },
+      ],
+    },
+    {
+      id: "trade3",
+      tradeName: "Simply F. Trade",
+      userName: "Simply F.",
+      preview: "You have marked trade as cancelled",
+      timestamp: "Nov 7, 2:58 PM",
+      avatar: "https://via.placeholder.com/40x40.png?text=SF",
+      itemImage: "https://via.placeholder.com/40x40.png?text=📚",
+      status: "Cancelled",
+      messages: [
+        {
+          id: 1,
+          type: "status",
+          text: "You have marked trade as cancelled",
+          timestamp: "Nov 7, 2:58 PM",
+        },
+      ],
+    },
+    {
+      id: "trade4",
+      tradeName: "Leanne W. Trade",
+      userName: "Leanne W.",
+      preview: "You have made the first offer",
+      timestamp: "Nov 6, 10:20 AM",
+      avatar: "https://via.placeholder.com/40x40.png?text=LW",
+      itemImage: "https://via.placeholder.com/40x40.png?text=👕",
+      status: "New trade",
+      messages: [],
+    },
+    {
+      id: "trade5",
+      tradeName: "Sal Trade",
+      userName: "Sal",
+      preview: "You have made the first offer",
+      timestamp: "Nov 5, 3:15 PM",
+      avatar: "https://via.placeholder.com/40x40.png?text=S",
+      itemImage: "https://via.placeholder.com/40x40.png?text=🎮",
+      status: "New trade",
+      messages: [],
+    },
+  ]);
+
+  const [selectedTradeId, setSelectedTradeId] = useState("trade1");
+  const selectedTrade = useMemo(
+    () => trades.find((t) => t.id === selectedTradeId) || trades[0],
+    [trades, selectedTradeId]
   );
 
   const [inputValue, setInputValue] = useState("");
 
   const handleSend = () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || !selectedConversation) return;
-
+    if (!trimmed) return;
     const newMessage = {
       id: Date.now(),
-      senderId: 1,
-      senderName: "Bạn",
-      timestamp: new Date().toISOString(),
-      avatarUrl: null,
-      content: trimmed,
-      read: false,
-      me: true,
+      type: "message",
+      sender: "You",
+      text: trimmed,
+      timestamp: new Date().toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      }),
     };
-
-    setConversations((prev) =>
-      prev.map((conversation) =>
-        conversation.conversationId === selectedConversation.conversationId
+    setTrades((prev) =>
+      prev.map((t) =>
+        t.id === selectedTrade.id
           ? {
-              ...conversation,
-              messages: [...conversation.messages, newMessage],
+              ...t,
+              messages: [...t.messages, newMessage],
+              preview: trimmed,
+              timestamp: newMessage.timestamp,
             }
-          : conversation
+          : t
       )
     );
-
     setInputValue("");
   };
 
@@ -158,17 +150,7 @@ const Chat = () => {
   };
 
   const formatTimestamp = (timestamp) => {
-    if (!timestamp) return "";
-    try {
-      return new Date(timestamp).toLocaleString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-      });
-    } catch (error) {
-      return timestamp;
-    }
+    return timestamp;
   };
 
   const primary = "#2563eb"; // Blue
@@ -246,152 +228,117 @@ const Chat = () => {
 
           {/* Trade List */}
           <div style={{ flex: 1, overflowY: "auto" }}>
-            {conversations.map((conversation) => {
-              const lastMessage =
-                conversation.messages[conversation.messages.length - 1];
-              const displayName =
-                conversation.username ||
-                lastMessage?.senderName ||
-                "Người dùng";
-              const preview = lastMessage?.content || "Chưa có tin nhắn";
-              const timestamp = formatTimestamp(lastMessage?.timestamp);
-              const avatar =
-                conversation.userAvatar || lastMessage?.avatarUrl || null;
-              const isActive =
-                selectedConversationId === conversation.conversationId;
-
-              return (
-                <div
-                  key={conversation.conversationId}
-                  onClick={() =>
-                    setSelectedConversationId(conversation.conversationId)
+            {trades.map((trade) => (
+              <div
+                key={trade.id}
+                onClick={() => setSelectedTradeId(trade.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "16px",
+                  cursor: "pointer",
+                  background:
+                    selectedTradeId === trade.id ? "#f3f4f6" : surface,
+                  borderBottom: "1px solid #f3f4f6",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedTradeId !== trade.id) {
+                    e.currentTarget.style.background = "#f9fafb";
                   }
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "16px",
-                    cursor: "pointer",
-                    background: isActive ? "#f3f4f6" : surface,
-                    borderBottom: "1px solid #f3f4f6",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = "#f9fafb";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = surface;
-                    }
-                  }}
-                >
-                  {/* Avatar */}
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      alt={displayName}
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        background: "#e5e7eb",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#9ca3af",
-                        fontSize: 20,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {displayName.charAt(0)}
-                    </div>
-                  )}
-
-                  {/* Item Image (small) */}
-                  {conversation.itemImage ? (
-                    <img
-                      src={conversation.itemImage}
-                      alt={conversation.itemTitle}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        background: "#ede9fe",
-                        color: "#6d5dfc",
-                        fontSize: 14,
-                        display: "grid",
-                        placeItems: "center",
-                        flexShrink: 0,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {conversation.itemTitle?.charAt(0) || "?"}
-                    </div>
-                  )}
-
-                  {/* Trade Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: "#1f2937",
-                        marginBottom: 4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {displayName}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#6b7280",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {preview}
-                    </div>
-                  </div>
-
-                  {/* Timestamp */}
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedTradeId !== trade.id) {
+                    e.currentTarget.style.background = surface;
+                  }
+                }}
+              >
+                {/* Avatar */}
+                {trade.avatar ? (
+                  <img
+                    src={trade.avatar}
+                    alt={trade.userName}
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      flexShrink: 0,
+                    }}
+                  />
+                ) : (
                   <div
                     style={{
-                      fontSize: 11,
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: "#e5e7eb",
+                      display: "grid",
+                      placeItems: "center",
                       color: "#9ca3af",
+                      fontSize: 20,
                       flexShrink: 0,
-                      textAlign: "right",
                     }}
                   >
-                    {timestamp}
+                    {trade.userName.charAt(0)}
+                  </div>
+                )}
+
+                {/* Item Image (small) */}
+                <img
+                  src={trade.itemImage}
+                  alt="Item"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 6,
+                    objectFit: "cover",
+                    flexShrink: 0,
+                  }}
+                />
+
+                {/* Trade Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "#1f2937",
+                      marginBottom: 4,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {trade.userName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#6b7280",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {trade.preview}
                   </div>
                 </div>
-              );
-            })}
+
+                {/* Timestamp */}
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "#9ca3af",
+                    flexShrink: 0,
+                    textAlign: "right",
+                  }}
+                >
+                  {trade.timestamp}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -415,10 +362,10 @@ const Chat = () => {
             }}
           >
             {/* Avatar */}
-            {selectedConversation?.userAvatar ? (
+            {selectedTrade?.avatar ? (
               <img
-                src={selectedConversation.userAvatar}
-                alt={selectedConversation.username || "Người dùng"}
+                src={selectedTrade.avatar}
+                alt={selectedTrade.userName}
                 style={{
                   width: 48,
                   height: 48,
@@ -439,17 +386,17 @@ const Chat = () => {
                   fontSize: 20,
                 }}
               >
-                {selectedConversation?.username?.charAt(0) || "U"}
+                {selectedTrade?.userName?.charAt(0) || "U"}
               </div>
             )}
 
             {/* User Info */}
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600, fontSize: 16, color: "#1f2937" }}>
-                {selectedConversation?.username || "Người dùng"}
+                {selectedTrade?.userName}
               </div>
               <div style={{ fontSize: 13, color: "#6b7280" }}>
-                {selectedConversation?.itemTitle || "Đang trao đổi"}
+                {selectedTrade?.status || "New trade"}
               </div>
             </div>
 
@@ -531,40 +478,83 @@ const Chat = () => {
               background: bgLight,
             }}
           >
-            {selectedConversation?.messages &&
-            selectedConversation.messages.length > 0 ? (
-              selectedConversation.messages.map((msg) => (
+            {selectedTrade?.messages && selectedTrade.messages.length > 0 ? (
+              selectedTrade.messages.map((msg) => (
                 <div
                   key={msg.id}
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: msg.me ? "flex-end" : "flex-start",
+                    alignItems:
+                      msg.type === "status" ? "flex-start" : "flex-end",
                     marginBottom: 16,
                   }}
                 >
-                  <div
-                    style={{
-                      background: msg.me ? primary : surface,
-                      color: msg.me ? surface : "#1f2937",
-                      padding: "12px 16px",
-                      borderRadius: 12,
-                      maxWidth: "70%",
-                      fontSize: 14,
-                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    <div>{msg.content}</div>
+                  {msg.type === "status" ? (
                     <div
                       style={{
-                        fontSize: 11,
-                        color: msg.me ? "rgba(255,255,255,0.8)" : "#9ca3af",
-                        marginTop: 4,
+                        background: green,
+                        color: surface,
+                        padding: "12px 16px",
+                        borderRadius: 12,
+                        maxWidth: "70%",
+                        fontSize: 14,
                       }}
                     >
-                      {formatTimestamp(msg.timestamp)}
+                      <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                        {msg.text}
+                      </div>
+                      {msg.action && (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            marginTop: 8,
+                            fontSize: 12,
+                            opacity: 0.9,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 24,
+                              height: 24,
+                              borderRadius: "50%",
+                              background: "rgba(255, 255, 255, 0.2)",
+                              display: "grid",
+                              placeItems: "center",
+                              fontSize: 10,
+                            }}
+                          >
+                            {msg.user?.charAt(0) || "U"}
+                          </div>
+                          <span>{msg.action}</span>
+                        </div>
+                      )}
+                      <div style={{ fontSize: 11, marginTop: 6, opacity: 0.8 }}>
+                        {msg.timestamp}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div
+                      style={{
+                        background: surface,
+                        color: "#1f2937",
+                        padding: "12px 16px",
+                        borderRadius: 12,
+                        maxWidth: "70%",
+                        fontSize: 14,
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <div>{msg.text}</div>
+                      <div
+                        style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}
+                      >
+                        {msg.timestamp}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))
             ) : (

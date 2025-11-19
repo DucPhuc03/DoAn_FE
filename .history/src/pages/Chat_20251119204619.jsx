@@ -103,8 +103,6 @@ const sampleConversations = [
 ];
 
 const Chat = () => {
-  const socket = new SockJS("http://localhost:8080/ws");
-  const client = Stomp.over(socket);
   const [leftTab, setLeftTab] = useState("chats"); // chats | meetings
 
   const [conversations, setConversations] = useState(sampleConversations);

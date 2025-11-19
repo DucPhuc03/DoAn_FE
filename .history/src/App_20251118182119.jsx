@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
 import Chat from "./pages/Chat";
 import NewPost from "./pages/NewPost";
+import NewPost from "./pages/NewPost";
 
 function App() {
   return (

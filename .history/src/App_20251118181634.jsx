@@ -20,7 +20,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/post/:id" element={<PostDetail />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="/new-post" element={<NewPost />} />
+        <Route path="/post/new" element={<NewPost />} />
       </Routes>
     </>
   );

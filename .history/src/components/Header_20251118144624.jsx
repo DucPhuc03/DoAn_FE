@@ -39,17 +39,16 @@ const Header = () => {
           <div className="col-auto ms-auto d-flex align-items-center">
             <div className="d-flex align-items-center gap-4">
               {/* Plus Icon */}
-              <Link
-                to="/new-post"
+              <button
                 className="btn btn-outline-primary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
                 style={{
                   width: "44px",
                   height: "44px",
                 }}
-                title="Đăng bài mới"
+                title="Thêm mới"
               >
                 <i className="bi bi-plus fs-5"></i>
-              </Link>
+              </button>
 
               {/* Chat Icon */}
               <Link
