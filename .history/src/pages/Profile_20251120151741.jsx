@@ -33,7 +33,7 @@ const Profile = () => {
       try {
         setLoading(true);
         const userId = id;
-        console.log(userId); // Default to 1 if no id in URL
+        console.log(id); // Default to 1 if no id in URL
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);

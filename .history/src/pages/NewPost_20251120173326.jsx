@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import { PiImageSquareDuotone } from "react-icons/pi";
-import { LuMapPin, LuTag } from "react-icons/lu";
+import { LuMapPin, LuTag, LuFiles } from "react-icons/lu";
 import { getCategoryList } from "../service/category/CategoryService.js";
-import { createPost } from "../service/post/PostService.js";
 
 const palette = {
   primary: "#6d5dfc",
@@ -34,12 +33,8 @@ const NewPost = () => {
   const [categories, setCategories] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [categoryError, setCategoryError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const previews = useMemo(
-    () => formData.images.map((img) => ({ src: img.preview, name: img.name })),
-    [formData.images]
-  );
+  const previews = useMemo(() => formData.images, [formData.images]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -72,7 +67,6 @@ const NewPost = () => {
 
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files || []).map((file) => ({
-      file,
       name: file.name,
       preview: URL.createObjectURL(file),
       size: file.size,
@@ -84,44 +78,13 @@ const NewPost = () => {
     e.preventDefault();
     setSubmitting(true);
     setMessage("");
-    setErrorMessage("");
 
     try {
-      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-
-      if (!currentUser?.id) {
-        throw new Error("Bạn cần đăng nhập để tạo bài đăng.");
-      }
-
-      if (!formData.images.length) {
-        throw new Error("Vui lòng thêm ít nhất một ảnh sản phẩm.");
-      }
-
-      const payload = {
-        title: formData.title,
-        description: formData.description,
-        tag: formData.tags,
-        itemCondition: formData.condition,
-        tradeLocation: formData.meetingSpot,
-        categoryId: Number(formData.category),
-        userId: currentUser.id,
-      };
-
-      const multipart = new FormData();
-      multipart.append("postDTO", JSON.stringify(payload));
-      formData.images.forEach(({ file }) => {
-        multipart.append("images", file);
-      });
-
-      await createPost(multipart);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setMessage("Bài đăng đã được tạo! Chúng tôi sẽ duyệt sớm nhất.");
       setFormData(defaultForm);
     } catch (error) {
-      const friendlyMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Có lỗi xảy ra, vui lòng thử lại.";
-      setErrorMessage(friendlyMessage);
+      setMessage("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setSubmitting(false);
     }
@@ -173,7 +136,11 @@ const NewPost = () => {
                   {previews.map((img, idx) => (
                     <div className="col-4" key={`${img.name}-${idx}`}>
                       <div className="rounded-4 overflow-hidden border">
-                        <img src={img.src} alt={img.name} className="w-100" />
+                        <img
+                          src={img.preview}
+                          alt={img.name}
+                          className="w-100"
+                        />
                       </div>
                     </div>
                   ))}
@@ -335,17 +302,11 @@ const SelectionCard = ({
         disabled={disabled}
       >
         <option value="">{placeholder}</option>
-        {options.map((option) => {
-          const optionValue =
-            typeof option === "string" ? option : option.value;
-          const optionLabel =
-            typeof option === "string" ? option : option.label;
-          return (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          );
-        })}
+        {options.map(({ value: optionValue, label: optionLabel }) => (
+          <option key={optionValue} value={optionValue}>
+            {optionLabel}
+          </option>
+        ))}
       </select>
       {helperText && (
         <p className="text-danger small mb-0 mt-2">{helperText}</p>

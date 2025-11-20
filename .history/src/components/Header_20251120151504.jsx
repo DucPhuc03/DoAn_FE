@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const userId = JSON.parse(localStorage.getItem("user")).id;
-
+  const userId = JSON.parse(localStorage.getItem("user"))?.id;
   return (
     <header className="bg-white border-bottom border-1 border-light shadow-sm sticky-top">
       <div className="container-fluid px-4">

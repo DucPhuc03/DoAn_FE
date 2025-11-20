@@ -108,7 +108,7 @@ const Header = () => {
 
               {/* Profile Icon */}
               <Link
-                to={`/profile/${userId}`}
+                to="/profile/2"
                 className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
                 style={{
                   width: "44px",

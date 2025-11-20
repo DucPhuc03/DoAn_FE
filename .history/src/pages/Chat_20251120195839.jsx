@@ -135,11 +135,6 @@ const Chat = () => {
     const token = Cookies.get("access_token");
 
     client.connect(
-      token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
       () => {
         console.log(
           `WebSocket connected for conversation ${selectedConversationId}`

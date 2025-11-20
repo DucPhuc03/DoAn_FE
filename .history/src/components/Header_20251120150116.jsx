@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const userId = JSON.parse(localStorage.getItem("user")).id;
-
   return (
     <header className="bg-white border-bottom border-1 border-light shadow-sm sticky-top">
       <div className="container-fluid px-4">
@@ -108,7 +106,7 @@ const Header = () => {
 
               {/* Profile Icon */}
               <Link
-                to={`/profile/${userId}`}
+                to="/profile/:id"
                 className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
                 style={{
                   width: "44px",

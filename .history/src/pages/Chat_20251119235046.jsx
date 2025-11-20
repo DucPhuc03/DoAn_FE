@@ -25,8 +25,8 @@ const sampleConversations = [
     messages: [
       {
         id: 1,
-        senderId: 1,
-        senderName: "phuc",
+        senderId: 2,
+        senderName: "phucabc",
         timestamp: "2025-11-06T15:52:35.540464",
         avatarUrl:
           "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
@@ -117,7 +117,6 @@ const Chat = () => {
     sampleConversations[0]?.conversationId
   );
   const stompClientRef = useRef(null);
-  const subscriptionRef = useRef(null);
 
   const selectedConversation = useMemo(
     () =>
@@ -144,31 +143,6 @@ const Chat = () => {
         console.log(
           `WebSocket connected for conversation ${selectedConversationId}`
         );
-
-        // Subscribe to the chat topic
-        const topic = `/chat-trade/${selectedConversationId}`;
-        subscriptionRef.current = client.subscribe(topic, (message) => {
-          try {
-            const messageData = JSON.parse(message.body);
-            console.log("Received message:", messageData);
-
-            // Update conversations with the new message
-            setConversations((prev) =>
-              prev.map((conversation) =>
-                conversation.conversationId === selectedConversationId
-                  ? {
-                      ...conversation,
-                      messages: [...conversation.messages, messageData],
-                    }
-                  : conversation
-              )
-            );
-          } catch (error) {
-            console.error("Error parsing message:", error);
-          }
-        });
-
-        console.log(`Subscribed to topic: ${topic}`);
       },
       (error) => {
         console.error("WebSocket connection error:", error);
@@ -176,13 +150,6 @@ const Chat = () => {
     );
 
     return () => {
-      // Unsubscribe from the topic
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-        subscriptionRef.current = null;
-      }
-
-      // Disconnect WebSocket
       if (stompClientRef.current) {
         stompClientRef.current.disconnect(() => {
           console.log("WebSocket disconnected");
@@ -196,29 +163,31 @@ const Chat = () => {
 
   const handleSend = () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || !selectedConversation || !stompClientRef.current) return;
+    if (!trimmed || !selectedConversation) return;
 
-    // Check if WebSocket is connected
-    if (!stompClientRef.current.connected) {
-      console.error("WebSocket is not connected");
-      return;
-    }
-
-    // Send message to backend via WebSocket
-    const destination = `/app/chat.sendMessage/${selectedConversationId}`;
-
-    // Backend expects String, so we send the message content as JSON string
-    const messagePayload = JSON.stringify({
+    const newMessage = {
+      id: Date.now(),
+      senderId: 1,
+      senderName: "Bạn",
+      timestamp: new Date().toISOString(),
+      avatarUrl: null,
       content: trimmed,
-    });
+      read: false,
+      me: true,
+    };
 
-    stompClientRef.current.send(destination, {}, messagePayload);
-    console.log(`Sent message to ${destination}:`, trimmed);
+    setConversations((prev) =>
+      prev.map((conversation) =>
+        conversation.conversationId === selectedConversation.conversationId
+          ? {
+              ...conversation,
+              messages: [...conversation.messages, newMessage],
+            }
+          : conversation
+      )
+    );
 
-    // Clear input field
     setInputValue("");
-
-    // Note: Message will be received via subscription and added to conversations automatically
   };
 
   const handleKeyDown = (e) => {
