@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getProfile } from "../service/user/UserService";
 import {
@@ -16,13 +16,14 @@ import {
 const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Đề xuất", "Lịch sử"];
 
 const primary = "#2563eb"; // Blue
-const secondary = "#333";
+const secondary = "#1f2937";
 const muted = "#6b7280";
 const surface = "#ffffff";
-const bgProfile = "#f6f8fa";
+const bgProfile = "#f8fafc";
 
 const Profile = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [tab, setTab] = useState(0);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,6 @@ const Profile = () => {
       try {
         setLoading(true);
         const userId = id;
-        console.log(userId); // Default to 1 if no id in URL
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
@@ -83,8 +83,14 @@ const Profile = () => {
           }}
         >
           <div style={{ textAlign: "center", color: muted }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-            <div>Đang tải...</div>
+            <div
+              className="spinner-border text-primary"
+              role="status"
+              style={{ width: "3rem", height: "3rem" }}
+            >
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <div style={{ marginTop: 16, fontSize: 16 }}>Đang tải...</div>
           </div>
         </div>
       </div>
@@ -123,94 +129,152 @@ const Profile = () => {
         <div
           style={{
             background: surface,
-            borderRadius: 18,
-            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.08)",
-            padding: "32px 36px 30px 36px",
+            borderRadius: 20,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+            padding: "40px 40px 36px 40px",
             position: "relative",
+            border: "1px solid #f1f5f9",
           }}
         >
           {/* Edit Profile Button - Top Right */}
           {profileData.canSetting && (
             <button
+              onClick={() => navigate(`/edit-profile/${id}`)}
               style={{
                 position: "absolute",
-                top: 20,
-                right: 20,
-                background: "#f8f9fa",
-                color: secondary,
-                border: "1px solid #e9ecef",
-                padding: "8px 16px",
-                borderRadius: 8,
-                fontWeight: 500,
+                top: 24,
+                right: 24,
+                background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                color: surface,
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: 10,
+                fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
-                transition: "all 0.2s",
+                transition: "all 0.3s",
+                boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#e9ecef";
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(37, 99, 235, 0.4)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f8f9fa";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(37, 99, 235, 0.3)";
               }}
             >
+              <FaEdit style={{ fontSize: 14 }} />
               Chỉnh sửa hồ sơ
             </button>
           )}
 
-          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
             {/* Avatar */}
-            {profileData.avatarUrl ? (
-              <img
-                src={profileData.avatarUrl}
-                alt="Avatar"
-                style={{
-                  width: 128,
-                  height: 128,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  boxShadow: "0 4px 14px rgba(37, 99, 235, 0.15)",
-                  border: `4px solid ${primary}`,
-                  flexShrink: 0,
-                }}
-              />
-            ) : (
+            <div style={{ position: "relative" }}>
+              {profileData.avatarUrl ? (
+                <img
+                  src={profileData.avatarUrl}
+                  alt="Avatar"
+                  style={{
+                    width: 140,
+                    height: 140,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    boxShadow: "0 8px 24px rgba(37, 99, 235, 0.2)",
+                    border: `5px solid ${primary}`,
+                    flexShrink: 0,
+                    transition: "transform 0.3s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 140,
+                    height: 140,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: surface,
+                    fontSize: 56,
+                    fontWeight: 600,
+                    border: `5px solid ${primary}`,
+                    flexShrink: 0,
+                    boxShadow: "0 8px 24px rgba(37, 99, 235, 0.2)",
+                    transition: "transform 0.3s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                >
+                  {(profileData.fullName || profileData.username || "U")
+                    .charAt(0)
+                    .toUpperCase()}
+                </div>
+              )}
+              {/* Online status indicator */}
               <div
                 style={{
-                  width: 128,
-                  height: 128,
+                  position: "absolute",
+                  bottom: 8,
+                  right: 8,
+                  width: 20,
+                  height: 20,
                   borderRadius: "50%",
-                  background: "#e9ecef",
-                  display: "grid",
-                  placeItems: "center",
-                  color: muted,
-                  fontSize: 48,
-                  fontWeight: 300,
-                  border: `4px solid ${primary}`,
-                  flexShrink: 0,
-                  position: "relative",
+                  background: "#10b981",
+                  border: "3px solid white",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
                 }}
-              >
-                <span style={{ fontSize: 64, color: "#dee2e6" }}>×</span>
-              </div>
-            )}
+              />
+            </div>
 
             {/* Info */}
             <div style={{ flex: 1 }}>
               <div
                 style={{
                   fontWeight: 700,
-                  fontSize: 26,
+                  fontSize: 32,
                   color: secondary,
-                  marginBottom: 16,
+                  marginBottom: 8,
+                  background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                 }}
               >
                 {profileData.fullName || profileData.username}
               </div>
               <div
                 style={{
+                  fontSize: 15,
+                  color: muted,
+                  marginBottom: 20,
+                  fontWeight: 500,
+                }}
+              >
+                @{profileData.username}
+              </div>
+              <div
+                style={{
                   display: "flex",
                   gap: 12,
-                  marginBottom: 20,
+                  marginBottom: 24,
                   flexWrap: "wrap",
                 }}
               >
@@ -219,184 +283,278 @@ const Profile = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      background: "#f1f3f5",
-                      borderRadius: 6,
-                      padding: "6px 13px",
-                      fontWeight: 500,
-                      color: secondary,
+                      background:
+                        "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                      borderRadius: 10,
+                      padding: "8px 16px",
+                      fontWeight: 600,
+                      color: "#0369a1",
                       fontSize: 14,
+                      border: "1px solid #bae6fd",
+                      boxShadow: "0 2px 4px rgba(37, 99, 235, 0.1)",
                     }}
                   >
                     <FaMapMarkerAlt
-                      style={{ marginRight: 7, color: primary }}
-                    />{" "}
+                      style={{ marginRight: 8, color: primary, fontSize: 14 }}
+                    />
                     {profileData.address}
                   </span>
                 )}
-                {/* Interests could be added if available in API */}
               </div>
               {/* Stats */}
-              <div style={{ display: "flex", gap: 38 }}>
-                <div style={{ textAlign: "center" }}>
+              <div style={{ display: "flex", gap: 32 }}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "12px 20px",
+                    background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                    borderRadius: 12,
+                    border: "1px solid #bae6fd",
+                    minWidth: 100,
+                    transition: "all 0.3s",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 16px rgba(37, 99, 235, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 18,
-                      color: primary,
-                      marginBottom: 4,
-                      letterSpacing: 1,
+                      fontSize: 24,
+                      background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      marginBottom: 6,
                     }}
                   >
                     {profileData.trades || 0}
                   </div>
                   <div
                     style={{
-                      color: secondary,
-                      fontWeight: 500,
+                      color: "#0369a1",
+                      fontWeight: 600,
                       fontSize: 13,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 4,
+                      gap: 6,
                     }}
                   >
-                    <FaExchangeAlt /> Đã trao đổi
+                    <FaExchangeAlt style={{ fontSize: 14 }} /> Đã trao đổi
                   </div>
                 </div>
-                {/* Followers and Following - would need separate API call */}
-                <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "12px 20px",
+                    background: "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)",
+                    borderRadius: 12,
+                    border: "1px solid #fbcfe8",
+                    minWidth: 100,
+                    transition: "all 0.3s",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 16px rgba(236, 72, 153, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 18,
-                      color: primary,
-                      marginBottom: 4,
-                      letterSpacing: 1,
+                      fontSize: 24,
+                      background: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      marginBottom: 6,
                     }}
                   >
-                    0
+                    {profileData.followers || 0}
                   </div>
                   <div
                     style={{
-                      color: secondary,
-                      fontWeight: 500,
+                      color: "#be185d",
+                      fontWeight: 600,
                       fontSize: 13,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 4,
+                      gap: 6,
                     }}
                   >
-                    <FaUserFriends /> Người theo dõi
+                    <FaUserFriends style={{ fontSize: 14 }} /> Người theo dõi
                   </div>
                 </div>
-                <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "12px 20px",
+                    background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+                    borderRadius: 12,
+                    border: "1px solid #bbf7d0",
+                    minWidth: 100,
+                    transition: "all 0.3s",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 16px rgba(34, 197, 94, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 18,
-                      color: primary,
-                      marginBottom: 4,
-                      letterSpacing: 1,
+                      fontSize: 24,
+                      background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      marginBottom: 6,
                     }}
                   >
-                    0
+                    {profileData.following || 0}
                   </div>
                   <div
                     style={{
-                      color: secondary,
-                      fontWeight: 500,
+                      color: "#15803d",
+                      fontWeight: 600,
                       fontSize: 13,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 4,
+                      gap: 6,
                     }}
                   >
-                    <FaUserPlus /> Đang theo dõi
+                    <FaUserPlus style={{ fontSize: 14 }} /> Đang theo dõi
                   </div>
                 </div>
               </div>
             </div>
           </div>
           {/* Intro */}
-          <div
-            style={{
-              margin: "30px 2px 0 2px",
-              paddingTop: 14,
-              borderTop: "1px solid #edf0fb",
-            }}
-          >
+          {profileData.bio && (
             <div
               style={{
-                color: secondary,
-                fontWeight: 600,
-                fontSize: 16,
-                marginBottom: 8,
+                margin: "32px 0 0 0",
+                paddingTop: 24,
+                borderTop: "2px solid #f1f5f9",
               }}
             >
-              Giới thiệu
+              <div
+                style={{
+                  color: secondary,
+                  fontWeight: 700,
+                  fontSize: 18,
+                  marginBottom: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <i className="bi bi-info-circle" style={{ color: primary }}></i>
+                Giới thiệu
+              </div>
+              <div
+                style={{
+                  color: "#475569",
+                  fontSize: 15,
+                  lineHeight: 1.7,
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                  borderRadius: 12,
+                  padding: 16,
+                  border: "1px solid #e2e8f0",
+                  boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.02)",
+                }}
+              >
+                {profileData.bio || "Chưa có thông tin giới thiệu"}
+              </div>
             </div>
-            <div
-              style={{
-                color: "#495057",
-                fontSize: 15,
-                minHeight: 40,
-                background: "#f8f9fa",
-                borderRadius: 8,
-                padding: 12,
-                border: "1px solid #e9ecef",
-              }}
-            >
-              {profileData.bio || ""}
-            </div>
-          </div>
+          )}
         </div>
         {/* Tabs + Cards */}
         <div
           style={{
-            margin: "28px 0 0",
+            margin: "32px 0 0",
             background: surface,
-            borderRadius: 18,
-            boxShadow: "0 4px 18px rgba(0, 0, 0, 0.05)",
+            borderRadius: 20,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
             minHeight: 340,
-            padding: "0 3px 7px 3px",
+            padding: "0",
+            border: "1px solid #f1f5f9",
+            overflow: "hidden",
           }}
         >
           {/* Tabs */}
           <div
             style={{
               display: "flex",
-              gap: 7,
-              padding: "22px 34px 0 34px",
-              borderBottom: "1px solid #f2f2f2",
+              gap: 8,
+              padding: "24px 32px 0 32px",
+              borderBottom: "2px solid #f1f5f9",
               alignItems: "center",
+              background: "linear-gradient(180deg, #fafbfc 0%, #ffffff 100%)",
             }}
           >
             {userTabs.map((t, idx) => (
               <button
                 key={t}
                 style={{
-                  padding: "10px 30px",
+                  padding: "12px 24px",
                   border: "none",
-                  borderRadius: 9,
-                  background: tab === idx ? primary : "#f2f6fb",
-                  color: tab === idx ? surface : primary,
+                  borderRadius: 10,
+                  background:
+                    tab === idx
+                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                      : "transparent",
+                  color: tab === idx ? surface : muted,
                   fontWeight: 600,
-                  fontSize: 16,
-                  marginBottom: -1,
+                  fontSize: 15,
+                  marginBottom: -2,
                   boxShadow:
                     tab === idx
-                      ? "0 2px 12px rgba(37, 99, 235, 0.2)"
+                      ? "0 4px 12px rgba(37, 99, 235, 0.3)"
                       : undefined,
                   borderBottom:
                     tab === idx
-                      ? `4px solid ${primary}`
-                      : "4px solid transparent",
+                      ? `3px solid ${primary}`
+                      : "3px solid transparent",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: "all 0.3s",
+                  position: "relative",
                 }}
                 onClick={() => setTab(idx)}
+                onMouseEnter={(e) => {
+                  if (tab !== idx) {
+                    e.currentTarget.style.background = "#f1f5f9";
+                    e.currentTarget.style.color = primary;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== idx) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = muted;
+                  }
+                }}
               >
                 {t}
               </button>
@@ -405,154 +563,242 @@ const Profile = () => {
           </div>
           <div
             style={{
-              display: "flex",
-              gap: 30,
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 24,
               minHeight: 220,
-              flexWrap: "wrap",
-              justifyContent: "flex-start",
-              padding: 37,
+              padding: 32,
             }}
           >
             {tab === 0 && profileData.posts && profileData.posts.length > 0 ? (
               profileData.posts.map((post) => (
                 <div
                   key={post.id}
+                  onClick={() => navigate(`/post/${post.id}`)}
                   style={{
-                    width: 260,
                     background: surface,
-                    borderRadius: 12,
+                    borderRadius: 16,
                     padding: 0,
-                    marginBottom: 24,
                     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-                    border: "1px solid #e9ecef",
-                    transition: "transform 0.2s, box-shadow 0.2s",
+                    border: "1px solid #e2e8f0",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     cursor: "pointer",
                     overflow: "hidden",
                     display: "flex",
                     flexDirection: "column",
                     position: "relative",
                   }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-8px)";
                     e.currentTarget.style.boxShadow =
-                      "0 8px 24px rgba(0, 0, 0, 0.12)";
+                      "0 12px 32px rgba(0, 0, 0, 0.15)";
+                    e.currentTarget.style.borderColor = primary;
                   }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "";
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow =
                       "0 2px 8px rgba(0, 0, 0, 0.08)";
+                    e.currentTarget.style.borderColor = "#e2e8f0";
                   }}
                 >
                   {post.imageUrls && post.imageUrls.length > 0 ? (
-                    <img
-                      src={post.imageUrls[0]}
-                      alt={post.title}
-                      style={{
-                        width: "100%",
-                        height: 148,
-                        objectFit: "cover",
-                      }}
-                    />
+                    <div style={{ position: "relative", overflow: "hidden" }}>
+                      <img
+                        src={post.imageUrls[0]}
+                        alt={post.title}
+                        style={{
+                          width: "100%",
+                          height: 180,
+                          objectFit: "cover",
+                          transition: "transform 0.3s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "scale(1.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          background: "rgba(0, 0, 0, 0.6)",
+                          color: surface,
+                          padding: "4px 10px",
+                          borderRadius: 20,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          backdropFilter: "blur(10px)",
+                        }}
+                      >
+                        {post.imageUrls.length > 1 && (
+                          <i className="bi bi-images me-1"></i>
+                        )}
+                        {post.imageUrls.length} ảnh
+                      </div>
+                    </div>
                   ) : (
                     <div
                       style={{
                         width: "100%",
-                        height: 148,
-                        background: "#f8f9fa",
+                        height: 180,
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                         display: "grid",
                         placeItems: "center",
-                        color: "#dee2e6",
+                        color: surface,
                         fontSize: 48,
-                        fontWeight: 300,
                       }}
                     >
-                      <span>×</span>
+                      <i className="bi bi-image"></i>
                     </div>
                   )}
-                  <div style={{ padding: 16, position: "relative" }}>
+                  <div style={{ padding: 18, position: "relative", flex: 1 }}>
                     <div
                       style={{
                         fontWeight: 700,
-                        fontSize: 17,
+                        fontSize: 18,
                         color: secondary,
-                        marginBottom: 8,
+                        marginBottom: 10,
+                        lineHeight: 1.4,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
                       {post.title}
                     </div>
                     <div
                       style={{
-                        color:
-                          getPostStatus(post.postStatus) === "Đã trao đổi"
-                            ? "#10b981"
-                            : muted,
-                        fontSize: 14,
-                        fontWeight: 500,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: "auto",
                       }}
                     >
-                      {getPostStatus(post.postStatus)}
+                      <span
+                        style={{
+                          color:
+                            getPostStatus(post.postStatus) === "Đã trao đổi"
+                              ? "#10b981"
+                              : getPostStatus(post.postStatus) === "Đang trao đổi"
+                              ? "#f59e0b"
+                              : muted,
+                          fontSize: 13,
+                          fontWeight: 600,
+                          background:
+                            getPostStatus(post.postStatus) === "Đã trao đổi"
+                              ? "#d1fae5"
+                              : getPostStatus(post.postStatus) === "Đang trao đổi"
+                              ? "#fef3c7"
+                              : "#f1f5f9",
+                          padding: "4px 10px",
+                          borderRadius: 6,
+                        }}
+                      >
+                        {getPostStatus(post.postStatus)}
+                      </span>
+                      {post.category && (
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color: primary,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {post.category.name}
+                        </span>
+                      )}
                     </div>
-                    {/* Action icons - Bottom right */}
+                    {/* Action icons - Top right */}
                     {(post.canEdit || post.canDelete) && (
                       <div
                         style={{
                           position: "absolute",
-                          bottom: 16,
-                          right: 16,
+                          top: 12,
+                          right: 12,
                           display: "flex",
-                          gap: 8,
+                          gap: 6,
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {post.canEdit && (
                           <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/edit-post/${post.id}`);
+                            }}
                             style={{
-                              width: 28,
-                              height: 28,
-                              borderRadius: 6,
+                              width: 32,
+                              height: 32,
+                              borderRadius: 8,
                               border: "none",
-                              background: "#f8f9fa",
+                              background: "rgba(255, 255, 255, 0.9)",
                               color: primary,
                               display: "grid",
                               placeItems: "center",
                               cursor: "pointer",
                               transition: "all 0.2s",
+                              backdropFilter: "blur(10px)",
+                              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = primary;
                               e.currentTarget.style.color = surface;
+                              e.currentTarget.style.transform = "scale(1.1)";
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#f8f9fa";
+                              e.currentTarget.style.background =
+                                "rgba(255, 255, 255, 0.9)";
                               e.currentTarget.style.color = primary;
+                              e.currentTarget.style.transform = "scale(1)";
                             }}
                           >
-                            <FaEdit style={{ fontSize: 12 }} />
+                            <FaEdit style={{ fontSize: 13 }} />
                           </button>
                         )}
                         {post.canDelete && (
                           <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (
+                                window.confirm(
+                                  "Bạn có chắc muốn xóa bài đăng này?"
+                                )
+                              ) {
+                                // TODO: Implement delete
+                              }
+                            }}
                             style={{
-                              width: 28,
-                              height: 28,
-                              borderRadius: 6,
+                              width: 32,
+                              height: 32,
+                              borderRadius: 8,
                               border: "none",
-                              background: "#f8f9fa",
+                              background: "rgba(255, 255, 255, 0.9)",
                               color: "#ef4444",
                               display: "grid",
                               placeItems: "center",
                               cursor: "pointer",
                               transition: "all 0.2s",
+                              backdropFilter: "blur(10px)",
+                              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = "#ef4444";
                               e.currentTarget.style.color = surface;
+                              e.currentTarget.style.transform = "scale(1.1)";
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#f8f9fa";
+                              e.currentTarget.style.background =
+                                "rgba(255, 255, 255, 0.9)";
                               e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.transform = "scale(1)";
                             }}
                           >
-                            <FaTrash style={{ fontSize: 12 }} />
+                            <FaTrash style={{ fontSize: 13 }} />
                           </button>
                         )}
                       </div>
@@ -563,39 +809,66 @@ const Profile = () => {
             ) : (
               <div
                 style={{
-                  width: "100%",
+                  gridColumn: "1 / -1",
                   textAlign: "center",
-                  padding: "40px 20px",
+                  padding: "60px 20px",
                   color: muted,
                 }}
               >
-                {tab === 0 ? "Chưa có bài đăng nào" : "Chưa có nội dung"}
+                <div
+                  style={{
+                    fontSize: 64,
+                    marginBottom: 16,
+                    opacity: 0.5,
+                  }}
+                >
+                  {tab === 0 ? "📝" : "📋"}
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+                  {tab === 0 ? "Chưa có bài đăng nào" : "Chưa có nội dung"}
+                </div>
+                <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                  {tab === 0
+                    ? "Hãy tạo bài đăng đầu tiên của bạn!"
+                    : "Nội dung sẽ được hiển thị ở đây"}
+                </div>
               </div>
             )}
           </div>
           {tab === 0 && profileData.posts && profileData.posts.length > 0 && (
             <div
-              style={{ textAlign: "center", marginTop: 5, marginBottom: 20 }}
+              style={{
+                textAlign: "center",
+                padding: "24px 0 32px",
+                borderTop: "1px solid #f1f5f9",
+              }}
             >
               <button
                 style={{
-                  padding: "13px 44px",
-                  borderRadius: 10,
+                  padding: "12px 32px",
+                  borderRadius: 12,
                   fontWeight: 600,
                   border: "none",
-                  background: primary,
+                  background:
+                    "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
                   color: surface,
-                  fontSize: 16,
-                  boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
+                  fontSize: 15,
+                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
                   cursor: "pointer",
-                  transition: "background 0.2s",
+                  transition: "all 0.3s",
                 }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.background = "#1d4ed8")
-                }
-                onMouseOut={(e) => (e.currentTarget.style.background = primary)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(37, 99, 235, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(37, 99, 235, 0.3)";
+                }}
               >
-                Xem thêm
+                Xem thêm bài đăng
               </button>
             </div>
           )}

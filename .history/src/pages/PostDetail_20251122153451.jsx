@@ -303,34 +303,38 @@ const PostDetail = () => {
                   <p className="mb-0  ">{post.category?.name || "Chưa có"}</p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className=" small d-block mb-1 fw-semibold">
                     Tình trạng
                   </label>
-                  <p className="mb-0  text-dark">
+                  <p className="mb-0 fw-medium text-dark">
                     {post.itemCondition || "Chưa có"}
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className=" small d-block mb-1 fw-semibold">
                     Trạng thái
                   </label>
-                  <p className={`mb-0  ${getStatusColor(post.postStatus)}`}>
+                  <p
+                    className={`mb-0 fw-medium ${getStatusColor(
+                      post.postStatus
+                    )}`}
+                  >
                     {getStatusLabel(post.postStatus)}
                   </p>
                 </div>
                 {post.tradeLocation && (
                   <div className="mb-3">
-                    <label className=" fw-bold  d-block mb-1 fw-semibold">
+                    <label className=" small d-block mb-1 fw-semibold">
                       Địa điểm trao đổi
                     </label>
-                    <p className="mb-0  text-dark">
+                    <p className="mb-0 fw-medium text-dark">
                       <i className="bi bi-geo-alt me-1"></i>
                       {post.tradeLocation}
                     </p>
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className=" small d-block mb-1 fw-semibold">
                     Mô tả
                   </label>
                   <p
@@ -350,7 +354,7 @@ const PostDetail = () => {
                   style={{ fontSize: "1rem" }}
                   disabled={post.postStatus === "COMPLETED"}
                 >
-                  Bắt đầu trao đổi
+                  Đề xuất trao đổi
                 </button>
                 {post.canEdit && (
                   <button

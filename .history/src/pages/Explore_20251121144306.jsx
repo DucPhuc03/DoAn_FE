@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 const Explore = () => {
-  const navigate = useNavigate();
+  const [selectedCard, setSelectedCard] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedDateRange, setSelectedDateRange] = useState("all");
+
+  const navigate = useNavigate();
 
   // Sample data for topics
   const topics = [
@@ -23,86 +28,85 @@ const Explore = () => {
       title: "iPhone 13 Pro Max",
       poster: "Nguyễn Văn A",
       image: "📱",
+      categoryId: 1,
+      createdAt: "2025-11-01",
     },
     {
       id: 2,
       title: "Áo khoác mùa đông",
       poster: "Trần Thị B",
       image: "🧥",
+      categoryId: 2,
+      createdAt: "2025-10-15",
     },
     {
       id: 3,
       title: "Sách lập trình React",
       poster: "Lê Văn C",
       image: "📖",
+      categoryId: 3,
+      createdAt: "2025-09-20",
     },
     {
       id: 4,
       title: "Bàn làm việc gỗ",
       poster: "Phạm Thị D",
       image: "🪑",
+      categoryId: 5,
+      createdAt: "2025-08-10",
     },
     {
       id: 5,
       title: "Giày thể thao Nike",
       poster: "Hoàng Văn E",
       image: "👟",
+      categoryId: 4,
+      createdAt: "2025-11-10",
     },
     {
       id: 6,
       title: "Xe đạp địa hình",
       poster: "Vũ Thị F",
       image: "🚴",
-    },
-    {
-      id: 7,
-      title: "Laptop Dell XPS",
-      poster: "Nguyễn Thị G",
-      image: "💻",
-    },
-    {
-      id: 8,
-      title: "Tai nghe AirPods",
-      poster: "Trần Văn H",
-      image: "🎧",
-    },
-    {
-      id: 9,
-      title: "Đồng hồ thông minh",
-      poster: "Lê Thị I",
-      image: "⌚",
-    },
-    {
-      id: 10,
-      title: "Máy ảnh Canon",
-      poster: "Phạm Văn J",
-      image: "📷",
-    },
-    {
-      id: 11,
-      title: "Balo du lịch",
-      poster: "Hoàng Thị K",
-      image: "🎒",
-    },
-    {
-      id: 12,
-      title: "Bàn phím cơ",
-      poster: "Vũ Văn L",
-      image: "⌨️",
+      categoryId: 6,
+      createdAt: "2025-07-05",
     },
   ];
 
-  const handlePostClick = (postId) => {
-    navigate(`/post/${postId}`);
-  };
+  const filteredCards = useMemo(() => {
+    const now = new Date();
 
-  const handleTopicClick = (topicName) => {
-    const encodedName = encodeURIComponent(topicName.toLowerCase().replace(/\s+/g, "-"));
-    navigate(`/category/${encodedName}`);
-  };
+    const isWithinRange = (createdAt) => {
+      if (selectedDateRange === "all") return true;
+      const createdDate = new Date(createdAt);
+      const diffInMs = now - createdDate;
+      const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+      switch (selectedDateRange) {
+        case "1m":
+          return diffInDays <= 30;
+        case "6m":
+          return diffInDays <= 180;
+        case "1y":
+          return diffInDays <= 365;
+        default:
+          return true;
+      }
+    };
+
+    return contentCards.filter((card) => {
+      const byCategory =
+        selectedCategory === "all" ||
+        String(card.categoryId) === String(selectedCategory);
+
+      const byDate = isWithinRange(card.createdAt);
+
+      return byCategory && byDate;
+    });
+  }, [contentCards, selectedCategory, selectedDateRange]);
 
   return (
-    <div className="bg-light min-vh-100">
+    <div className="div">
       <Header />
       <div className="container-fluid py-4 explore-container">
         {/* Search and Filter Section */}
@@ -113,7 +117,7 @@ const Explore = () => {
               <div className="w-100" style={{ maxWidth: "600px" }}>
                 <input
                   type="text"
-                  className="form-control form-control-lg bg-white border-0 rounded-pill px-4 py-3 shadow-sm"
+                  className="form-control form-control-lg bg-light border-0 rounded-pill px-4 py-3"
                   placeholder="Tìm kiếm sản phẩm..."
                   style={{ fontSize: "1.1rem" }}
                 />
@@ -128,18 +132,56 @@ const Explore = () => {
 
             {/* Filter Controls */}
             <div className="d-flex align-items-center justify-content-center gap-3">
-              <button className="btn btn-outline-secondary rounded-circle p-2">
+              <button
+                className="btn btn-outline-secondary rounded-circle p-2"
+                type="button"
+                onClick={() => setShowFilters((prev) => !prev)}
+              >
                 <i className="bi bi-funnel fs-5"></i>
               </button>
-              <div className="d-flex gap-2">
-                <button className="btn btn-outline-primary rounded-pill px-3 py-2">
-                  Địa điểm
-                </button>
-                <button className="btn btn-outline-secondary rounded-pill px-3 py-2">
-                  Khoảng cách
-                </button>
-              </div>
             </div>
+
+            {showFilters && (
+              <div className="mt-3 d-flex flex-column flex-md-row justify-content-center gap-3">
+                {/* Category Filter */}
+                <div className="d-flex align-items-center gap-2">
+                  <span className="text-muted small fw-semibold text-uppercase">
+                    Danh mục
+                  </span>
+                  <select
+                    className="form-select form-select-sm rounded-pill px-3"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    style={{ minWidth: "160px" }}
+                  >
+                    <option value="all">Tất cả</option>
+                    {topics.map((topic) => (
+                      <option key={topic.id} value={topic.id}>
+                        {topic.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Date Filter */}
+                <div className="d-flex align-items-center gap-2">
+                  <span className="text-muted small fw-semibold text-uppercase">
+                    Ngày đăng
+                  </span>
+                  <select
+                    className="form-select form-select-sm rounded-pill px-3"
+                    value={selectedDateRange}
+                    onChange={(e) => setSelectedDateRange(e.target.value)}
+                    style={{ minWidth: "180px" }}
+                  >
+                    <option value="all">Tất cả</option>
+                    <option value="1m">Trong 1 tháng</option>
+                    <option value="6m">Trong 6 tháng</option>
+                    <option value="1y">Trong 1 năm</option>
+                  </select>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -152,12 +194,11 @@ const Explore = () => {
                 {topics.map((topic) => (
                   <div
                     key={topic.id}
-                    className="flex-shrink-0 text-center cursor-pointer"
+                    className="flex-shrink-0 text-center"
                     style={{ minWidth: "120px" }}
-                    onClick={() => handleTopicClick(topic.name)}
                   >
                     <div
-                      className="bg-white rounded-3 p-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all"
+                      className="bg-light rounded-3 p-3 mb-2 d-flex align-items-center justify-content-center"
                       style={{ height: "80px", width: "120px" }}
                     >
                       <span className="fs-1">{topic.image}</span>
@@ -174,31 +215,34 @@ const Explore = () => {
         <div className="row mb-4">
           <div className="col-12">
             <div className="content-grid">
-              {contentCards.map((card) => (
+              {filteredCards.map((card, index) => (
                 <div
                   key={card.id}
-                  className="card border-0 cursor-pointer transition-all shadow-sm hover-shadow bg-white"
-                  onClick={() => handlePostClick(card.id)}
+                  className={`card border-2 cursor-pointer transition-all 
+                  }`}
                   style={{
                     cursor: "pointer",
                     transition: "all 0.2s ease",
+                    minHeight: "260px",
+                  }}
+                  onClick={() => {
+                    setSelectedCard(index);
+                    navigate(`/post/${card.id}`);
                   }}
                 >
                   <div className="card-body p-0">
                     {/* Image Placeholder */}
                     <div
                       className="bg-light d-flex align-items-center justify-content-center"
-                      style={{ height: "120px" }}
+                      style={{ height: "150px" }}
                     >
-                      <span className="fs-2 text-muted">{card.image}</span>
+                      <span className="fs-1 text-muted">{card.image}</span>
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-2">
-                      <h6 className="card-title fw-bold mb-1 text-truncate" style={{ fontSize: "0.9rem" }}>
-                        {card.title}
-                      </h6>
-                      <p className="card-text text-muted mb-0 small">
+                    <div className="p-3">
+                      <h5 className="card-title fw-bold mb-2">{card.title}</h5>
+                      <p className="card-text text-muted mb-1">
                         <i className="bi bi-person me-1"></i>
                         {card.poster}
                       </p>
@@ -229,7 +273,7 @@ const Explore = () => {
                     className={`page-link border-0 rounded-circle mx-1 ${
                       currentPage === 1
                         ? "bg-primary text-white"
-                        : "bg-white text-dark"
+                        : "bg-light text-dark"
                     }`}
                     onClick={() => setCurrentPage(1)}
                     style={{ width: "40px", height: "40px" }}
@@ -242,7 +286,7 @@ const Explore = () => {
                     className={`page-link border-0 rounded-circle mx-1 ${
                       currentPage === 2
                         ? "bg-primary text-white"
-                        : "bg-white text-dark"
+                        : "bg-light text-dark"
                     }`}
                     onClick={() => setCurrentPage(2)}
                     style={{ width: "40px", height: "40px" }}
@@ -255,7 +299,7 @@ const Explore = () => {
                     className={`page-link border-0 rounded-circle mx-1 ${
                       currentPage === 3
                         ? "bg-primary text-white"
-                        : "bg-white text-dark"
+                        : "bg-light text-dark"
                     }`}
                     onClick={() => setCurrentPage(3)}
                     style={{ width: "40px", height: "40px" }}

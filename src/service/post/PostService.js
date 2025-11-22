@@ -8,3 +8,23 @@ export async function createPost(post) {
   const { data } = await axios.post("/api/post", post);
   return data;
 }
+export async function updatePost(id, post) {
+  const { data } = await axios.put(`/api/post/${id}`, post);
+  return data;
+}
+export async function updatePostStatus(id, status) {
+  const { data } = await axios.put(`/api/post/${id}/status`, { status });
+  return data;
+}
+export async function deletePost(id) {
+  const { data } = await axios.delete(`/api/post/${id}`);
+  return data;
+}
+export async function getPostComments(postId) {
+  const { data } = await axios.get(`/api/post/${postId}/comments`);
+  return data;
+}
+export async function createComment(postId, content) {
+  const { data } = await axios.post(`/api/post/${postId}/comments`, { content });
+  return data;
+}

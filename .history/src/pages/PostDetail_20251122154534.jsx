@@ -303,10 +303,10 @@ const PostDetail = () => {
                   <p className="mb-0  ">{post.category?.name || "Chưa có"}</p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className=" fw-bold small d-block mb-1 fw-semibold">
                     Tình trạng
                   </label>
-                  <p className="mb-0  text-dark">
+                  <p className="mb-0 fw-medium text-dark">
                     {post.itemCondition || "Chưa có"}
                   </p>
                 </div>

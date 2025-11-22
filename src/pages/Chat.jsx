@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Header from "../components/Header";
+import TradeModal from "../components/TradeModal";
+import PlanModal from "../components/PlanModal";
 import {
   FaEllipsisV,
   FaSmile,
@@ -116,6 +118,8 @@ const Chat = () => {
   const [selectedConversationId, setSelectedConversationId] = useState(
     sampleConversations[0]?.conversationId
   );
+  const [showTradeModal, setShowTradeModal] = useState(false);
+  const [showPlanModal, setShowPlanModal] = useState(false);
   const stompClientRef = useRef(null);
   const subscriptionRef = useRef(null);
 
@@ -527,6 +531,7 @@ const Chat = () => {
             {/* Action Buttons */}
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <button
+                onClick={() => setShowTradeModal(true)}
                 style={{
                   padding: "8px 16px",
                   border: "none",
@@ -548,6 +553,7 @@ const Chat = () => {
                 View trade
               </button>
               <button
+                onClick={() => setShowPlanModal(true)}
                 style={{
                   padding: "8px 16px",
                   border: "none",
@@ -757,6 +763,22 @@ const Chat = () => {
           </div>
         </div>
       </div>
+
+      {/* Trade Modal */}
+      {showTradeModal && (
+        <TradeModal
+          onClose={() => setShowTradeModal(false)}
+          conversation={selectedConversation}
+        />
+      )}
+
+      {/* Plan Modal */}
+      {showPlanModal && (
+        <PlanModal
+          onClose={() => setShowPlanModal(false)}
+          conversation={selectedConversation}
+        />
+      )}
     </div>
   );
 };
