@@ -29,60 +29,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fake reviews data
-  const fakeReviews = [
-    {
-      id: 1,
-      reviewerName: "Nguyễn Văn Tường",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-      content:
-        "Sản phẩm rất tốt, đúng như mô tả. Người bán rất nhiệt tình và giao hàng nhanh. Rất hài lòng với giao dịch này!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/sach.webp",
-      itemTitle: "iPhone 16 Pro Max",
-      reviewDate: "2025-01-15",
-    },
-    {
-      id: 2,
-      reviewerName: "Trần Thị Bích",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
-      content:
-        "Chất lượng sản phẩm tốt, giá cả hợp lý. Đã trao đổi thành công và rất vui với món đồ này.",
-      rating: 4,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/ao.webp",
-      itemTitle: "Áo khoác mùa đông",
-      reviewDate: "2025-01-10",
-    },
-    {
-      id: 3,
-      reviewerName: "Lê Văn Cao",
-      reviewerAvatar: null,
-      content:
-        "Giao dịch diễn ra suôn sẻ, sản phẩm như mô tả. Cảm ơn bạn đã trao đổi!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/giay.webp",
-      itemTitle: "Giày thể thao Nike",
-      reviewDate: "2025-01-05",
-    },
-    {
-      id: 4,
-      reviewerName: "Phạm Thị Dung",
-      reviewerAvatar: null,
-      content:
-        "Sản phẩm ổn, nhưng có một số điểm nhỏ cần cải thiện. Nhìn chung vẫn hài lòng.",
-      rating: 3,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/dovat.webp",
-      itemTitle: "Bàn làm việc gỗ",
-      reviewDate: "2024-12-28",
-    },
-  ];
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -173,131 +119,21 @@ const Profile = () => {
   }
 
   return (
-    <div
-      style={{
-        background: bgProfile,
-        minHeight: "100vh",
-        position: "relative",
-      }}
-    >
+    <div style={{ background: bgProfile, minHeight: "100vh" }}>
       <Header />
-
-      {/* Background with Mountains */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "400px",
-          background:
-            "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 30%, #7dd3fc 60%, #38bdf8 100%)",
-          overflow: "hidden",
-          zIndex: 0,
-        }}
-      >
-        {/* Clouds */}
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            left: "10%",
-            width: "120px",
-            height: "40px",
-            background: "rgba(255, 255, 255, 0.6)",
-            borderRadius: "50px",
-            opacity: 0.8,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: "40px",
-            right: "15%",
-            width: "100px",
-            height: "35px",
-            background: "rgba(255, 255, 255, 0.5)",
-            borderRadius: "50px",
-            opacity: 0.7,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: "60px",
-            left: "50%",
-            width: "80px",
-            height: "30px",
-            background: "rgba(255, 255, 255, 0.4)",
-            borderRadius: "50px",
-            opacity: 0.6,
-          }}
-        />
-
-        {/* Mountains */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "200px",
-            background:
-              "linear-gradient(180deg, transparent 0%, #14b8a6 20%, #0d9488 50%, #0f766e 100%)",
-            clipPath:
-              "polygon(0% 100%, 10% 60%, 20% 80%, 30% 50%, 40% 70%, 50% 40%, 60% 60%, 70% 35%, 80% 55%, 90% 45%, 100% 100%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "150px",
-            background:
-              "linear-gradient(180deg, transparent 0%, #2dd4bf 30%, #14b8a6 70%, #0d9488 100%)",
-            clipPath:
-              "polygon(0% 100%, 15% 70%, 25% 85%, 35% 65%, 45% 75%, 55% 55%, 65% 70%, 75% 50%, 85% 65%, 100% 100%)",
-            opacity: 0.8,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "120px",
-            background:
-              "linear-gradient(180deg, transparent 0%, #5eead4 40%, #2dd4bf 80%, #14b8a6 100%)",
-            clipPath:
-              "polygon(0% 100%, 20% 80%, 30% 90%, 40% 75%, 50% 85%, 60% 70%, 70% 80%, 80% 65%, 90% 75%, 100% 100%)",
-            opacity: 0.6,
-          }}
-        />
-      </div>
-
       {/* Profile Container */}
       <div
-        style={{
-          maxWidth: 980,
-          margin: "0 auto",
-          padding: "36px 12px 28px",
-          position: "relative",
-          zIndex: 1,
-        }}
+        style={{ maxWidth: 980, margin: "0 auto", padding: "36px 12px 28px" }}
       >
         {/* Profile Card */}
         <div
           style={{
             background: surface,
             borderRadius: 20,
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
             padding: "40px 40px 36px 40px",
             position: "relative",
             border: "1px solid #f1f5f9",
-            marginTop: "200px",
           }}
         >
           {/* Edit Profile Button - Top Right */}
@@ -308,35 +144,33 @@ const Profile = () => {
                 position: "absolute",
                 top: 24,
                 right: 24,
-                background: "#f8f9fa",
-                color: "#6b7280",
-                border: "1px solid #e5e7eb",
-                padding: "10px",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                color: surface,
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: 10,
+                fontWeight: 600,
+                fontSize: 14,
                 cursor: "pointer",
                 transition: "all 0.3s",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#e9ecef";
                 e.currentTarget.style.transform = "translateY(-2px)";
                 e.currentTarget.style.boxShadow =
-                  "0 4px 12px rgba(0, 0, 0, 0.15)";
+                  "0 4px 12px rgba(37, 99, 235, 0.4)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f8f9fa";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow =
-                  "0 2px 8px rgba(0, 0, 0, 0.1)";
+                  "0 2px 8px rgba(37, 99, 235, 0.3)";
               }}
-              title="Chỉnh sửa hồ sơ"
             >
-              <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
+              <FaEdit style={{ fontSize: 14 }} />
+              Chỉnh sửa hồ sơ
             </button>
           )}
 
@@ -419,7 +253,7 @@ const Profile = () => {
                   color: secondary,
                   marginBottom: 8,
                   background:
-                    "linear-gradient(135deg, #070708ff 0%, #272525ff 100%)",
+                    "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -435,7 +269,7 @@ const Profile = () => {
                   fontWeight: 500,
                 }}
               >
-                @{profileData.username}
+                @{profileData.fullName}
               </div>
               <div
                 style={{
@@ -967,225 +801,6 @@ const Profile = () => {
                   </div>
                 </div>
               ))
-            ) : tab === 2 ? (
-              // Reviews Tab
-              fakeReviews.length > 0 ? (
-                fakeReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    style={{
-                      gridColumn: "1 / -1",
-                      background: surface,
-                      borderRadius: 16,
-                      padding: 20,
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-                      border: "1px solid #e2e8f0",
-                      marginBottom: 16,
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: 16 }}>
-                      {/* Reviewer Info */}
-                      <div style={{ display: "flex", gap: 12, flex: 1 }}>
-                        {/* Avatar */}
-                        <div
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: "50%",
-                            background: review.reviewerAvatar
-                              ? "transparent"
-                              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {review.reviewerAvatar ? (
-                            <img
-                              src={review.reviewerAvatar}
-                              alt={review.reviewerName}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ) : (
-                            <span
-                              style={{
-                                color: surface,
-                                fontSize: 20,
-                                fontWeight: 600,
-                              }}
-                            >
-                              {review.reviewerName.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Review Content */}
-                        <div style={{ flex: 1 }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 12,
-                              marginBottom: 8,
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontWeight: 600,
-                                fontSize: 16,
-                                color: secondary,
-                              }}
-                            >
-                              {review.reviewerName}
-                            </div>
-                            {/* Rating Stars */}
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: 2,
-                                alignItems: "center",
-                              }}
-                            >
-                              {[...Array(5)].map((_, index) => (
-                                <i
-                                  key={index}
-                                  className={`bi ${
-                                    index < review.rating
-                                      ? "bi-star-fill"
-                                      : "bi-star"
-                                  }`}
-                                  style={{
-                                    color:
-                                      index < review.rating
-                                        ? "#fbbf24"
-                                        : "#d1d5db",
-                                    fontSize: "14px",
-                                  }}
-                                ></i>
-                              ))}
-                            </div>
-                            <div
-                              style={{
-                                marginLeft: "auto",
-                                fontSize: 12,
-                                color: muted,
-                              }}
-                            >
-                              {formatDate(review.reviewDate)}
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              color: "#475569",
-                              fontSize: 14,
-                              lineHeight: 1.6,
-                              marginBottom: 12,
-                            }}
-                          >
-                            {review.content}
-                          </div>
-
-                          {/* Item Info */}
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: 12,
-                              alignItems: "center",
-                              padding: 12,
-                              background: "#f8fafc",
-                              borderRadius: 10,
-                              border: "1px solid #e2e8f0",
-                            }}
-                          >
-                            {review.itemImage ? (
-                              <img
-                                src={review.itemImage}
-                                alt={review.itemTitle}
-                                style={{
-                                  width: 60,
-                                  height: 60,
-                                  borderRadius: 8,
-                                  objectFit: "cover",
-                                }}
-                              />
-                            ) : (
-                              <div
-                                style={{
-                                  width: 60,
-                                  height: 60,
-                                  borderRadius: 8,
-                                  background: "#e5e7eb",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <i
-                                  className="bi bi-image text-muted"
-                                  style={{ fontSize: "1.5rem" }}
-                                ></i>
-                              </div>
-                            )}
-                            <div style={{ flex: 1 }}>
-                              <div
-                                style={{
-                                  fontWeight: 600,
-                                  fontSize: 14,
-                                  color: secondary,
-                                  marginBottom: 4,
-                                }}
-                              >
-                                {review.itemTitle}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 12,
-                                  color: muted,
-                                }}
-                              >
-                                Sản phẩm đã trao đổi
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div
-                  style={{
-                    gridColumn: "1 / -1",
-                    textAlign: "center",
-                    padding: "60px 20px",
-                    color: muted,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 64,
-                      marginBottom: 16,
-                      opacity: 0.5,
-                    }}
-                  >
-                    ⭐
-                  </div>
-                  <div
-                    style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}
-                  >
-                    Chưa có đánh giá nào
-                  </div>
-                  <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                    Đánh giá sẽ được hiển thị ở đây
-                  </div>
-                </div>
-              )
             ) : (
               <div
                 style={{

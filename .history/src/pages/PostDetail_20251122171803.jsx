@@ -5,7 +5,6 @@ import {
   getPostDetail,
   getPostComments,
   createComment,
-  updatePostStatus,
 } from "../service/post/PostService";
 
 const PostDetail = () => {
@@ -16,8 +15,6 @@ const PostDetail = () => {
   const [commentText, setCommentText] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [user, setUser] = useState(null);
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -72,48 +69,7 @@ const PostDetail = () => {
       return;
     }
     // Navigate to exchange proposal page or open modal
-    navigate(`/chat`);
-  };
-
-  const handleUpdateStatus = async (newStatus) => {
-    try {
-      setUpdatingStatus(true);
-      await updatePostStatus(id, newStatus);
-      setShowStatusModal(false);
-      fetchPostDetail(); // Refresh to get updated status
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Có lỗi xảy ra khi cập nhật trạng thái");
-    } finally {
-      setUpdatingStatus(false);
-    }
-  };
-
-  const getAvailableStatuses = () => {
-    const currentStatus = post.postStatus;
-    const statuses = {
-      AVAILABLE: "Có thể trao đổi",
-      PENDING: "Đang trao đổi",
-      COMPLETED: "Đã trao đổi",
-    };
-
-    // Return available statuses based on current status
-    if (currentStatus === "AVAILABLE") {
-      return [
-        { value: "PENDING", label: "Đang trao đổi" },
-        { value: "COMPLETED", label: "Đã trao đổi" },
-      ];
-    } else if (currentStatus === "PENDING") {
-      return [
-        { value: "AVAILABLE", label: "Có thể trao đổi" },
-        { value: "COMPLETED", label: "Đã trao đổi" },
-      ];
-    } else {
-      return [
-        { value: "AVAILABLE", label: "Có thể trao đổi" },
-        { value: "PENDING", label: "Đang trao đổi" },
-      ];
-    }
+    console.log("Propose exchange for post:", id);
   };
 
   const formatDate = (dateString) => {
@@ -129,8 +85,8 @@ const PostDetail = () => {
   const getStatusLabel = (status) => {
     const statusMap = {
       COMPLETED: "Đã trao đổi",
-      PENDING: "Đang trao đổi",
-      AVAILABLE: "Có thể trao đổi",
+      PENDING: "Chờ trao đổi",
+      AVAILABLE: "Chưa trao đổi",
     };
     return statusMap[status] || status;
   };
@@ -196,9 +152,9 @@ const PostDetail = () => {
         </div>
 
         {/* Main Content - Two Columns */}
-        <div className="row g-5 mb-4">
+        <div className="row g-4 mb-4">
           {/* Left Column - Image Gallery and Poster Info */}
-          <div className="col-lg-6 ms-5 ">
+          <div className="col-lg-6">
             {/* Image Gallery */}
             <div
               className="mb-4 position-relative"
@@ -333,7 +289,7 @@ const PostDetail = () => {
           </div>
 
           {/* Right Column - Post Details */}
-          <div className="col-lg-5 ms-4">
+          <div className="col-lg-6">
             <div className="h-100">
               {/* Title */}
               <h3 className="fw-bold text-dark mb-4">{post.title}</h3>
@@ -387,28 +343,15 @@ const PostDetail = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="d-flex gap-2 flex-wrap">
+              <div className="d-flex gap-2">
                 <button
                   className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
                   onClick={handleProposeExchange}
                   style={{ fontSize: "1rem" }}
-                  disabled={
-                    post.postStatus === "PENDING" ||
-                    post.postStatus === "COMPLETED"
-                  }
+                  disabled={post.postStatus === "PENDING"}
                 >
                   Bắt đầu trao đổi
                 </button>
-                {post.canUpdateStatus && (
-                  <button
-                    className="btn btn-outline-secondary py-3 rounded-3"
-                    onClick={() => setShowStatusModal(true)}
-                    style={{ minWidth: "120px" }}
-                  >
-                    <i className="bi bi-arrow-repeat me-2"></i>
-                    Cập nhật trạng thái
-                  </button>
-                )}
                 {post.canEdit && (
                   <button
                     className="btn btn-outline-secondary py-3 rounded-3"
@@ -444,11 +387,7 @@ const PostDetail = () => {
 
           {/* Comment Input */}
           {user && (
-            <form
-              onSubmit={handleSubmitComment}
-              className="mb-4"
-              style={{ width: "50%" }}
-            >
+            <form onSubmit={handleSubmitComment} className="mb-4">
               <div className="d-flex align-items-start gap-3">
                 {/* User Avatar */}
                 <div
@@ -490,6 +429,14 @@ const PostDetail = () => {
                     />
                   </div>
                   <div className="d-flex align-items-center justify-content-end gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-link p-0 text-muted"
+                      style={{ fontSize: "1.2rem" }}
+                      title="Emoji"
+                    >
+                      <i className="bi bi-emoji-smile"></i>
+                    </button>
                     <button
                       type="submit"
                       className="btn btn-link p-0 text-primary"
@@ -559,73 +506,6 @@ const PostDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* Status Update Modal */}
-      {showStatusModal && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
-          onClick={() => setShowStatusModal(false)}
-        >
-          <div
-            className="modal-dialog modal-dialog-centered"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title fw-bold">Cập nhật trạng thái</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowStatusModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p className="mb-3 text-muted">
-                  Trạng thái hiện tại:{" "}
-                  <strong className={getStatusColor(post.postStatus)}>
-                    {getStatusLabel(post.postStatus)}
-                  </strong>
-                </p>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold">
-                    Chọn trạng thái mới
-                  </label>
-                  <div className="d-flex flex-column gap-2">
-                    {getAvailableStatuses().map((status) => (
-                      <button
-                        key={status.value}
-                        className="btn btn-outline-primary text-start"
-                        onClick={() => handleUpdateStatus(status.value)}
-                        disabled={updatingStatus}
-                        style={{
-                          padding: "12px 16px",
-                          borderRadius: "8px",
-                        }}
-                      >
-                        <div className="d-flex align-items-center justify-content-between">
-                          <span>{status.label}</span>
-                          <i className="bi bi-chevron-right"></i>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowStatusModal(false)}
-                  disabled={updatingStatus}
-                >
-                  Hủy
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

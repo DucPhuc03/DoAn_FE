@@ -259,7 +259,7 @@ const Explore = () => {
                         />
                       ) : null}
                     </div>
-                    <small className=" fw-bold">{topic.name}</small>
+                    <small className="text-muted fw-medium">{topic.name}</small>
                   </div>
                 ))}
               </div>

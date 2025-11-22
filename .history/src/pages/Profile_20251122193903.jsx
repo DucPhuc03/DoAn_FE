@@ -29,60 +29,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fake reviews data
-  const fakeReviews = [
-    {
-      id: 1,
-      reviewerName: "Nguyễn Văn Tường",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-      content:
-        "Sản phẩm rất tốt, đúng như mô tả. Người bán rất nhiệt tình và giao hàng nhanh. Rất hài lòng với giao dịch này!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/sach.webp",
-      itemTitle: "iPhone 16 Pro Max",
-      reviewDate: "2025-01-15",
-    },
-    {
-      id: 2,
-      reviewerName: "Trần Thị Bích",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
-      content:
-        "Chất lượng sản phẩm tốt, giá cả hợp lý. Đã trao đổi thành công và rất vui với món đồ này.",
-      rating: 4,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/ao.webp",
-      itemTitle: "Áo khoác mùa đông",
-      reviewDate: "2025-01-10",
-    },
-    {
-      id: 3,
-      reviewerName: "Lê Văn Cao",
-      reviewerAvatar: null,
-      content:
-        "Giao dịch diễn ra suôn sẻ, sản phẩm như mô tả. Cảm ơn bạn đã trao đổi!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/giay.webp",
-      itemTitle: "Giày thể thao Nike",
-      reviewDate: "2025-01-05",
-    },
-    {
-      id: 4,
-      reviewerName: "Phạm Thị Dung",
-      reviewerAvatar: null,
-      content:
-        "Sản phẩm ổn, nhưng có một số điểm nhỏ cần cải thiện. Nhìn chung vẫn hài lòng.",
-      rating: 3,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/dovat.webp",
-      itemTitle: "Bàn làm việc gỗ",
-      reviewDate: "2024-12-28",
-    },
-  ];
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -308,35 +254,34 @@ const Profile = () => {
                 position: "absolute",
                 top: 24,
                 right: 24,
-                background: "#f8f9fa",
-                color: "#6b7280",
-                border: "1px solid #e5e7eb",
-                padding: "10px",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                background:
+                  "linear-gradient(135deg, #3c3d3fff 0%, #aaaebbff 100%)",
+                color: surface,
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: 10,
+                fontWeight: 600,
+                fontSize: 14,
                 cursor: "pointer",
                 transition: "all 0.3s",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#e9ecef";
                 e.currentTarget.style.transform = "translateY(-2px)";
                 e.currentTarget.style.boxShadow =
-                  "0 4px 12px rgba(0, 0, 0, 0.15)";
+                  "0 4px 12px rgba(37, 99, 235, 0.4)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f8f9fa";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow =
-                  "0 2px 8px rgba(0, 0, 0, 0.1)";
+                  "0 2px 8px rgba(37, 99, 235, 0.3)";
               }}
-              title="Chỉnh sửa hồ sơ"
             >
-              <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
+              <FaEdit style={{ fontSize: 14 }} />
+              Chỉnh sửa hồ sơ
             </button>
           )}
 
@@ -967,225 +912,6 @@ const Profile = () => {
                   </div>
                 </div>
               ))
-            ) : tab === 2 ? (
-              // Reviews Tab
-              fakeReviews.length > 0 ? (
-                fakeReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    style={{
-                      gridColumn: "1 / -1",
-                      background: surface,
-                      borderRadius: 16,
-                      padding: 20,
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-                      border: "1px solid #e2e8f0",
-                      marginBottom: 16,
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: 16 }}>
-                      {/* Reviewer Info */}
-                      <div style={{ display: "flex", gap: 12, flex: 1 }}>
-                        {/* Avatar */}
-                        <div
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: "50%",
-                            background: review.reviewerAvatar
-                              ? "transparent"
-                              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {review.reviewerAvatar ? (
-                            <img
-                              src={review.reviewerAvatar}
-                              alt={review.reviewerName}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ) : (
-                            <span
-                              style={{
-                                color: surface,
-                                fontSize: 20,
-                                fontWeight: 600,
-                              }}
-                            >
-                              {review.reviewerName.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Review Content */}
-                        <div style={{ flex: 1 }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 12,
-                              marginBottom: 8,
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontWeight: 600,
-                                fontSize: 16,
-                                color: secondary,
-                              }}
-                            >
-                              {review.reviewerName}
-                            </div>
-                            {/* Rating Stars */}
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: 2,
-                                alignItems: "center",
-                              }}
-                            >
-                              {[...Array(5)].map((_, index) => (
-                                <i
-                                  key={index}
-                                  className={`bi ${
-                                    index < review.rating
-                                      ? "bi-star-fill"
-                                      : "bi-star"
-                                  }`}
-                                  style={{
-                                    color:
-                                      index < review.rating
-                                        ? "#fbbf24"
-                                        : "#d1d5db",
-                                    fontSize: "14px",
-                                  }}
-                                ></i>
-                              ))}
-                            </div>
-                            <div
-                              style={{
-                                marginLeft: "auto",
-                                fontSize: 12,
-                                color: muted,
-                              }}
-                            >
-                              {formatDate(review.reviewDate)}
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              color: "#475569",
-                              fontSize: 14,
-                              lineHeight: 1.6,
-                              marginBottom: 12,
-                            }}
-                          >
-                            {review.content}
-                          </div>
-
-                          {/* Item Info */}
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: 12,
-                              alignItems: "center",
-                              padding: 12,
-                              background: "#f8fafc",
-                              borderRadius: 10,
-                              border: "1px solid #e2e8f0",
-                            }}
-                          >
-                            {review.itemImage ? (
-                              <img
-                                src={review.itemImage}
-                                alt={review.itemTitle}
-                                style={{
-                                  width: 60,
-                                  height: 60,
-                                  borderRadius: 8,
-                                  objectFit: "cover",
-                                }}
-                              />
-                            ) : (
-                              <div
-                                style={{
-                                  width: 60,
-                                  height: 60,
-                                  borderRadius: 8,
-                                  background: "#e5e7eb",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <i
-                                  className="bi bi-image text-muted"
-                                  style={{ fontSize: "1.5rem" }}
-                                ></i>
-                              </div>
-                            )}
-                            <div style={{ flex: 1 }}>
-                              <div
-                                style={{
-                                  fontWeight: 600,
-                                  fontSize: 14,
-                                  color: secondary,
-                                  marginBottom: 4,
-                                }}
-                              >
-                                {review.itemTitle}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 12,
-                                  color: muted,
-                                }}
-                              >
-                                Sản phẩm đã trao đổi
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div
-                  style={{
-                    gridColumn: "1 / -1",
-                    textAlign: "center",
-                    padding: "60px 20px",
-                    color: muted,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 64,
-                      marginBottom: 16,
-                      opacity: 0.5,
-                    }}
-                  >
-                    ⭐
-                  </div>
-                  <div
-                    style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}
-                  >
-                    Chưa có đánh giá nào
-                  </div>
-                  <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                    Đánh giá sẽ được hiển thị ở đây
-                  </div>
-                </div>
-              )
             ) : (
               <div
                 style={{

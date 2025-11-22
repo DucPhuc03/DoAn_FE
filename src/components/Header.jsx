@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const userId = JSON.parse(localStorage.getItem("user"))?.id;
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMeetings, setShowMeetings] = useState(false);
   const notificationRef = useRef(null);
+  const meetingsRef = useRef(null);
 
   // Fake notification data
   const [notifications] = useState([
@@ -65,16 +67,22 @@ const Header = () => {
       ) {
         setShowNotifications(false);
       }
+      if (
+        meetingsRef.current &&
+        !meetingsRef.current.contains(event.target)
+      ) {
+        setShowMeetings(false);
+      }
     };
 
-    if (showNotifications) {
+    if (showNotifications || showMeetings) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotifications]);
+  }, [showNotifications, showMeetings]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -168,17 +176,23 @@ const Header = () => {
                 <i className="bi bi-chat-dots fs-5"></i>
               </Link>
 
-              {/* Calendar Icon */}
-              <button
-                className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
-                style={{
-                  width: "44px",
-                  height: "44px",
-                }}
-                title="Lịch"
-              >
-                <i className="bi bi-calendar3 fs-5"></i>
-              </button>
+              {/* Calendar Icon with Meetings Dropdown */}
+              <div className="position-relative" ref={meetingsRef}>
+                <button
+                  className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn position-relative"
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                  }}
+                  title="Lịch"
+                  onClick={() => setShowMeetings(!showMeetings)}
+                >
+                  <i className="bi bi-calendar3 fs-5"></i>
+                </button>
+
+                {/* Meetings Dropdown */}
+                {showMeetings && <MeetingsModal onClose={() => setShowMeetings(false)} />}
+              </div>
 
               {/* Bell Icon with Notifications Dropdown */}
               <div className="position-relative" ref={notificationRef}>
@@ -308,6 +322,180 @@ const Header = () => {
         </div>
       </div>
     </header>
+  );
+};
+
+// Meetings Modal Component
+const MeetingsModal = ({ onClose }) => {
+  // Fake meetings data
+  const meetings = [
+    {
+      id: 1,
+      date: "2025-01-20",
+      time: "14:00",
+      location: "Quán cà phê The Coffee House, 123 Nguyễn Huệ, Q1, TP.HCM",
+      notes: "Gặp mặt trao đổi iPhone 16 Pro Max với MacBook Pro M3",
+      participantName: "Nguyễn Văn A",
+      participantAvatar: "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
+    },
+    {
+      id: 2,
+      date: "2025-01-22",
+      time: "10:30",
+      location: "Trung tâm thương mại Vincom, 72 Lê Thánh Tôn, Q1, TP.HCM",
+      notes: "Trao đổi áo khoác mùa đông với giày thể thao Nike",
+      participantName: "Trần Thị Bích",
+      participantAvatar: "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
+    },
+    {
+      id: 3,
+      date: "2025-01-25",
+      time: "16:00",
+      location: "Công viên Lê Văn Tám, Đường Hai Bà Trưng, Q1, TP.HCM",
+      notes: "Gặp trao đổi sách lập trình React",
+      participantName: "Lê Văn Cao",
+      participantAvatar: null,
+    },
+    {
+      id: 4,
+      date: "2025-01-28",
+      time: "09:00",
+      location: "Nhà sách Fahasa, 60 Nguyễn Du, Q1, TP.HCM",
+      notes: "Trao đổi bàn làm việc gỗ với đồ vật trang trí",
+      participantName: "Phạm Thị Dung",
+      participantAvatar: null,
+    },
+  ];
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  return (
+    <div className="notifications-dropdown" style={{ width: "420px" }}>
+      <div className="notifications-header">
+        <h6 className="mb-0 fw-bold">
+          <i className="bi bi-calendar3 me-2"></i>
+          Lịch hẹn
+        </h6>
+        <span className="badge bg-primary ms-2">{meetings.length} cuộc hẹn</span>
+      </div>
+      <div className="notifications-list">
+        {meetings.length > 0 ? (
+          meetings.map((meeting) => (
+            <div
+              key={meeting.id}
+              className="notification-item"
+              style={{
+                flexDirection: "column",
+                alignItems: "flex-start",
+                padding: "16px",
+              }}
+            >
+              <div className="d-flex align-items-start w-100 gap-3">
+                {/* Avatar */}
+                <div
+                  className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                  style={{ width: "45px", height: "45px" }}
+                >
+                  {meeting.participantAvatar ? (
+                    <img
+                      src={meeting.participantAvatar}
+                      alt={meeting.participantName}
+                      className="rounded-circle"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <i className="bi bi-person-fill text-white"></i>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <strong className="notification-title">
+                      {meeting.participantName}
+                    </strong>
+                    <div
+                      className="badge bg-info text-dark"
+                      style={{ fontSize: "0.7rem" }}
+                    >
+                      {meeting.time}
+                    </div>
+                  </div>
+
+                  {/* Date */}
+                  <div className="mb-2">
+                    <i className="bi bi-calendar-event me-1 text-primary"></i>
+                    <small className="text-muted">
+                      {formatDate(meeting.date)}
+                    </small>
+                  </div>
+
+                  {/* Location */}
+                  <div className="mb-2">
+                    <i className="bi bi-geo-alt me-1 text-danger"></i>
+                    <small
+                      className="text-dark"
+                      style={{
+                        fontSize: "0.85rem",
+                        lineHeight: "1.4",
+                        display: "block",
+                      }}
+                    >
+                      {meeting.location}
+                    </small>
+                  </div>
+
+                  {/* Notes */}
+                  {meeting.notes && (
+                    <div className="mb-2">
+                      <i className="bi bi-sticky me-1 text-warning"></i>
+                      <small
+                        className="text-muted"
+                        style={{
+                          fontSize: "0.85rem",
+                          lineHeight: "1.4",
+                          display: "block",
+                        }}
+                      >
+                        {meeting.notes}
+                      </small>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-muted py-4">
+            <i className="bi bi-calendar-x fs-3 d-block mb-2"></i>
+            <p className="mb-0">Chưa có cuộc hẹn nào</p>
+          </div>
+        )}
+      </div>
+      {meetings.length > 0 && (
+        <div className="notifications-footer">
+          <button
+            className="btn btn-link text-decoration-none text-primary fw-semibold p-0"
+            onClick={onClose}
+          >
+            Đóng
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 

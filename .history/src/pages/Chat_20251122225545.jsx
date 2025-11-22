@@ -541,7 +541,7 @@ const Chat = () => {
                 display: "flex",
                 gap: 8,
                 alignItems: "center",
-                marginRight: "50px",
+                marginRight: "100px",
               }}
             >
               <button

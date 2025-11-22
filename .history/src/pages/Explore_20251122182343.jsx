@@ -8,42 +8,12 @@ const Explore = () => {
 
   // Sample data for topics
   const topics = [
-    {
-      id: 1,
-      name: "Điện tử",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/dientu.webp",
-    },
-    {
-      id: 2,
-      name: "Thời trang",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/thoitrang.webp",
-    },
-    {
-      id: 3,
-      name: "Sách",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/sach.webp",
-    },
-    {
-      id: 4,
-      name: "Trò chơi",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/game.webp",
-    },
-    {
-      id: 5,
-      name: "Nội thất",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/noithat.webp",
-    },
-    {
-      id: 6,
-      name: "Âm nhạc",
-      image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/amnhac.webp",
-    },
+    { id: 1, name: "Điện tử", image: "📱" },
+    { id: 2, name: "Thời trang", image: "👕" },
+    { id: 3, name: "Sách", image: "📚" },
+    { id: 4, name: "Thể thao", image: "⚽" },
+    { id: 5, name: "Nội thất", image: "🪑" },
+    { id: 6, name: "Xe cộ", image: "🚗" },
   ];
 
   // Sample data for content cards
@@ -86,82 +56,42 @@ const Explore = () => {
       poster: "Vũ Thị F",
       image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/coc.webp",
     },
-    {
-      id: 7,
-      title: "iPhone 13 Pro Max",
-      poster: "Nguyễn Văn A",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/sach.webp",
-    },
-    {
-      id: 8,
-      title: "Áo khoác mùa đông",
-      poster: "Trần Thị B",
-      image:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/daychuyen.webp",
-    },
-    {
-      id: 3,
-      title: "Sách lập trình React",
-      poster: "Lê Văn C",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/ao.webp",
-    },
-    {
-      id: 4,
-      title: "Bàn làm việc gỗ",
-      poster: "Phạm Thị D",
-      image:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/dovat.webp",
-    },
-    {
-      id: 5,
-      title: "Giày thể thao Nike",
-      poster: "Hoàng Văn E",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/giay.webp",
-    },
-    {
-      id: 6,
-      title: "Xe đạp địa hình",
-      poster: "Vũ Thị F",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/coc.webp",
-    },
-    {
-      id: 7,
-      title: "iPhone 13 Pro Max",
-      poster: "Nguyễn Văn A",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/sach.webp",
-    },
-    {
-      id: 8,
-      title: "Áo khoác mùa đông",
-      poster: "Trần Thị B",
-      image:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/daychuyen.webp",
-    },
-    {
-      id: 3,
-      title: "Sách lập trình React",
-      poster: "Lê Văn C",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/ao.webp",
-    },
-    {
-      id: 4,
-      title: "Bàn làm việc gỗ",
-      poster: "Phạm Thị D",
-      image:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/dovat.webp",
-    },
-    {
-      id: 5,
-      title: "Giày thể thao Nike",
-      poster: "Hoàng Văn E",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/giay.webp",
-    },
-    {
-      id: 6,
-      title: "Xe đạp địa hình",
-      poster: "Vũ Thị F",
-      image: "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/coc.webp",
-    },
+    // {
+    //   id: 7,
+    //   title: "Laptop Dell XPS",
+    //   poster: "Nguyễn Thị G",
+    //   image: "💻",
+    // },
+    // {
+    //   id: 8,
+    //   title: "Tai nghe AirPods",
+    //   poster: "Trần Văn H",
+    //   image: "🎧",
+    // },
+    // {
+    //   id: 9,
+    //   title: "Đồng hồ thông minh",
+    //   poster: "Lê Thị I",
+    //   image: "⌚",
+    // },
+    // {
+    //   id: 10,
+    //   title: "Máy ảnh Canon",
+    //   poster: "Phạm Văn J",
+    //   image: "📷",
+    // },
+    // {
+    //   id: 11,
+    //   title: "Balo du lịch",
+    //   poster: "Hoàng Thị K",
+    //   image: "🎒",
+    // },
+    // {
+    //   id: 12,
+    //   title: "Bàn phím cơ",
+    //   poster: "Vũ Văn L",
+    //   image: "⌨️",
+    // },
   ];
 
   const handlePostClick = (postId) => {
@@ -231,35 +161,12 @@ const Explore = () => {
                     onClick={() => handleTopicClick(topic.name)}
                   >
                     <div
-                      className="bg-white rounded-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all overflow-hidden position-relative"
+                      className="bg-white rounded-3 p-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all"
                       style={{ height: "80px", width: "120px" }}
                     >
-                      {topic.image && topic.image.startsWith("https://") ? (
-                        <img
-                          src={topic.image}
-                          alt={topic.name}
-                          className="w-100 h-100"
-                          style={{
-                            objectFit: "cover",
-                            transition: "transform 0.3s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "scale(1)";
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            const fallback = e.target.nextElementSibling;
-                            if (fallback) {
-                              fallback.style.display = "flex";
-                            }
-                          }}
-                        />
-                      ) : null}
+                      <span className="fs-1">{topic.image}</span>
                     </div>
-                    <small className=" fw-bold">{topic.name}</small>
+                    <small className="text-muted fw-medium">{topic.name}</small>
                   </div>
                 ))}
               </div>
@@ -279,8 +186,6 @@ const Explore = () => {
                   style={{
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    borderRadius: "12px",
-                    overflow: "hidden",
                   }}
                 >
                   <div className="card-body p-0">

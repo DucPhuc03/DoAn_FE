@@ -30,7 +30,7 @@ const Explore = () => {
       id: 4,
       name: "Trò chơi",
       image:
-        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/game.webp",
+        "https://testprofiledoan.s3.ap-southeast-1.amazonaws.com/game.webp⚽",
     },
     {
       id: 5,
@@ -231,35 +231,12 @@ const Explore = () => {
                     onClick={() => handleTopicClick(topic.name)}
                   >
                     <div
-                      className="bg-white rounded-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all overflow-hidden position-relative"
+                      className="bg-white rounded-3 p-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all"
                       style={{ height: "80px", width: "120px" }}
                     >
-                      {topic.image && topic.image.startsWith("https://") ? (
-                        <img
-                          src={topic.image}
-                          alt={topic.name}
-                          className="w-100 h-100"
-                          style={{
-                            objectFit: "cover",
-                            transition: "transform 0.3s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "scale(1)";
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            const fallback = e.target.nextElementSibling;
-                            if (fallback) {
-                              fallback.style.display = "flex";
-                            }
-                          }}
-                        />
-                      ) : null}
+                      <span className="fs-1">{topic.image}</span>
                     </div>
-                    <small className=" fw-bold">{topic.name}</small>
+                    <small className="text-muted fw-medium">{topic.name}</small>
                   </div>
                 ))}
               </div>

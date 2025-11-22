@@ -392,10 +392,7 @@ const PostDetail = () => {
                   className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
                   onClick={handleProposeExchange}
                   style={{ fontSize: "1rem" }}
-                  disabled={
-                    post.postStatus === "PENDING" ||
-                    post.postStatus === "COMPLETED"
-                  }
+                  disabled={post.postStatus === "PENDING"}
                 >
                   Bắt đầu trao đổi
                 </button>

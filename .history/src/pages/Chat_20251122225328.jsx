@@ -536,14 +536,7 @@ const Chat = () => {
             </div>
 
             {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                marginRight: "50px",
-              }}
-            >
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <button
                 onClick={() => setShowTradeModal(true)}
                 style={{

@@ -520,30 +520,16 @@ const Chat = () => {
 
             {/* User Info */}
             <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#1f2937",
-                  width: "200px",
-                }}
-              >
+              <div style={{ fontWeight: 600, fontSize: 16, color: "#1f2937" }}>
                 {selectedConversation?.username || "Người dùng"}
               </div>
-              <div style={{ fontSize: 13, color: "#6b7280", width: "200px" }}>
+              <div style={{ fontSize: 13, color: "#6b7280" }}>
                 {selectedConversation?.itemTitle || "Đang trao đổi"}
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                marginRight: "50px",
-              }}
-            >
+            <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
               <button
                 onClick={() => setShowTradeModal(true)}
                 style={{
