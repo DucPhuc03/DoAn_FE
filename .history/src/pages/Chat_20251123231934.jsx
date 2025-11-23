@@ -340,8 +340,18 @@ const Chat = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const senderId = user?.id;
 
+    if (!senderId) {
+      console.error("User ID not found in localStorage");
+      setWsError(
+        "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại."
+      );
+      return;
+    }
+
     // Check if WebSocket is connected
     if (!stompClientRef.current.connected) {
+      console.error("WebSocket is not connected");
+      setWsError("Không thể gửi tin nhắn. Đang thử kết nối lại...");
       // Try to reconnect
       if (selectedConversationId) {
         setSelectedConversationId((prev) => prev);
@@ -962,6 +972,28 @@ const Chat = () => {
               >
                 Thử lại
               </button>
+            </div>
+          )}
+          {!wsConnected && !wsError && selectedConversationId && (
+            <div
+              style={{
+                padding: "8px 20px",
+                background: "#fffbeb",
+                borderTop: "1px solid #fde68a",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <div
+                className="spinner-border spinner-border-sm text-warning"
+                role="status"
+                style={{ width: "14px", height: "14px" }}
+              >
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <small className="text-warning">Đang kết nối...</small>
             </div>
           )}
 

@@ -684,9 +684,7 @@ const Chat = () => {
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                         }}
-                      >
-                        {displayName}
-                      </div>
+                      ></div>
                       <div
                         style={{
                           fontSize: 12,

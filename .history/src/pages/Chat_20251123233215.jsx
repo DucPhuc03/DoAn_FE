@@ -695,9 +695,7 @@ const Chat = () => {
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                         }}
-                      >
-                        {preview}
-                      </div>
+                      ></div>
                     </div>
 
                     {/* Timestamp */}
