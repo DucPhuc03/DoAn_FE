@@ -8,6 +8,11 @@ import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
 import Chat from "./pages/Chat";
 import NewPost from "./pages/NewPost";
+import PostManagement from './pages/admin/PostManagement';
+import AccountManagement from './pages/admin/AccountManagement';
+import ReportManagement from './pages/admin/ReportManagement';
+import PendingManagement from './pages/admin/PendingManagement';
+import CategoryManagement from './pages/admin/CategoryManagement';
 
 function App() {
   return (
@@ -21,6 +26,12 @@ function App() {
         <Route path="/post/:id" element={<PostDetail />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/new-post" element={<NewPost />} />
+
+        <Route path="/admin/post_management" element={<PostManagement />} />
+        <Route path="/admin/account_management" element={<AccountManagement />} />
+        <Route path="/admin/report_management" element={<ReportManagement />} />
+        <Route path="/admin/pending_management" element={<PendingManagement />} />
+        <Route path="/admin/category_management" element={<CategoryManagement />} />
       </Routes>
     </>
   );
