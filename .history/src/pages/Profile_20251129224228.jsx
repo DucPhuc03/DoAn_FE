@@ -14,7 +14,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 
-const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
+const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Đề xuất", "Lịch sử"];
 
 const primary = "#2563eb"; // Blue
 const secondary = "#1f2937";
@@ -982,62 +982,43 @@ const Profile = () => {
                   }}
                 >
                   <div style={{ position: "relative", overflow: "hidden" }}>
-                    {post.imageUrl ? (
-                      <>
-                        <img
-                          src={post.imageUrl}
-                          alt={post.title}
-                          style={{
-                            width: "100%",
-                            height: 140,
-                            objectFit: "cover",
-                            transition: "transform 0.3s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "scale(1)";
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            const fallback = e.target.nextElementSibling;
-                            if (fallback) {
-                              fallback.style.display = "grid";
-                            }
-                          }}
-                        />
-                        <div
-                          style={{
-                            width: "100%",
-                            height: 140,
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            display: "none",
-                            placeItems: "center",
-                            color: surface,
-                            fontSize: 36,
-                          }}
-                        >
-                          <i className="bi bi-image"></i>
-                        </div>
-                      </>
-                    ) : (
-                      <div
-                        style={{
-                          width: "100%",
-                          height: 140,
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          display: "grid",
-                          placeItems: "center",
-                          color: surface,
-                          fontSize: 36,
-                        }}
-                      >
-                        <i className="bi bi-image"></i>
-                      </div>
-                    )}
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      style={{
+                        width: "100%",
+                        height: 140,
+                        objectFit: "cover",
+                        transition: "transform 0.3s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        const fallback = e.target.nextElementSibling;
+                        if (fallback) {
+                          fallback.style.display = "grid";
+                        }
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: "100%",
+                        height: 140,
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        display: "none",
+                        placeItems: "center",
+                        color: surface,
+                        fontSize: 36,
+                      }}
+                    >
+                      <i className="bi bi-image"></i>
+                    </div>
                   </div>
 
                   <div style={{ padding: 14, position: "relative", flex: 1 }}>

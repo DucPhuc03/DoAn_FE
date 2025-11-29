@@ -14,7 +14,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 
-const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
+const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Đề xuất", "Lịch sử"];
 
 const primary = "#2563eb"; // Blue
 const secondary = "#1f2937";
@@ -40,7 +40,6 @@ const Profile = () => {
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
-          console.log("Profile data:", response.data);
         } else {
           setError(response.message || "Failed to load profile");
         }
@@ -981,55 +980,264 @@ const Profile = () => {
                     e.currentTarget.style.borderColor = "#e2e8f0";
                   }}
                 >
-                  <div style={{ position: "relative", overflow: "hidden" }}>
-                    {post.imageUrl ? (
-                      <>
-                        <img
-                          src={post.imageUrl}
-                          alt={post.title}
+                  {post.imageUrls && post.imageUrls.length > 0 ? (
+                    <div style={{ position: "relative", overflow: "hidden" }}>
+                      <img
+                        src={post.imageUrls[0]}
+                        alt={post.title}
+                        style={{
+                          width: "100%",
+                          height: 140,
+                          objectFit: "cover",
+                          transition: "transform 0.3s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "scale(1.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: 140,
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: surface,
+                        fontSize: 36,
+                      }}
+                    >
+                      <i className="bi bi-image"></i>
+                    </div>
+                  )}
+                  <div style={{ padding: 14, position: "relative", flex: 1 }}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: 15,
+                        color: secondary,
+                        marginBottom: 8,
+                        lineHeight: 1.4,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {post.title}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: "auto",
+                        gap: 8,
+                      }}
+                    >
+                      <span
+                        style={{
+                          color:
+                            getPostStatus(post.postStatus) === "Đã trao đổi"
+                              ? "#10b981"
+                              : getPostStatus(post.postStatus) ===
+                                "Đang trao đổi"
+                              ? "#f59e0b"
+                              : muted,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          background:
+                            getPostStatus(post.postStatus) === "Đã trao đổi"
+                              ? "#d1fae5"
+                              : getPostStatus(post.postStatus) ===
+                                "Đang trao đổi"
+                              ? "#fef3c7"
+                              : "#f1f5f9",
+                          padding: "3px 8px",
+                          borderRadius: 6,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {getPostStatus(post.postStatus)}
+                      </span>
+                      {post.category && (
+                        <span
                           style={{
-                            width: "100%",
-                            height: 140,
-                            objectFit: "cover",
-                            transition: "transform 0.3s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "scale(1)";
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            const fallback = e.target.nextElementSibling;
-                            if (fallback) {
-                              fallback.style.display = "grid";
-                            }
-                          }}
-                        />
-                        <div
-                          style={{
-                            width: "100%",
-                            height: 140,
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            display: "none",
-                            placeItems: "center",
-                            color: surface,
-                            fontSize: 36,
+                            fontSize: 11,
+                            color: primary,
+                            fontWeight: 600,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
-                          <i className="bi bi-image"></i>
-                        </div>
-                      </>
-                    ) : (
+                          {post.category.name}
+                        </span>
+                      )}
+                    </div>
+                    {/* Action icons - Top right */}
+                    {(post.canEdit || post.canDelete) && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          display: "flex",
+                          gap: 6,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {post.canEdit && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/edit-post/${post.id}`);
+                            }}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: 6,
+                              border: "none",
+                              background: "rgba(255, 255, 255, 0.9)",
+                              color: primary,
+                              display: "grid",
+                              placeItems: "center",
+                              cursor: "pointer",
+                              transition: "all 0.2s",
+                              backdropFilter: "blur(10px)",
+                              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = primary;
+                              e.currentTarget.style.color = surface;
+                              e.currentTarget.style.transform = "scale(1.1)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background =
+                                "rgba(255, 255, 255, 0.9)";
+                              e.currentTarget.style.color = primary;
+                              e.currentTarget.style.transform = "scale(1)";
+                            }}
+                          >
+                            <FaEdit style={{ fontSize: 11 }} />
+                          </button>
+                        )}
+                        {post.canDelete && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (
+                                window.confirm(
+                                  "Bạn có chắc muốn xóa bài đăng này?"
+                                )
+                              ) {
+                                // TODO: Implement delete
+                              }
+                            }}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: 6,
+                              border: "none",
+                              background: "rgba(255, 255, 255, 0.9)",
+                              color: "#ef4444",
+                              display: "grid",
+                              placeItems: "center",
+                              cursor: "pointer",
+                              transition: "all 0.2s",
+                              backdropFilter: "blur(10px)",
+                              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = "#ef4444";
+                              e.currentTarget.style.color = surface;
+                              e.currentTarget.style.transform = "scale(1.1)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background =
+                                "rgba(255, 255, 255, 0.9)";
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.transform = "scale(1)";
+                            }}
+                          >
+                            <FaTrash style={{ fontSize: 11 }} />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : tab === 1 &&
+              profileData.likedPosts &&
+              profileData.likedPosts.length > 0 ? (
+              profileData.likedPosts.map((post) => (
+                <div
+                  key={post.id}
+                  onClick={() => navigate(`/post/${post.id}`)}
+                  style={{
+                    background: surface,
+                    borderRadius: 16,
+                    padding: 0,
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+                    border: "1px solid #e2e8f0",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-8px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 12px 32px rgba(0, 0, 0, 0.15)";
+                    e.currentTarget.style.borderColor = primary;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 2px 8px rgba(0, 0, 0, 0.08)";
+                    e.currentTarget.style.borderColor = "#e2e8f0";
+                  }}
+                >
+                  {post.imageUrl ? (
+                    <div style={{ position: "relative", overflow: "hidden" }}>
+                      <img
+                        src={post.imageUrl}
+                        alt={post.title}
+                        style={{
+                          width: "100%",
+                          height: 140,
+                          objectFit: "cover",
+                          transition: "transform 0.3s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "scale(1.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          const fallback = e.target.nextElementSibling;
+                          if (fallback) {
+                            fallback.style.display = "grid";
+                          }
+                        }}
+                      />
                       <div
                         style={{
                           width: "100%",
                           height: 140,
                           background:
                             "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          display: "grid",
+                          display: "none",
                           placeItems: "center",
                           color: surface,
                           fontSize: 36,
@@ -1037,9 +1245,23 @@ const Profile = () => {
                       >
                         <i className="bi bi-image"></i>
                       </div>
-                    )}
-                  </div>
-
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: 140,
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: surface,
+                        fontSize: 36,
+                      }}
+                    >
+                      <i className="bi bi-image"></i>
+                    </div>
+                  )}
                   <div style={{ padding: 14, position: "relative", flex: 1 }}>
                     <div
                       style={{

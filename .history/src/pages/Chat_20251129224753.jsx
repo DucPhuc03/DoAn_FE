@@ -18,6 +18,99 @@ if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
 }
 
+const sampleConversations = [
+  {
+    conversationId: 1,
+    itemTitle: "iPhone 16",
+    itemImage: null,
+    username: null,
+    userAvatar: null,
+    messages: [
+      {
+        id: 1,
+        senderId: 1,
+        senderName: "phuc",
+        timestamp: "2025-11-06T15:52:35.540464",
+        avatarUrl:
+          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
+        content: "hello",
+        read: false,
+        me: true,
+      },
+      {
+        id: 2,
+        senderId: 1,
+        senderName: null,
+        timestamp: "2025-11-06T17:29:01.105307",
+        avatarUrl:
+          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
+        content: "hello",
+        read: false,
+        me: true,
+      },
+      {
+        id: 3,
+        senderId: 2,
+        senderName: "phucabc",
+        timestamp: "2025-11-06T17:30:02.697978",
+        avatarUrl:
+          "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
+        content: "hello",
+        read: false,
+        me: false,
+      },
+    ],
+  },
+  {
+    conversationId: 2,
+    itemTitle: "Áo khoác Canada Goose",
+    itemImage: "https://via.placeholder.com/40x40.png?text=🧥",
+    username: "ThuHien",
+    userAvatar: "https://via.placeholder.com/48x48.png?text=TH",
+    messages: [
+      {
+        id: 11,
+        senderId: 9,
+        senderName: "ThuHien",
+        timestamp: "2025-11-10T08:11:00.000Z",
+        avatarUrl: "https://via.placeholder.com/48x48.png?text=TH",
+        content: "Áo còn nguyên tag chứ bạn?",
+        read: true,
+        me: false,
+      },
+      {
+        id: 12,
+        senderId: 1,
+        senderName: "Bạn",
+        timestamp: "2025-11-10T08:12:30.000Z",
+        avatarUrl: null,
+        content: "Nguyên tag và còn ấm lắm nha!",
+        read: true,
+        me: true,
+      },
+    ],
+  },
+  {
+    conversationId: 3,
+    itemTitle: "Bộ bàn học trẻ em",
+    itemImage: "https://via.placeholder.com/40x40.png?text=🪑",
+    username: "GreenHouse",
+    userAvatar: null,
+    messages: [
+      {
+        id: 21,
+        senderId: 6,
+        senderName: "GreenHouse",
+        timestamp: "2025-11-11T13:45:10.000Z",
+        avatarUrl: null,
+        content: "Bạn có thể gửi thêm ảnh bàn không?",
+        read: false,
+        me: false,
+      },
+    ],
+  },
+];
+
 const Chat = () => {
   const [leftTab, setLeftTab] = useState("chats"); // chats | meetings
 
@@ -482,7 +575,6 @@ const Chat = () => {
                   conversation.username ||
                   lastMessage?.senderName ||
                   "Người dùng";
-                const itemTitle = conversation.itemTitle || "Sản phẩm";
                 const preview = lastMessage?.content || "Chưa có tin nhắn";
                 const timestamp = formatTimestamp(lastMessage?.timestamp);
                 const avatar = conversation.userAvatar || null;
