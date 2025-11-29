@@ -9,8 +9,3 @@ export async function updateProfile(id, profileData) {
   const { data } = await axios.patch(`/api/user/profile`, profileData);
   return data;
 }
-
-export async function updateAvatar(avatar) {
-  const { data } = await axios.patch(`/api/user/avatar`, avatar);
-  return data;
-}

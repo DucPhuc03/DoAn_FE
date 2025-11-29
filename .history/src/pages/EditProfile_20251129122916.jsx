@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, updateProfile, updateAvatar } from "../service/user/UserService";
+import { getProfile, updateProfile } from "../service/user/UserService";
 import Cookies from "js-cookie";
 
 const EditProfile = () => {
@@ -11,10 +11,6 @@ const EditProfile = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [currentAvatar, setCurrentAvatar] = useState(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -41,11 +37,6 @@ const EditProfile = () => {
           bio: profile.bio || "",
           email: profile.email || "",
         });
-        // Set current avatar
-        if (profile.avatarUrl) {
-          setCurrentAvatar(profile.avatarUrl);
-          setAvatarPreview(profile.avatarUrl);
-        }
       }
     } catch (err) {
       console.error("Error fetching profile:", err);
@@ -84,72 +75,6 @@ const EditProfile = () => {
       );
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        setError("Vui lòng chọn file ảnh");
-        return;
-      }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Kích thước ảnh không được vượt quá 5MB");
-        return;
-      }
-      setAvatarFile(file);
-      setError("");
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAvatarUpload = async () => {
-    if (!avatarFile) {
-      setError("Vui lòng chọn ảnh để tải lên");
-      return;
-    }
-
-    try {
-      setUploadingAvatar(true);
-      setError("");
-      
-      // Create FormData
-      const formData = new FormData();
-      formData.append("avatar", avatarFile);
-      
-      const response = await updateAvatar(formData);
-      if (response.code === 1000) {
-        setSuccess("Cập nhật ảnh đại diện thành công!");
-        setCurrentAvatar(avatarPreview);
-        setAvatarFile(null);
-        // Update user in localStorage if needed
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user && response.data?.avatarUrl) {
-          user.avatarUrl = response.data.avatarUrl;
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-        setTimeout(() => {
-          setSuccess("");
-        }, 2000);
-      } else {
-        setError(response.message || "Có lỗi xảy ra khi cập nhật ảnh");
-      }
-    } catch (err) {
-      console.error("Error updating avatar:", err);
-      setError(
-        err?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại sau"
-      );
-    } finally {
-      setUploadingAvatar(false);
     }
   };
 
@@ -193,7 +118,7 @@ const EditProfile = () => {
       <Header />
       <div
         style={{
-          maxWidth: "1000px",
+          maxWidth: "700px",
           margin: "0 auto",
           padding: "40px 20px",
         }}
@@ -224,179 +149,16 @@ const EditProfile = () => {
           </p>
         </div>
 
-        {/* Main Content - Two Columns */}
+        {/* Form Card */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "300px 1fr",
-            gap: 32,
-            alignItems: "start",
+            background: surface,
+            borderRadius: 20,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+            padding: "40px",
+            border: "1px solid #f1f5f9",
           }}
-          className="edit-profile-layout"
         >
-          {/* Left Column - Avatar Upload */}
-          <div
-            style={{
-              background: surface,
-              borderRadius: 20,
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-              padding: "32px",
-              border: "1px solid #f1f5f9",
-              position: "sticky",
-              top: 100,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 20,
-              }}
-            >
-              {/* Avatar Preview */}
-              <div
-                style={{
-                  position: "relative",
-                  width: 180,
-                  height: 180,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "4px solid #e5e7eb",
-                  background: "#f9fafb",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {avatarPreview ? (
-                  <img
-                    src={avatarPreview}
-                    alt="Avatar preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  <i
-                    className="bi bi-person-fill"
-                    style={{ fontSize: 80, color: "#9ca3af" }}
-                  ></i>
-                )}
-              </div>
-
-              {/* Upload Button */}
-              <label
-                htmlFor="avatar-upload"
-                style={{
-                  padding: "10px 20px",
-                  border: `2px dashed ${primary}`,
-                  borderRadius: 10,
-                  background: "#f0f7ff",
-                  color: primary,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  textAlign: "center",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#e0f2fe";
-                  e.currentTarget.style.borderColor = "#1d4ed8";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#f0f7ff";
-                  e.currentTarget.style.borderColor = primary;
-                }}
-              >
-                <i className="bi bi-camera"></i>
-                Chọn ảnh
-              </label>
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                style={{ display: "none" }}
-              />
-
-              {/* Upload Button */}
-              {avatarFile && (
-                <button
-                  type="button"
-                  onClick={handleAvatarUpload}
-                  disabled={uploadingAvatar}
-                  style={{
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: 10,
-                    background: uploadingAvatar
-                      ? "#9ca3af"
-                      : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                    color: surface,
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: uploadingAvatar ? "not-allowed" : "pointer",
-                    transition: "all 0.2s",
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  {uploadingAvatar ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Đang tải...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-upload"></i>
-                      Tải lên
-                    </>
-                  )}
-                </button>
-              )}
-
-              {/* Info Text */}
-              <p
-                style={{
-                  fontSize: 12,
-                  color: "#6b7280",
-                  textAlign: "center",
-                  margin: 0,
-                  lineHeight: 1.5,
-                }}
-              >
-                Định dạng: JPG, PNG
-                <br />
-                Kích thước tối đa: 5MB
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column - Form */}
-          <div
-            style={{
-              background: surface,
-              borderRadius: 20,
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-              padding: "40px",
-              border: "1px solid #f1f5f9",
-            }}
-          >
           <form onSubmit={handleSubmit}>
             {/* Full Name */}
             <div style={{ marginBottom: 24 }}>
@@ -763,7 +525,6 @@ const EditProfile = () => {
               </button>
             </div>
           </form>
-          </div>
         </div>
       </div>
     </div>

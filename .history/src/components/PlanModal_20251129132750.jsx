@@ -6,7 +6,6 @@ const PlanModal = ({ onClose, conversation }) => {
     time: "",
     location: "",
     notes: "",
-    tradeId: conversation?.tradeId || null,
   });
 
   const [errors, setErrors] = useState({});
@@ -22,13 +21,12 @@ const PlanModal = ({ onClose, conversation }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Validation
     const newErrors = {};
     if (!formData.date) newErrors.date = "Vui lòng chọn ngày";
     if (!formData.time) newErrors.time = "Vui lòng chọn giờ";
-    if (!formData.location.trim())
-      newErrors.location = "Vui lòng nhập địa điểm";
+    if (!formData.location.trim()) newErrors.location = "Vui lòng nhập địa điểm";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -39,10 +37,10 @@ const PlanModal = ({ onClose, conversation }) => {
     try {
       // TODO: Call API to create meeting plan
       console.log("Plan data:", formData);
-
+      
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      
       // Show success message and close
       alert("Lịch hẹn đã được tạo thành công!");
       onClose();
@@ -376,9 +374,7 @@ const PlanModal = ({ onClose, conversation }) => {
                 >
                   Tóm tắt lịch hẹn:
                 </div>
-                <div
-                  style={{ fontSize: 13, color: "#0c4a6e", lineHeight: 1.6 }}
-                >
+                <div style={{ fontSize: 13, color: "#0c4a6e", lineHeight: 1.6 }}>
                   <div>
                     <strong>Ngày:</strong>{" "}
                     {new Date(formData.date).toLocaleDateString("vi-VN", {
@@ -459,3 +455,8 @@ const PlanModal = ({ onClose, conversation }) => {
 };
 
 export default PlanModal;
+
+
+
+
+

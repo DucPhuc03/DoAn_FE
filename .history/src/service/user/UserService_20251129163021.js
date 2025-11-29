@@ -11,6 +11,6 @@ export async function updateProfile(id, profileData) {
 }
 
 export async function updateAvatar(avatar) {
-  const { data } = await axios.patch(`/api/user/avatar`, avatar);
+  const { data } = await axios.post(`/api/user/avatar`, avatar);
   return data;
 }

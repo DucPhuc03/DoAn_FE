@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getProfile } from "../service/user/UserService";
+import { getReview } from "../service/review/ReviewService";
 import {
   FaMapMarkerAlt,
   FaRegHeart,
@@ -28,60 +29,8 @@ const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Fake reviews data
-  const fakeReviews = [
-    {
-      id: 1,
-      reviewerName: "Nguyễn Văn Tường",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-      content:
-        "Sản phẩm rất tốt, đúng như mô tả. Người bán rất nhiệt tình và giao hàng nhanh. Rất hài lòng với giao dịch này!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/sach.webp",
-      itemTitle: "iPhone 16 Pro Max",
-      reviewDate: "2025-01-15",
-    },
-    {
-      id: 2,
-      reviewerName: "Trần Thị Bích",
-      reviewerAvatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
-      content:
-        "Chất lượng sản phẩm tốt, giá cả hợp lý. Đã trao đổi thành công và rất vui với món đồ này.",
-      rating: 4,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/ao.webp",
-      itemTitle: "Áo khoác mùa đông",
-      reviewDate: "2025-01-10",
-    },
-    {
-      id: 3,
-      reviewerName: "Lê Văn Cao",
-      reviewerAvatar: null,
-      content:
-        "Giao dịch diễn ra suôn sẻ, sản phẩm như mô tả. Cảm ơn bạn đã trao đổi!",
-      rating: 5,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/giay.webp",
-      itemTitle: "Giày thể thao Nike",
-      reviewDate: "2025-01-05",
-    },
-    {
-      id: 4,
-      reviewerName: "Phạm Thị Dung",
-      reviewerAvatar: null,
-      content:
-        "Sản phẩm ổn, nhưng có một số điểm nhỏ cần cải thiện. Nhìn chung vẫn hài lòng.",
-      rating: 3,
-      itemImage:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/post/dovat.webp",
-      itemTitle: "Bàn làm việc gỗ",
-      reviewDate: "2024-12-28",
-    },
-  ];
+  const [reviews, setReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -104,6 +53,37 @@ const Profile = () => {
 
     fetchProfile();
   }, [id]);
+
+  // Fetch reviews when tab changes to reviews tab or when id changes
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (tab === 2 && id) {
+        try {
+          setLoadingReviews(true);
+          const response = await getReview(id);
+          
+          // Handle API response structure
+          let reviewsData = [];
+          if (response?.code === 1000 && response?.data) {
+            reviewsData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            reviewsData = response;
+          } else if (Array.isArray(response?.data)) {
+            reviewsData = response.data;
+          }
+          
+          setReviews(reviewsData);
+        } catch (err) {
+          console.error("Error fetching reviews:", err);
+          setReviews([]);
+        } finally {
+          setLoadingReviews(false);
+        }
+      }
+    };
+
+    fetchReviews();
+  }, [tab, id]);
 
   // Format date from YYYY-MM-DD to DD/MM/YYYY
   const formatDate = (dateString) => {
@@ -969,8 +949,21 @@ const Profile = () => {
               ))
             ) : tab === 2 ? (
               // Reviews Tab
-              fakeReviews.length > 0 ? (
-                fakeReviews.map((review) => (
+              loadingReviews ? (
+                <div
+                  style={{
+                    gridColumn: "1 / -1",
+                    textAlign: "center",
+                    padding: "60px 20px",
+                    color: muted,
+                  }}
+                >
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              ) : reviews.length > 0 ? (
+                reviews.map((review) => (
                   <div
                     key={review.id}
                     style={{

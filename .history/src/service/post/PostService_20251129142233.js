@@ -13,10 +13,7 @@ export async function updatePost(id, post) {
   return data;
 }
 export async function updatePostStatus(id, status) {
-  const { data } = await axios.post(`/api/post/status`, {
-    postId: id,
-    status: status,
-  });
+  const { data } = await axios.post(`/api/post/status`, { status });
   return data;
 }
 export async function deletePost(id) {

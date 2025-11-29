@@ -403,3 +403,16 @@
     display: flex;
   }
 }
+
+/* Edit Profile Layout Responsive */
+@media (max-width: 992px) {
+  .edit-profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .edit-profile-layout > div:first-child {
+    position: static !important;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}

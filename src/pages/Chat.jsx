@@ -1082,6 +1082,7 @@ const Chat = () => {
         <TradeModal
           onClose={() => setShowTradeModal(false)}
           conversation={selectedConversation}
+          tradeId={selectedConversation?.tradeId || selectedConversation?.conversationId}
         />
       )}
 

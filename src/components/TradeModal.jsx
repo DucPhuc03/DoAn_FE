@@ -1,36 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getDetailTrade } from "../service/trade/TradeService";
 
-const TradeModal = ({ onClose, conversation }) => {
+const TradeModal = ({ onClose, conversation, tradeId }) => {
   // Color constants
   const surface = "#ffffff";
   const primary = "#2563eb";
 
-  // Fake data for trade information
-  const tradeData = {
-    user1: {
-      id: 1,
-      name: "Nguyễn Văn A",
-      avatar:
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761970519508_58791216101f9d41c40e.jpg",
-      item: {
-        name: "iPhone 16 Pro Max 256GB",
-        image:
-          "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop",
-      },
-    },
-    user2: {
-      id: 2,
-      name: conversation?.username || "Nguyễn Thị B",
-      avatar:
-        conversation?.userAvatar ||
-        "https://traodoido.s3.ap-southeast-1.amazonaws.com/profile/1761838431539_58791216101f9d41c40e.jpg",
-      item: {
-        name: conversation?.itemTitle || "MacBook Pro M3 14 inch",
-        image:
-          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
-      },
-    },
-  };
+  const [tradeData, setTradeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTradeDetail = async () => {
+      if (!tradeId) {
+        setError("Không tìm thấy ID trao đổi");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getDetailTrade(tradeId);
+        
+        // Handle API response structure
+        const data = response?.data || response;
+        if (data) {
+          setTradeData(data);
+        } else {
+          setError("Không tìm thấy dữ liệu trao đổi");
+        }
+      } catch (err) {
+        console.error("Error fetching trade detail:", err);
+        setError("Không thể tải thông tin trao đổi");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTradeDetail();
+  }, [tradeId]);
 
   return (
     <div
@@ -124,141 +133,183 @@ const TradeModal = ({ onClose, conversation }) => {
             padding: "24px 20px",
           }}
         >
-          <div
-            className="trade-items-container"
-            style={{
-              gap: "20px",
-              alignItems: "center",
-            }}
-          >
-            {/* User 1 */}
+          {loading ? (
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                gap: "16px",
+                justifyContent: "center",
+                padding: "40px 20px",
               }}
             >
-              {/* Avatar */}
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "40px 20px",
+                color: "#ef4444",
+              }}
+            >
+              <i className="bi bi-exclamation-triangle fs-3 d-block mb-2"></i>
+              <p className="mb-0">{error}</p>
+            </div>
+          ) : tradeData ? (
+            <div
+              className="trade-items-container"
+              style={{
+                gap: "20px",
+                alignItems: "center",
+              }}
+            >
+              {/* Requester - Left Side */}
               <div
                 style={{
-                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "16px",
                 }}
               >
-                {tradeData.user1.avatar ? (
-                  <img
-                    src={tradeData.user1.avatar}
-                    alt={tradeData.user1.name}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "2px solid #e5e7eb",
-                    }}
-                  />
-                ) : (
+                {/* Avatar */}
+                <div
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  {tradeData.requesterAvatar ? (
+                    <img
+                      src={tradeData.requesterAvatar}
+                      alt={tradeData.requesterName || "Requester"}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "2px solid #e5e7eb",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        background: "#e5e7eb",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#9ca3af",
+                        fontSize: 24,
+                        border: "2px solid #e5e7eb",
+                      }}
+                    >
+                      {tradeData.requesterName
+                        ? tradeData.requesterName.charAt(0).toUpperCase()
+                        : "R"}
+                    </div>
+                  )}
+                </div>
+
+                {/* Name */}
+                <div
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
                   <div
                     style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      background: "#e5e7eb",
-                      display: "grid",
-                      placeItems: "center",
-                      color: "#9ca3af",
-                      fontSize: 24,
-                      border: "2px solid #e5e7eb",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "#1f2937",
+                      marginBottom: 2,
                     }}
                   >
-                    {tradeData.user1.name.charAt(0)}
+                    {tradeData.requesterName || "Người yêu cầu"}
                   </div>
-                )}
-              </div>
-
-              {/* Name */}
-              <div
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 2,
-                  }}
-                >
-                  {tradeData.user1.name}
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#6b7280",
+                    }}
+                  >
+                    Người yêu cầu
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#6b7280",
-                  }}
-                >
-                  Người trao đổi
-                </div>
-              </div>
 
-              {/* Item Card */}
-              <div
-                style={{
-                  width: "100%",
-                  background: "#f9fafb",
-                  borderRadius: 12,
-                  padding: "12px",
-                  border: "2px solid #e5e7eb",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "#2563eb";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(37, 99, 235, 0.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                {/* Item Image */}
+                {/* Item Card */}
                 <div
                   style={{
                     width: "100%",
-                    aspectRatio: "1",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    marginBottom: 8,
-                    background: "#fff",
+                    background: "#f9fafb",
+                    borderRadius: 12,
+                    padding: "12px",
+                    border: "2px solid #e5e7eb",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "#2563eb";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(37, 99, 235, 0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  <img
-                    src={tradeData.user1.item.image}
-                    alt={tradeData.user1.item.name}
+                  {/* Item Image */}
+                  <div
                     style={{
                       width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
+                      aspectRatio: "1",
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      marginBottom: 8,
+                      background: "#fff",
                     }}
-                  />
-                </div>
+                  >
+                    {tradeData.itemRequesterImage ? (
+                      <img
+                        src={tradeData.itemRequesterImage}
+                        alt={tradeData.itemRequesterTitle || "Item"}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "grid",
+                          placeItems: "center",
+                          background: "#f3f4f6",
+                          color: "#9ca3af",
+                        }}
+                      >
+                        <i className="bi bi-image" style={{ fontSize: 32 }}></i>
+                      </div>
+                    )}
+                  </div>
 
-                {/* Item Name */}
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 12,
-                    color: "#1f2937",
-                    textAlign: "center",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {tradeData.user1.item.name}
+                  {/* Item Name */}
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 12,
+                      color: "#1f2937",
+                      textAlign: "center",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {tradeData.itemRequesterTitle || "Chưa có tên"}
+                  </div>
                 </div>
               </div>
-            </div>
 
             {/* Exchange Arrow - Desktop */}
             <div
@@ -341,135 +392,153 @@ const TradeModal = ({ onClose, conversation }) => {
               </div>
             </div>
 
-            {/* User 2 */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
-              }}
-            >
-              {/* Avatar */}
+              {/* Owner - Right Side */}
               <div
                 style={{
-                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "16px",
                 }}
               >
-                {tradeData.user2.avatar ? (
-                  <img
-                    src={tradeData.user2.avatar}
-                    alt={tradeData.user2.name}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "2px solid #e5e7eb",
-                    }}
-                  />
-                ) : (
+                {/* Avatar */}
+                <div
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  {tradeData.ownerAvatar ? (
+                    <img
+                      src={tradeData.ownerAvatar}
+                      alt={tradeData.ownerName || "Owner"}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "2px solid #e5e7eb",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        background: "#e5e7eb",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#9ca3af",
+                        fontSize: 24,
+                        border: "2px solid #e5e7eb",
+                      }}
+                    >
+                      {tradeData.ownerName
+                        ? tradeData.ownerName.charAt(0).toUpperCase()
+                        : "O"}
+                    </div>
+                  )}
+                </div>
+
+                {/* Name */}
+                <div
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
                   <div
                     style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      background: "#e5e7eb",
-                      display: "grid",
-                      placeItems: "center",
-                      color: "#9ca3af",
-                      fontSize: 24,
-                      border: "2px solid #e5e7eb",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "#1f2937",
+                      marginBottom: 2,
                     }}
                   >
-                    {tradeData.user2.name.charAt(0)}
+                    {tradeData.ownerName || "Chủ sở hữu"}
                   </div>
-                )}
-              </div>
-
-              {/* Name */}
-              <div
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 2,
-                  }}
-                >
-                  {tradeData.user2.name}
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#6b7280",
+                    }}
+                  >
+                    Chủ sở hữu
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#6b7280",
-                  }}
-                >
-                  Người trao đổi
-                </div>
-              </div>
 
-              {/* Item Card */}
-              <div
-                style={{
-                  width: "100%",
-                  background: "#f9fafb",
-                  borderRadius: 12,
-                  padding: "12px",
-                  border: "2px solid #e5e7eb",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "#2563eb";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(37, 99, 235, 0.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                {/* Item Image */}
+                {/* Item Card */}
                 <div
                   style={{
                     width: "100%",
-                    aspectRatio: "1",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    marginBottom: 8,
-                    background: "#fff",
+                    background: "#f9fafb",
+                    borderRadius: 12,
+                    padding: "12px",
+                    border: "2px solid #e5e7eb",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "#2563eb";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(37, 99, 235, 0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  <img
-                    src={tradeData.user2.item.image}
-                    alt={tradeData.user2.item.name}
+                  {/* Item Image */}
+                  <div
                     style={{
                       width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
+                      aspectRatio: "1",
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      marginBottom: 8,
+                      background: "#fff",
                     }}
-                  />
-                </div>
+                  >
+                    {tradeData.itemOwnerImage ? (
+                      <img
+                        src={tradeData.itemOwnerImage}
+                        alt={tradeData.itemOwnerTitle || "Item"}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "grid",
+                          placeItems: "center",
+                          background: "#f3f4f6",
+                          color: "#9ca3af",
+                        }}
+                      >
+                        <i className="bi bi-image" style={{ fontSize: 32 }}></i>
+                      </div>
+                    )}
+                  </div>
 
-                {/* Item Name */}
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 12,
-                    color: "#1f2937",
-                    textAlign: "center",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {tradeData.user2.item.name}
+                  {/* Item Name */}
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 12,
+                      color: "#1f2937",
+                      textAlign: "center",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {tradeData.itemOwnerTitle || "Chưa có tên"}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         {/* Footer Actions */}
@@ -504,27 +573,29 @@ const TradeModal = ({ onClose, conversation }) => {
           >
             Đóng
           </button>
-          <button
-            style={{
-              padding: "8px 20px",
-              border: "none",
-              borderRadius: 8,
-              background: "#2563eb",
-              color: surface,
-              fontWeight: 600,
-              fontSize: 13,
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#1d4ed8";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#2563eb";
-            }}
-          >
-            Xác nhận trao đổi
-          </button>
+          {tradeData?.canUpdate && (
+            <button
+              style={{
+                padding: "8px 20px",
+                border: "none",
+                borderRadius: 8,
+                background: "#2563eb",
+                color: surface,
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#1d4ed8";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#2563eb";
+              }}
+            >
+              Cập nhật trao đổi
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -532,6 +603,8 @@ const TradeModal = ({ onClose, conversation }) => {
 };
 
 export default TradeModal;
+
+
 
 
 
