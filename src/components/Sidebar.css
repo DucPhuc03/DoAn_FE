@@ -1,0 +1,144 @@
+/* Sidebar.css — updated with left-to-right hover transition */
+
+:root {
+  --sidebar-w: 280px;
+  --sidebar-padding: 24px;
+  --accent: #000080;
+  --muted: #4F4F4F;
+
+  --highlight-bg: rgba(155,155,255,0.30); /* active */
+  --hover-bg: rgba(155,155,255,0.22);     /* hover */
+
+  --highlight-radius: 12px;
+  --menu-item-height: 72px;
+  --transition-fast: 220ms;
+}
+
+/* ---------- Container ---------- */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: #fff;
+  padding: var(--sidebar-padding);
+  box-sizing: border-box;
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Logo ---------- */
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* ---------- Menu ---------- */
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  position: relative;
+}
+
+/* Base pseudo-element for hover + active background */
+.menu-item::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--sidebar-padding));
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center; /* KEY: animation starts from left */
+  height: var(--menu-item-height);
+
+  /* Gradient to make the highlight feel like it's sliding */
+  background: linear-gradient(
+    to right,
+    var(--hover-bg),
+    rgba(155,155,255,0.10)
+  );
+
+  border-radius: 0 var(--highlight-radius) var(--highlight-radius) 0;
+  z-index: 0;
+  transition: transform var(--transition-fast) ease;
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* Hover → expand highlight left → right */
+.menu-item:hover::before,
+.menu-item:focus-within::before {
+  transform: translateY(-50%) scaleX(1);
+}
+
+/* Active → static background, fully expanded */
+.menu-item.active::before {
+  transform: translateY(-50%) scaleX(1);
+  background: var(--highlight-bg);
+}
+
+/* ---------- Button ---------- */
+.menu-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: var(--menu-item-height);
+  padding: 12px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.menu-btn:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Icons */
+.menu-icon {
+  font-size: 1.6rem;
+  color: var(--muted);
+  transition: color var(--transition-fast) ease;
+}
+
+.menu-item.active .menu-icon,
+.menu-item.active .label {
+  color: var(--accent);
+}
+
+.menu-item:hover .menu-icon,
+.menu-item:focus-within .menu-icon,
+.menu-item:hover .label,
+.menu-item:focus-within .label {
+  color: var(--accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  :root {
+    --sidebar-w: 280px;
+    --sidebar-padding: 16px;
+    --menu-item-height: 56px;
+    --highlight-radius: 10px;
+  }
+}
