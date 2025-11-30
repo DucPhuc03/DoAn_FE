@@ -435,10 +435,12 @@ const Profile = () => {
                       padding: "8px 16px",
                       fontWeight: 600,
 
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                   >
-                    <FaMapMarkerAlt style={{ marginRight: 8, fontSize: 14 }} />
+                    <FaMapMarkerAlt
+                      style={{ marginRight: 8, color: primary, fontSize: 14 }}
+                    />
                     {profileData.address}
                   </span>
                 )}
@@ -449,9 +451,10 @@ const Profile = () => {
                   style={{
                     textAlign: "center",
                     padding: "12px 20px",
-
+                    background:
+                      "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
                     borderRadius: 12,
-                    border: "1px solid #d3dbdeff",
+                    border: "1px solid #bae6fd",
                     minWidth: 100,
                     transition: "all 0.3s",
                     cursor: "pointer",
@@ -498,9 +501,10 @@ const Profile = () => {
                   style={{
                     textAlign: "center",
                     padding: "12px 20px",
-
+                    background:
+                      "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)",
                     borderRadius: 12,
-                    border: "1px solid #d3dbdeff",
+                    border: "1px solid #fbcfe8",
                     minWidth: 100,
                     transition: "all 0.3s",
                     cursor: "pointer",
@@ -547,9 +551,10 @@ const Profile = () => {
                   style={{
                     textAlign: "center",
                     padding: "12px 20px",
-
+                    background:
+                      "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
                     borderRadius: 12,
-                    border: "1px solid #d3dbdeff",
+                    border: "1px solid #bbf7d0",
                     minWidth: 100,
                     transition: "all 0.3s",
                     cursor: "pointer",

@@ -549,7 +549,7 @@ const Profile = () => {
                     padding: "12px 20px",
 
                     borderRadius: 12,
-                    border: "1px solid #d3dbdeff",
+                    border: "1px solid #bbf7d0",
                     minWidth: 100,
                     transition: "all 0.3s",
                     cursor: "pointer",

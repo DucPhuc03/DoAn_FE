@@ -998,6 +998,38 @@ const Chat = () => {
             )}
           </div>
 
+          {/* Connection Status */}
+          {/* {wsError && (
+            <div
+              style={{
+                padding: "8px 20px",
+                background: "#fef2f2",
+                borderTop: "1px solid #fecaca",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <i className="bi bi-exclamation-triangle text-danger"></i>
+                <small className="text-danger">{wsError}</small>
+              </div>
+              <button
+                onClick={() => {
+                  setWsError(null);
+                  if (selectedConversationId) {
+                    setSelectedConversationId((prev) => prev);
+                  }
+                }}
+                className="btn btn-sm btn-outline-danger"
+                style={{ fontSize: "12px", padding: "2px 8px" }}
+              >
+                Thử lại
+              </button>
+            </div>
+          )} */}
+
           {/* Input Area */}
           <div
             style={{

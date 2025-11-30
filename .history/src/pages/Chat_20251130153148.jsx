@@ -398,6 +398,71 @@ const Chat = () => {
                 </div>
                 <div style={{ fontSize: 14 }}>Đang tải cuộc trò chuyện...</div>
               </div>
+            ) : error ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: 12,
+                  padding: "20px",
+                  textAlign: "center",
+                }}
+              >
+                <i
+                  className="bi bi-exclamation-triangle text-warning"
+                  style={{ fontSize: 32 }}
+                ></i>
+                <div style={{ fontSize: 14, color: "#6b7280" }}>{error}</div>
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      setError(null);
+                      const response = await getConversation();
+                      let conversationsData = [];
+                      if (response?.data) {
+                        conversationsData = Array.isArray(response.data)
+                          ? response.data
+                          : [];
+                      } else if (Array.isArray(response)) {
+                        conversationsData = response;
+                      }
+                      const transformedConversations = conversationsData.map(
+                        (conv) => ({
+                          conversationId: conv.conversationId || conv.id,
+                          itemTitle: conv.itemTitle || conv.postTitle,
+                          itemImage: conv.itemImage || conv.postImage,
+                          username: conv.username || conv.partnerUsername,
+                          userAvatar: conv.userAvatar || conv.partnerAvatar,
+                          messages: conv.messages || [],
+                          meeting: conv.meeting || null,
+                          tradeId: conv.tradeId || null,
+                        })
+                      );
+                      setConversations(transformedConversations);
+                      if (
+                        transformedConversations.length > 0 &&
+                        !selectedConversationId
+                      ) {
+                        setSelectedConversationId(
+                          transformedConversations[0].conversationId
+                        );
+                      }
+                    } catch (err) {
+                      console.error("Error fetching conversations:", err);
+                      setError("Không thể tải danh sách cuộc trò chuyện");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                >
+                  Thử lại
+                </button>
+              </div>
             ) : conversations.length === 0 ? (
               <div
                 style={{
@@ -618,123 +683,88 @@ const Chat = () => {
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                gap: 8,
+                gap: 6,
               }}
             >
-              <div>
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 16,
-                    color: "#1f2937",
-                    width: "200px",
-                  }}
-                >
-                  {selectedConversation?.username || "Người dùng"}
-                </div>
-                <div style={{ fontSize: 13, color: "#6b7280", width: "200px" }}>
-                  {selectedConversation?.itemTitle || "Đang trao đổi"}
-                </div>
+              {/* Item Title */}
+              <div
+                style={{
+                  fontWeight: 600,
+                  fontSize: 16,
+                  color: "#1f2937",
+                }}
+              >
+                {selectedConversation?.itemTitle || "Đang trao đổi"}
               </div>
-              {/* Meeting Info */}
+
+              {/* Meeting Info - Single Line Format */}
               {selectedConversation?.meeting && (
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 16,
+                    gap: 12,
                     flexWrap: "wrap",
                   }}
                 >
                   <div
                     style={{
-                      padding: "8px 12px",
-                      color: "black",
-                      fontSize: 16,
+                      fontSize: 13,
+                      color: "#6b7280",
                       display: "flex",
-                      flexDirection: "row",
                       alignItems: "center",
-                      gap: 16,
+                      gap: 8,
                       flexWrap: "wrap",
                     }}
                   >
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                      }}
-                    >
-                      <i className="bi bi-calendar-event"></i>
-                      Lịch hẹn
-                    </div>
-
                     {selectedConversation.meeting.meetingDate && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        <i
-                          className="bi bi-calendar"
-                          style={{ fontSize: 11 }}
-                        ></i>
+                      <>
                         <span>
                           {new Date(
                             selectedConversation.meeting.meetingDate
-                          ).toLocaleDateString("vi-VN")}
+                          ).toLocaleDateString("vi-VN", {
+                            day: "numeric",
+                            month: "short",
+                          })}
                         </span>
-                      </div>
-                    )}
-                    {selectedConversation.meeting.time && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        <i className="bi bi-clock" style={{ fontSize: 11 }}></i>
-                        <span>{selectedConversation.meeting.time}</span>
-                      </div>
+                        {selectedConversation.meeting.time && (
+                          <>
+                            <span>·</span>
+                            <span>{selectedConversation.meeting.time}</span>
+                          </>
+                        )}
+                      </>
                     )}
                     {selectedConversation.meeting.location && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        <i
-                          className="bi bi-geo-alt"
-                          style={{ fontSize: 11 }}
-                        ></i>
+                      <>
+                        {selectedConversation.meeting.meetingDate && (
+                          <span>·</span>
+                        )}
                         <span>{selectedConversation.meeting.location}</span>
-                      </div>
+                      </>
                     )}
                   </div>
-                  {/* Meeting Status - Creator waiting */}
-                  {selectedConversation.meeting.creator &&
-                    selectedConversation.meeting.status === "WAITING" && (
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "#ef4444",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Đang chờ xác nhận
-                      </div>
-                    )}
+
+                  {/* Meeting Status */}
+                  {selectedConversation.meeting.status === "WAITING" && (
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#ef4444",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Đang chờ xác nhận
+                    </div>
+                  )}
+
                   {/* Accept/Reject Buttons */}
                   {!selectedConversation.meeting.creator &&
                     selectedConversation.meeting.status === "WAITING" && (
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div
+                        style={{ display: "flex", gap: 8, marginLeft: "auto" }}
+                      >
                         <button
                           onClick={() => {
                             // TODO: Implement accept meeting
@@ -769,7 +799,7 @@ const Chat = () => {
                             padding: "8px 16px",
                             border: "none",
                             borderRadius: 8,
-                            background: "#c33131ff",
+                            background: "#ef4444",
                             color: surface,
                             fontWeight: 600,
                             fontSize: 14,
@@ -787,37 +817,24 @@ const Chat = () => {
                         </button>
                       </div>
                     )}
-                  {/* Cancel Meeting Button */}
-                  {selectedConversation.meeting.status === "SCHEDULED" && (
-                    <button
-                      onClick={() => {
-                        // TODO: Implement cancel meeting
-                        console.log("Cancel meeting");
-                      }}
-                      style={{
-                        padding: "8px 16px",
-                        border: "none",
-                        borderRadius: 8,
-                        background: "#ef4444",
-                        color: surface,
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#dc2626";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ef4444";
-                      }}
-                    >
-                      Hủy lịch
-                    </button>
-                  )}
                 </div>
               )}
             </div>
+
+            {/* Item Thumbnail */}
+            {selectedConversation?.itemImage && (
+              <img
+                src={selectedConversation.itemImage}
+                alt={selectedConversation.itemTitle || "Item"}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 8,
+                  objectFit: "cover",
+                  flexShrink: 0,
+                }}
+              />
+            )}
 
             {/* Action Buttons */}
             <div
@@ -998,6 +1015,38 @@ const Chat = () => {
             )}
           </div>
 
+          {/* Connection Status */}
+          {/* {wsError && (
+            <div
+              style={{
+                padding: "8px 20px",
+                background: "#fef2f2",
+                borderTop: "1px solid #fecaca",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <i className="bi bi-exclamation-triangle text-danger"></i>
+                <small className="text-danger">{wsError}</small>
+              </div>
+              <button
+                onClick={() => {
+                  setWsError(null);
+                  if (selectedConversationId) {
+                    setSelectedConversationId((prev) => prev);
+                  }
+                }}
+                className="btn btn-sm btn-outline-danger"
+                style={{ fontSize: "12px", padding: "2px 8px" }}
+              >
+                Thử lại
+              </button>
+            </div>
+          )} */}
+
           {/* Input Area */}
           <div
             style={{
@@ -1034,8 +1083,36 @@ const Chat = () => {
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#059669";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = green;
+                }}
               >
                 Trade
+              </button>
+              <button
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "transparent",
+                  color: "#6b7280",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                <FaSmile />
               </button>
 
               <button
@@ -1057,6 +1134,16 @@ const Chat = () => {
                       : "not-allowed",
                   transition: "all 0.2s",
                   opacity: wsConnected && inputValue.trim() ? 1 : 0.6,
+                }}
+                onMouseEnter={(e) => {
+                  if (wsConnected && inputValue.trim()) {
+                    e.currentTarget.style.background = "#1d4ed8";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (wsConnected && inputValue.trim()) {
+                    e.currentTarget.style.background = primary;
+                  }
                 }}
               >
                 <FaArrowUp />

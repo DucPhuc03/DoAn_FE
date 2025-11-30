@@ -398,6 +398,71 @@ const Chat = () => {
                 </div>
                 <div style={{ fontSize: 14 }}>Đang tải cuộc trò chuyện...</div>
               </div>
+            ) : error ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: 12,
+                  padding: "20px",
+                  textAlign: "center",
+                }}
+              >
+                <i
+                  className="bi bi-exclamation-triangle text-warning"
+                  style={{ fontSize: 32 }}
+                ></i>
+                <div style={{ fontSize: 14, color: "#6b7280" }}>{error}</div>
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      setError(null);
+                      const response = await getConversation();
+                      let conversationsData = [];
+                      if (response?.data) {
+                        conversationsData = Array.isArray(response.data)
+                          ? response.data
+                          : [];
+                      } else if (Array.isArray(response)) {
+                        conversationsData = response;
+                      }
+                      const transformedConversations = conversationsData.map(
+                        (conv) => ({
+                          conversationId: conv.conversationId || conv.id,
+                          itemTitle: conv.itemTitle || conv.postTitle,
+                          itemImage: conv.itemImage || conv.postImage,
+                          username: conv.username || conv.partnerUsername,
+                          userAvatar: conv.userAvatar || conv.partnerAvatar,
+                          messages: conv.messages || [],
+                          meeting: conv.meeting || null,
+                          tradeId: conv.tradeId || null,
+                        })
+                      );
+                      setConversations(transformedConversations);
+                      if (
+                        transformedConversations.length > 0 &&
+                        !selectedConversationId
+                      ) {
+                        setSelectedConversationId(
+                          transformedConversations[0].conversationId
+                        );
+                      }
+                    } catch (err) {
+                      console.error("Error fetching conversations:", err);
+                      setError("Không thể tải danh sách cuộc trò chuyện");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                >
+                  Thử lại
+                </button>
+              </div>
             ) : conversations.length === 0 ? (
               <div
                 style={{
@@ -641,7 +706,7 @@ const Chat = () => {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "row",
+
                     alignItems: "center",
                     gap: 16,
                     flexWrap: "wrap",
@@ -718,19 +783,6 @@ const Chat = () => {
                       </div>
                     )}
                   </div>
-                  {/* Meeting Status - Creator waiting */}
-                  {selectedConversation.meeting.creator &&
-                    selectedConversation.meeting.status === "WAITING" && (
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "#ef4444",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Đang chờ xác nhận
-                      </div>
-                    )}
                   {/* Accept/Reject Buttons */}
                   {!selectedConversation.meeting.creator &&
                     selectedConversation.meeting.status === "WAITING" && (
@@ -769,7 +821,7 @@ const Chat = () => {
                             padding: "8px 16px",
                             border: "none",
                             borderRadius: 8,
-                            background: "#c33131ff",
+                            background: "#ef4444",
                             color: surface,
                             fontWeight: 600,
                             fontSize: 14,
@@ -787,34 +839,6 @@ const Chat = () => {
                         </button>
                       </div>
                     )}
-                  {/* Cancel Meeting Button */}
-                  {selectedConversation.meeting.status === "SCHEDULED" && (
-                    <button
-                      onClick={() => {
-                        // TODO: Implement cancel meeting
-                        console.log("Cancel meeting");
-                      }}
-                      style={{
-                        padding: "8px 16px",
-                        border: "none",
-                        borderRadius: 8,
-                        background: "#ef4444",
-                        color: surface,
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#dc2626";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ef4444";
-                      }}
-                    >
-                      Hủy lịch
-                    </button>
-                  )}
                 </div>
               )}
             </div>
@@ -998,6 +1022,38 @@ const Chat = () => {
             )}
           </div>
 
+          {/* Connection Status */}
+          {/* {wsError && (
+            <div
+              style={{
+                padding: "8px 20px",
+                background: "#fef2f2",
+                borderTop: "1px solid #fecaca",
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <i className="bi bi-exclamation-triangle text-danger"></i>
+                <small className="text-danger">{wsError}</small>
+              </div>
+              <button
+                onClick={() => {
+                  setWsError(null);
+                  if (selectedConversationId) {
+                    setSelectedConversationId((prev) => prev);
+                  }
+                }}
+                className="btn btn-sm btn-outline-danger"
+                style={{ fontSize: "12px", padding: "2px 8px" }}
+              >
+                Thử lại
+              </button>
+            </div>
+          )} */}
+
           {/* Input Area */}
           <div
             style={{
@@ -1034,8 +1090,36 @@ const Chat = () => {
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#059669";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = green;
+                }}
               >
                 Trade
+              </button>
+              <button
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "transparent",
+                  color: "#6b7280",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                <FaSmile />
               </button>
 
               <button
@@ -1057,6 +1141,16 @@ const Chat = () => {
                       : "not-allowed",
                   transition: "all 0.2s",
                   opacity: wsConnected && inputValue.trim() ? 1 : 0.6,
+                }}
+                onMouseEnter={(e) => {
+                  if (wsConnected && inputValue.trim()) {
+                    e.currentTarget.style.background = "#1d4ed8";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (wsConnected && inputValue.trim()) {
+                    e.currentTarget.style.background = primary;
+                  }
                 }}
               >
                 <FaArrowUp />
