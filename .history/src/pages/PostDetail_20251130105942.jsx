@@ -288,19 +288,7 @@ const PostDetail = () => {
                 {/* Avatar */}
                 <div
                   className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                  style={{ 
-                    width: "50px", 
-                    height: "50px",
-                    cursor: "pointer",
-                    transition: "transform 0.2s"
-                  }}
-                  onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
+                  style={{ width: "50px", height: "50px" }}
                 >
                   {post.avatarUrl ? (
                     <img
@@ -318,20 +306,7 @@ const PostDetail = () => {
                   )}
                 </div>
                 <div>
-                  <p 
-                    className="mb-0 fw-semibold text-dark"
-                    style={{ 
-                      cursor: "pointer",
-                      transition: "color 0.2s"
-                    }}
-                    onClick={() => post.userId && navigate(`/profile/${post.userId}`)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "#2563eb";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#1f2937";
-                    }}
-                  >
+                  <p className="mb-0 fw-semibold text-dark">
                     {post.username || "Người đăng"}
                   </p>
                   <small className="text-muted">

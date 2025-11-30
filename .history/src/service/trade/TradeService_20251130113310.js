@@ -4,9 +4,9 @@ export async function getDetailTrade(id) {
   return data;
 }
 
-export async function updateTradePost(tradeId, postId) {
+export async function updateTradePost(id, postId) {
   const { data } = await axios.post(`/api/trade/update-post`, {
-    tradeId: tradeId,
+    tradeId: id,
     requesterPostId: postId,
   });
   return data;

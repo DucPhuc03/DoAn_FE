@@ -214,7 +214,6 @@ const NewPost = () => {
                   <input
                     type="text"
                     className="form-control rounded-4"
-                    placeholder="Nhập yêu cầu"
                     value={formData.tags}
                     onChange={handleChange("tags")}
                   />

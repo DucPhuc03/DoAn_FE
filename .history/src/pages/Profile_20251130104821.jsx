@@ -1218,58 +1218,6 @@ const Profile = () => {
                   </div>
                 </div>
               )
-            ) : tab === 3 ? (
-              // Proposals Tab
-              <div
-                style={{
-                  gridColumn: "1 / -1",
-                  textAlign: "center",
-                  padding: "60px 20px",
-                  color: muted,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 64,
-                    marginBottom: 16,
-                    opacity: 0.5,
-                  }}
-                >
-                  💡
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-                  Chưa có đề xuất nào
-                </div>
-                <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                  Các đề xuất trao đổi sẽ được hiển thị ở đây
-                </div>
-              </div>
-            ) : tab === 4 ? (
-              // History Tab
-              <div
-                style={{
-                  gridColumn: "1 / -1",
-                  textAlign: "center",
-                  padding: "60px 20px",
-                  color: muted,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 64,
-                    marginBottom: 16,
-                    opacity: 0.5,
-                  }}
-                >
-                  📋
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-                  Chưa có lịch sử
-                </div>
-                <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                  Lịch sử trao đổi sẽ được hiển thị ở đây
-                </div>
-              </div>
             ) : (
               <div
                 style={{

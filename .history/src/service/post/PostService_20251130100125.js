@@ -4,10 +4,6 @@ export async function getPostDetail(id) {
   const { data } = await axios.get(`/api/post/${id}`);
   return data;
 }
-export async function getPostUser(id) {
-  const { data } = await axios.get(`/api/post/user/${id}`);
-  return data;
-}
 export async function createPost(post) {
   const { data } = await axios.post("/api/post", post);
   return data;
@@ -25,10 +21,6 @@ export async function updatePostStatus(id, status) {
 }
 export async function deletePost(id) {
   const { data } = await axios.delete(`/api/post/${id}`);
-  return data;
-}
-export async function getPostComments(postId) {
-  const { data } = await axios.get(`/api/post/${postId}/comments`);
   return data;
 }
 

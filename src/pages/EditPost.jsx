@@ -40,8 +40,16 @@ const EditPost = () => {
 
   const previews = useMemo(
     () => [
-      ...formData.existingImages.map((img) => ({ src: img, name: "existing", isExisting: true })),
-      ...formData.images.map((img) => ({ src: img.preview, name: img.name, isExisting: false })),
+      ...formData.existingImages.map((img) => ({
+        src: img,
+        name: "existing",
+        isExisting: true,
+      })),
+      ...formData.images.map((img) => ({
+        src: img.preview,
+        name: img.name,
+        isExisting: false,
+      })),
     ],
     [formData.images, formData.existingImages]
   );
@@ -77,7 +85,7 @@ const EditPost = () => {
       setLoading(true);
       const response = await getPostDetail(id);
       const post = response.data || response;
-      
+
       setFormData({
         title: post.title || "",
         description: post.description || "",
@@ -90,7 +98,9 @@ const EditPost = () => {
       });
     } catch (error) {
       console.error("Failed to load post", error);
-      setErrorMessage("Không thể tải thông tin bài đăng. Vui lòng thử lại sau.");
+      setErrorMessage(
+        "Không thể tải thông tin bài đăng. Vui lòng thử lại sau."
+      );
     } finally {
       setLoading(false);
     }
@@ -154,12 +164,15 @@ const EditPost = () => {
 
       const multipart = new FormData();
       multipart.append("postDTO", JSON.stringify(payload));
-      
+
       // Append existing images that should be kept
       if (formData.existingImages.length > 0) {
-        multipart.append("existingImageUrls", JSON.stringify(formData.existingImages));
+        multipart.append(
+          "existingImageUrls",
+          JSON.stringify(formData.existingImages)
+        );
       }
-      
+
       // Append new images
       formData.images.forEach(({ file }) => {
         multipart.append("images", file);
@@ -240,7 +253,10 @@ const EditPost = () => {
               {previews.length > 0 && (
                 <div className="row g-2 mt-3">
                   {previews.map((img, idx) => (
-                    <div className="col-4 position-relative" key={`${img.name}-${idx}`}>
+                    <div
+                      className="col-4 position-relative"
+                      key={`${img.name}-${idx}`}
+                    >
                       <div className="rounded-4 overflow-hidden border position-relative">
                         <img src={img.src} alt={img.name} className="w-100" />
                         <button
@@ -286,12 +302,12 @@ const EditPost = () => {
               <div className="row g-3">
                 <div className="col-md-6">
                   <label className="form-label fw-semibold">
-                    Thẻ (tuỳ chọn) <LuTag className="ms-1" />
+                    Yêu cầu muốn đổi <LuTag className="ms-1" />
                   </label>
                   <input
                     type="text"
                     className="form-control rounded-4"
-                    placeholder="Nhập #tags"
+                    placeholder="Nhập yêu cầu"
                     value={formData.tags}
                     onChange={handleChange("tags")}
                   />
@@ -433,10 +449,4 @@ const SelectionCard = ({
 );
 
 export default EditPost;
-
-
-
-
-
-
 

@@ -1218,58 +1218,6 @@ const Profile = () => {
                   </div>
                 </div>
               )
-            ) : tab === 3 ? (
-              // Proposals Tab
-              <div
-                style={{
-                  gridColumn: "1 / -1",
-                  textAlign: "center",
-                  padding: "60px 20px",
-                  color: muted,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 64,
-                    marginBottom: 16,
-                    opacity: 0.5,
-                  }}
-                >
-                  💡
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-                  Chưa có đề xuất nào
-                </div>
-                <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                  Các đề xuất trao đổi sẽ được hiển thị ở đây
-                </div>
-              </div>
-            ) : tab === 4 ? (
-              // History Tab
-              <div
-                style={{
-                  gridColumn: "1 / -1",
-                  textAlign: "center",
-                  padding: "60px 20px",
-                  color: muted,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 64,
-                    marginBottom: 16,
-                    opacity: 0.5,
-                  }}
-                >
-                  📋
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-                  Chưa có lịch sử
-                </div>
-                <div style={{ fontSize: 14, color: "#94a3b8" }}>
-                  Lịch sử trao đổi sẽ được hiển thị ở đây
-                </div>
-              </div>
             ) : (
               <div
                 style={{
@@ -1305,6 +1253,43 @@ const Profile = () => {
               </div>
             )}
           </div>
+          {tab === 0 && profileData.posts && profileData.posts.length > 0 && (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "24px 0 32px",
+                borderTop: "1px solid #f1f5f9",
+              }}
+            >
+              <button
+                style={{
+                  padding: "12px 32px",
+                  borderRadius: 12,
+                  fontWeight: 600,
+                  border: "none",
+                  background:
+                    "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                  color: surface,
+                  fontSize: 15,
+                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                  cursor: "pointer",
+                  transition: "all 0.3s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(37, 99, 235, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(37, 99, 235, 0.3)";
+                }}
+              >
+                Xem thêm bài đăng
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

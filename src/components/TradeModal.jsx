@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getDetailTrade } from "../service/trade/TradeService";
+import ListPostModal from "./ListPostModal";
 
 const TradeModal = ({ onClose, conversation, tradeId }) => {
   // Color constants
@@ -9,6 +10,7 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
   const [tradeData, setTradeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showListPostModal, setShowListPostModal] = useState(false);
 
   useEffect(() => {
     const fetchTradeDetail = async () => {
@@ -575,6 +577,7 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
           </button>
           {tradeData?.canUpdate && (
             <button
+              onClick={() => setShowListPostModal(true)}
               style={{
                 padding: "8px 20px",
                 border: "none",
@@ -598,6 +601,32 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
           )}
         </div>
       </div>
+
+      {/* ListPostModal */}
+      {showListPostModal && (
+        <ListPostModal
+          onClose={() => setShowListPostModal(false)}
+          userId={tradeData?.requesterId || tradeData?.ownerId}
+          tradeId={tradeId}
+          onSelectPost={(post) => {
+            // Refresh trade data after update
+            if (tradeId) {
+              const fetchTradeDetail = async () => {
+                try {
+                  const response = await getDetailTrade(tradeId);
+                  const data = response?.data || response;
+                  if (data) {
+                    setTradeData(data);
+                  }
+                } catch (err) {
+                  console.error("Error refreshing trade detail:", err);
+                }
+              };
+              fetchTradeDetail();
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
