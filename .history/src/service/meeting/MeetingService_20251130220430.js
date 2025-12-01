@@ -8,10 +8,6 @@ export async function acceptedMeeting(meetingId) {
   return data;
 }
 export async function cancelMeeting(meetingId) {
-  const { data } = await axios.delete(`/api/meeting/${meetingId}`);
-  return data;
-}
-export async function getMeetingUser() {
-  const { data } = await axios.get(`/api/meeting`);
+  const { data } = await axios.delete(`/api/meeting`);
   return data;
 }

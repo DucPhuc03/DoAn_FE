@@ -124,14 +124,7 @@ const Header = () => {
               <div className="d-flex align-items-center">
                 <img
                   src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
-                  alt="logo"
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-                  }}
+                  alt=""
                 />
               </div>
             </Link>

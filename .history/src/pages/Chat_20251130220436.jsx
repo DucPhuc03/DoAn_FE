@@ -13,10 +13,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Cookies from "js-cookie";
 import { getConversation } from "../service/conversation/ConversationService";
-import {
-  acceptedMeeting,
-  cancelMeeting,
-} from "../service/meeting/MeetingService";
 
 if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
@@ -141,9 +137,9 @@ const Chat = () => {
     const token = Cookies.get("access_token");
 
     const connectHeaders = token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
       : {};
 
     client.connect(
@@ -158,28 +154,28 @@ const Chat = () => {
         // Subscribe to the chat topic
         const topic = `/chat-trade/${selectedConversationId}`;
         try {
-        subscriptionRef.current = client.subscribe(topic, (message) => {
-          try {
-            const messageData = JSON.parse(message.body);
-            console.log("Received message:", messageData);
+          subscriptionRef.current = client.subscribe(topic, (message) => {
+            try {
+              const messageData = JSON.parse(message.body);
+              console.log("Received message:", messageData);
 
-            // Update conversations with the new message
-            setConversations((prev) =>
-              prev.map((conversation) =>
-                conversation.conversationId === selectedConversationId
-                  ? {
-                      ...conversation,
-                      messages: [...conversation.messages, messageData],
-                    }
-                  : conversation
-              )
-            );
-          } catch (error) {
-            console.error("Error parsing message:", error);
-          }
-        });
+              // Update conversations with the new message
+              setConversations((prev) =>
+                prev.map((conversation) =>
+                  conversation.conversationId === selectedConversationId
+                    ? {
+                        ...conversation,
+                        messages: [...conversation.messages, messageData],
+                      }
+                    : conversation
+                )
+              );
+            } catch (error) {
+              console.error("Error parsing message:", error);
+            }
+          });
 
-        console.log(`Subscribed to topic: ${topic}`);
+          console.log(`Subscribed to topic: ${topic}`);
         } catch (error) {
           console.error("Error subscribing to topic:", error);
         }
@@ -211,7 +207,7 @@ const Chat = () => {
       // Unsubscribe from the topic
       if (subscriptionRef.current) {
         try {
-        subscriptionRef.current.unsubscribe();
+          subscriptionRef.current.unsubscribe();
         } catch (e) {
           console.warn("Error unsubscribing in cleanup:", e);
         }
@@ -222,9 +218,9 @@ const Chat = () => {
       if (stompClientRef.current) {
         try {
           if (stompClientRef.current.connected) {
-        stompClientRef.current.disconnect(() => {
-          console.log("WebSocket disconnected");
-        });
+            stompClientRef.current.disconnect(() => {
+              console.log("WebSocket disconnected");
+            });
           }
         } catch (e) {
           console.warn("Error disconnecting in cleanup:", e);
@@ -256,26 +252,26 @@ const Chat = () => {
     }
 
     try {
-    // Send message to backend via WebSocket
-    const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+      // Send message to backend via WebSocket
+      const destination = `/app/chat.sendMessage/${selectedConversationId}`;
 
       // Backend expects ChatMessageDTO with senderId and content
-    const messagePayload = JSON.stringify({
+      const messagePayload = JSON.stringify({
         senderId: senderId,
-      content: trimmed,
-    });
+        content: trimmed,
+      });
 
-    stompClientRef.current.send(destination, {}, messagePayload);
+      stompClientRef.current.send(destination, {}, messagePayload);
       console.log(`Sent message to ${destination}:`, {
         senderId,
         content: trimmed,
       });
 
-    // Clear input field
-    setInputValue("");
+      // Clear input field
+      setInputValue("");
       setWsError(null);
 
-    // Note: Message will be received via subscription and added to conversations automatically
+      // Note: Message will be received via subscription and added to conversations automatically
     } catch (error) {
       console.error("Error sending message:", error);
       setWsError("Không thể gửi tin nhắn. Vui lòng thử lại.");
@@ -300,73 +296,6 @@ const Chat = () => {
       });
     } catch (error) {
       return timestamp;
-    }
-  };
-
-  // Refresh conversations to update meeting status
-  const refreshConversations = async () => {
-    try {
-      const response = await getConversation();
-      let conversationsData = [];
-      if (response?.data) {
-        conversationsData = Array.isArray(response.data) ? response.data : [];
-      } else if (Array.isArray(response)) {
-        conversationsData = response;
-      }
-
-      const transformedConversations = conversationsData.map((conv) => ({
-        conversationId: conv.conversationId || conv.id,
-        itemTitle: conv.itemTitle || conv.postTitle,
-        itemImage: conv.itemImage || conv.postImage,
-        username: conv.username || conv.partnerUsername,
-        userAvatar: conv.userAvatar || conv.partnerAvatar,
-        messages: conv.messages || [],
-        meeting: conv.meeting || null,
-        tradeId: conv.tradeId || null,
-      }));
-
-      setConversations(transformedConversations);
-    } catch (err) {
-      console.error("Error refreshing conversations:", err);
-    }
-  };
-
-  const handleAcceptMeeting = async () => {
-    if (!selectedConversation?.meeting?.meetingId) return;
-
-    try {
-      await acceptedMeeting(selectedConversation.meeting.meetingId);
-      // Refresh conversations to update meeting status
-      await refreshConversations();
-    } catch (error) {
-      console.error("Error accepting meeting:", error);
-      alert("Không thể chấp nhận lịch hẹn. Vui lòng thử lại.");
-    }
-  };
-
-  const handleRejectMeeting = async () => {
-    if (!selectedConversation?.meeting?.meetingId) return;
-
-    try {
-      await cancelMeeting(selectedConversation.meeting.meetingId);
-      // Refresh conversations to update meeting status
-      await refreshConversations();
-    } catch (error) {
-      console.error("Error rejecting meeting:", error);
-      alert("Không thể từ chối lịch hẹn. Vui lòng thử lại.");
-    }
-  };
-
-  const handleCancelMeeting = async () => {
-    if (!selectedConversation?.meeting?.meetingId) return;
-
-    try {
-      await cancelMeeting(selectedConversation.meeting.meetingId);
-      // Refresh conversations to update meeting status
-      await refreshConversations();
-    } catch (error) {
-      console.error("Error canceling meeting:", error);
-      alert("Không thể hủy lịch hẹn. Vui lòng thử lại.");
     }
   };
 
@@ -479,150 +408,150 @@ const Chat = () => {
               </div>
             ) : (
               conversations.map((conversation) => {
-              const lastMessage =
-                conversation.messages[conversation.messages.length - 1];
-              const displayName =
-                conversation.username ||
-                lastMessage?.senderName ||
-                "Người dùng";
+                const lastMessage =
+                  conversation.messages[conversation.messages.length - 1];
+                const displayName =
+                  conversation.username ||
+                  lastMessage?.senderName ||
+                  "Người dùng";
                 const itemTitle = conversation.itemTitle || "Sản phẩm";
-              const preview = lastMessage?.content || "Chưa có tin nhắn";
-              const timestamp = formatTimestamp(lastMessage?.timestamp);
+                const preview = lastMessage?.content || "Chưa có tin nhắn";
+                const timestamp = formatTimestamp(lastMessage?.timestamp);
                 const avatar = conversation.userAvatar || null;
-              const isActive =
-                selectedConversationId === conversation.conversationId;
+                const isActive =
+                  selectedConversationId === conversation.conversationId;
 
-              return (
-                <div
-                  key={conversation.conversationId}
-                  onClick={() =>
-                    setSelectedConversationId(conversation.conversationId)
-                  }
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "16px",
-                    cursor: "pointer",
-                    background: isActive ? "#f3f4f6" : surface,
-                    borderBottom: "1px solid #f3f4f6",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = "#f9fafb";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = surface;
-                    }
-                  }}
-                >
-                  {/* Avatar */}
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      alt={displayName}
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        background: "#e5e7eb",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#9ca3af",
-                        fontSize: 20,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {displayName.charAt(0)}
-                    </div>
-                  )}
-
-                  {/* Item Image (small) */}
-                  {conversation.itemImage ? (
-                    <img
-                      src={conversation.itemImage}
-                      alt={conversation.itemTitle}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        background: "#ede9fe",
-                        color: "#6d5dfc",
-                        fontSize: 14,
-                        display: "grid",
-                        placeItems: "center",
-                        flexShrink: 0,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {conversation.itemTitle?.charAt(0) || "?"}
-                    </div>
-                  )}
-
-                  {/* Trade Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: "#1f2937",
-                        marginBottom: 4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                        {itemTitle}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#6b7280",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {preview}
-                    </div>
-                  </div>
-
-                  {/* Timestamp */}
+                return (
                   <div
+                    key={conversation.conversationId}
+                    onClick={() =>
+                      setSelectedConversationId(conversation.conversationId)
+                    }
                     style={{
-                      fontSize: 11,
-                      color: "#9ca3af",
-                      flexShrink: 0,
-                      textAlign: "right",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "16px",
+                      cursor: "pointer",
+                      background: isActive ? "#f3f4f6" : surface,
+                      borderBottom: "1px solid #f3f4f6",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = "#f9fafb";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = surface;
+                      }
                     }}
                   >
-                    {timestamp}
+                    {/* Avatar */}
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt={displayName}
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: "50%",
+                          background: "#e5e7eb",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "#9ca3af",
+                          fontSize: 20,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {displayName.charAt(0)}
+                      </div>
+                    )}
+
+                    {/* Item Image (small) */}
+                    {conversation.itemImage ? (
+                      <img
+                        src={conversation.itemImage}
+                        alt={conversation.itemTitle}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 6,
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 6,
+                          background: "#ede9fe",
+                          color: "#6d5dfc",
+                          fontSize: 14,
+                          display: "grid",
+                          placeItems: "center",
+                          flexShrink: 0,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {conversation.itemTitle?.charAt(0) || "?"}
+                      </div>
+                    )}
+
+                    {/* Trade Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 14,
+                          color: "#1f2937",
+                          marginBottom: 4,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {itemTitle}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#6b7280",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {preview}
+                      </div>
+                    </div>
+
+                    {/* Timestamp */}
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#9ca3af",
+                        flexShrink: 0,
+                        textAlign: "right",
+                      }}
+                    >
+                      {timestamp}
+                    </div>
                   </div>
-                </div>
-              );
+                );
               })
             )}
           </div>
@@ -694,11 +623,11 @@ const Chat = () => {
                     width: "200px",
                   }}
                 >
-                {selectedConversation?.username || "Người dùng"}
-              </div>
+                  {selectedConversation?.username || "Người dùng"}
+                </div>
                 <div style={{ fontSize: 13, color: "#6b7280", width: "200px" }}>
-                {selectedConversation?.itemTitle || "Đang trao đổi"}
-              </div>
+                  {selectedConversation?.itemTitle || "Đang trao đổi"}
+                </div>
               </div>
               {/* Meeting Info */}
               {selectedConversation?.meeting && (
@@ -800,7 +729,10 @@ const Chat = () => {
                     selectedConversation.meeting.status === "WAITING" && (
                       <div style={{ display: "flex", gap: 8 }}>
                         <button
-                          onClick={handleAcceptMeeting}
+                          onClick={() => {
+                            // TODO: Implement accept meeting
+                            console.log("Accept meeting");
+                          }}
                           style={{
                             padding: "8px 16px",
                             border: "none",
@@ -822,7 +754,10 @@ const Chat = () => {
                           Đồng ý
                         </button>
                         <button
-                          onClick={handleRejectMeeting}
+                          onClick={() => {
+                            // TODO: Implement reject meeting
+                            console.log("Reject meeting");
+                          }}
                           style={{
                             padding: "8px 16px",
                             border: "none",
@@ -848,7 +783,10 @@ const Chat = () => {
                   {/* Cancel Meeting Button */}
                   {selectedConversation.meeting.status === "SCHEDULED" && (
                     <button
-                      onClick={handleCancelMeeting}
+                      onClick={() => {
+                        // TODO: Implement cancel meeting
+                        console.log("Cancel meeting");
+                      }}
                       style={{
                         padding: "8px 16px",
                         border: "none",
@@ -908,28 +846,28 @@ const Chat = () => {
               {selectedConversation?.meeting ? (
                 <>
                   {selectedConversation.meeting.canEdit && (
-              <button
+                    <button
                       onClick={() => setShowPlanModal(true)}
-                style={{
-                  padding: "8px 16px",
-                  border: "none",
-                  borderRadius: 8,
-                  background: yellow,
-                  color: surface,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#f59e0b";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = yellow;
-                }}
-              >
+                      style={{
+                        padding: "8px 16px",
+                        border: "none",
+                        borderRadius: 8,
+                        background: yellow,
+                        color: surface,
+                        fontWeight: 600,
+                        fontSize: 14,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#f59e0b";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = yellow;
+                      }}
+                    >
                       Sửa lịch
-              </button>
+                    </button>
                   )}
                 </>
               ) : (
@@ -999,40 +937,40 @@ const Chat = () => {
                 const isMyMessage = msg.senderId === userId;
 
                 return (
-                <div
-                  key={msg.id}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                      alignItems: isMyMessage ? "flex-end" : "flex-start",
-                    marginBottom: 16,
-                  }}
-                >
                   <div
+                    key={msg.id}
                     style={{
-                        background: isMyMessage ? primary : surface,
-                        color: isMyMessage ? surface : "#1f2937",
-                      padding: "12px 16px",
-                      borderRadius: 12,
-                      maxWidth: "70%",
-                      fontSize: 14,
-                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: isMyMessage ? "flex-end" : "flex-start",
+                      marginBottom: 16,
                     }}
                   >
-                    <div>{msg.content}</div>
                     <div
                       style={{
-                        fontSize: 11,
+                        background: isMyMessage ? primary : surface,
+                        color: isMyMessage ? surface : "#1f2937",
+                        padding: "12px 16px",
+                        borderRadius: 12,
+                        maxWidth: "70%",
+                        fontSize: 14,
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <div>{msg.content}</div>
+                      <div
+                        style={{
+                          fontSize: 11,
                           color: isMyMessage
                             ? "rgba(255,255,255,0.8)"
                             : "#9ca3af",
-                        marginTop: 4,
-                      }}
-                    >
-                      {formatTimestamp(msg.timestamp)}
+                          marginTop: 4,
+                        }}
+                      >
+                        {formatTimestamp(msg.timestamp)}
+                      </div>
                     </div>
                   </div>
-                </div>
                 );
               })
             ) : (
@@ -1138,7 +1076,6 @@ const Chat = () => {
         <PlanModal
           onClose={() => setShowPlanModal(false)}
           conversation={selectedConversation}
-          onSuccess={refreshConversations}
         />
       )}
     </div>

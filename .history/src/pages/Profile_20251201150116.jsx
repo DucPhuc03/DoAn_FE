@@ -108,6 +108,8 @@ const Profile = () => {
 
           setTrades(tradesData);
         } catch (err) {
+          console.error("Error fetching trades:", err);
+          setTrades([]);
         } finally {
           setLoadingTrades(false);
         }

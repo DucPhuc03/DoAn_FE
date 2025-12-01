@@ -84,6 +84,8 @@ const Profile = () => {
 
           setReviews(reviewsData);
         } catch (err) {
+          console.error("Error fetching reviews:", err);
+          setReviews([]);
         } finally {
           setLoadingReviews(false);
         }
@@ -104,10 +106,18 @@ const Profile = () => {
 
           // Handle API response structure
           let tradesData = [];
-          tradesData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            tradesData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            tradesData = response;
+          } else if (Array.isArray(response?.data)) {
+            tradesData = response.data;
+          }
 
           setTrades(tradesData);
         } catch (err) {
+          console.error("Error fetching trades:", err);
+          setTrades([]);
         } finally {
           setLoadingTrades(false);
         }

@@ -122,17 +122,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="text-decoration-none me-5">
               <div className="d-flex align-items-center">
-                <img
-                  src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
-                  alt="logo"
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-                  }}
-                />
+                <span className="fw-bold text-dark fs-4">TraoDoiDo</span>
               </div>
             </Link>
 

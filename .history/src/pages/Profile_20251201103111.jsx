@@ -52,8 +52,13 @@ const Profile = () => {
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
+          console.log("Profile data:", response.data);
+        } else {
+          setError(response.message || "Failed to load profile");
         }
       } catch (err) {
+        setError("Error loading profile");
+        console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);
       }
@@ -80,10 +85,18 @@ const Profile = () => {
 
           // Handle API response structure
           let reviewsData = [];
-          reviewsData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            reviewsData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            reviewsData = response;
+          } else if (Array.isArray(response?.data)) {
+            reviewsData = response.data;
+          }
 
           setReviews(reviewsData);
         } catch (err) {
+          console.error("Error fetching reviews:", err);
+          setReviews([]);
         } finally {
           setLoadingReviews(false);
         }
@@ -104,10 +117,18 @@ const Profile = () => {
 
           // Handle API response structure
           let tradesData = [];
-          tradesData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            tradesData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            tradesData = response;
+          } else if (Array.isArray(response?.data)) {
+            tradesData = response.data;
+          }
 
           setTrades(tradesData);
         } catch (err) {
+          console.error("Error fetching trades:", err);
+          setTrades([]);
         } finally {
           setLoadingTrades(false);
         }
@@ -1256,6 +1277,9 @@ const Profile = () => {
                   >
                     Chưa có đánh giá nào
                   </div>
+                  <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                    Đánh giá sẽ được hiển thị ở đây
+                  </div>
                 </div>
               )
             ) : userTabs[tab] === "Lịch sử" ? (
@@ -1280,11 +1304,11 @@ const Profile = () => {
                     style={{
                       gridColumn: "1 / -1",
                       background: surface,
-                      borderRadius: 14,
-                      padding: 18,
-                      boxShadow: "0 1px 4px rgba(15, 23, 42, 0.08)",
+                      borderRadius: 16,
+                      padding: 24,
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
                       border: "1px solid #e2e8f0",
-                      marginBottom: 12,
+                      marginBottom: 16,
                     }}
                   >
                     {/* Header with user info and status */}
@@ -1364,14 +1388,26 @@ const Profile = () => {
                           </div>
                         </div>
                       </div>
+                      <div
+                        style={{
+                          padding: "6px 12px",
+                          borderRadius: 8,
+                          background: `${getTradeStatusColor(trade.status)}20`,
+                          color: getTradeStatusColor(trade.status),
+                          fontWeight: 600,
+                          fontSize: 13,
+                        }}
+                      >
+                        {getTradeStatus(trade.status)}
+                      </div>
                     </div>
 
                     {/* Trade Items */}
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "1.1fr auto 1.1fr",
-                        gap: 16,
+                        gridTemplateColumns: "1fr auto 1fr",
+                        gap: 20,
                         alignItems: "center",
                         marginBottom: 20,
                       }}
@@ -1380,8 +1416,8 @@ const Profile = () => {
                       <div
                         style={{
                           background: "#f8fafc",
-                          borderRadius: 10,
-                          padding: 12,
+                          borderRadius: 12,
+                          padding: 16,
                           border: "1px solid #e2e8f0",
                         }}
                       >
@@ -1401,21 +1437,28 @@ const Profile = () => {
                             src={trade.requesterPostImage}
                             alt={trade.requesterPostTitle}
                             style={{
-                              width: "70%",
-                              height: 150,
+                              width: "100%",
+                              height: 120,
                               objectFit: "cover",
                               borderRadius: 8,
-                              marginBottom: 8,
+                              marginBottom: 12,
+                            }}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              const fallback = e.target.nextElementSibling;
+                              if (fallback) {
+                                fallback.style.display = "flex";
+                              }
                             }}
                           />
                         ) : null}
                         <div
                           style={{
-                            width: "70%",
-                            height: 150,
+                            width: "100%",
+                            height: 120,
                             background: "#e5e7eb",
                             borderRadius: 8,
-                            marginBottom: 8,
+                            marginBottom: 12,
                             display: trade.requesterPostImage ? "none" : "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -1451,7 +1494,7 @@ const Profile = () => {
                             width: 48,
                             height: 48,
                             borderRadius: "50%",
-                            background: "#f59e0b",
+                            background: `linear-gradient(135deg, ${primary} 0%, #1d4ed8 100%)`,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -1468,8 +1511,8 @@ const Profile = () => {
                       <div
                         style={{
                           background: "#f8fafc",
-                          borderRadius: 10,
-                          padding: 12,
+                          borderRadius: 12,
+                          padding: 16,
                           border: "1px solid #e2e8f0",
                         }}
                       >
@@ -1489,21 +1532,28 @@ const Profile = () => {
                             src={trade.ownerPostImage}
                             alt={trade.ownerPostTitle}
                             style={{
-                              width: "70%",
-                              height: 150,
+                              width: "100%",
+                              height: 120,
                               objectFit: "cover",
                               borderRadius: 8,
-                              marginBottom: 8,
+                              marginBottom: 12,
+                            }}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              const fallback = e.target.nextElementSibling;
+                              if (fallback) {
+                                fallback.style.display = "flex";
+                              }
                             }}
                           />
                         ) : null}
                         <div
                           style={{
-                            width: "70%",
-                            height: 150,
+                            width: "100%",
+                            height: 120,
                             background: "#e5e7eb",
                             borderRadius: 8,
-                            marginBottom: 8,
+                            marginBottom: 12,
                             display: trade.ownerPostImage ? "none" : "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -1536,9 +1586,7 @@ const Profile = () => {
                         alignItems: "center",
                       }}
                     >
-                      {/* Nếu cả hai đều false -> hiển thị "Đang chờ xác nhận" */}
-                      {trade.canComplete === false &&
-                      trade.canRate === false ? (
+                      {trade.canRate === false ? (
                         <div
                           style={{
                             padding: "10px 20px",
@@ -1553,7 +1601,6 @@ const Profile = () => {
                         </div>
                       ) : (
                         <>
-                          {/* Nếu canComplete === true -> hiển thị nút "Hoàn thành" */}
                           {trade.canComplete && (
                             <button
                               onClick={() => {
@@ -1565,7 +1612,7 @@ const Profile = () => {
                               style={{
                                 padding: "10px 20px",
                                 borderRadius: 8,
-                                background: "#f59e0b",
+                                background: `linear-gradient(135deg, ${primary} 0%, #1d4ed8 100%)`,
                                 color: surface,
                                 border: "none",
                                 fontWeight: 600,
@@ -1590,7 +1637,6 @@ const Profile = () => {
                               Hoàn thành
                             </button>
                           )}
-                          {/* Nếu canRate === true -> hiển thị nút "Đánh giá" */}
                           {trade.canRate && (
                             <button
                               onClick={() => {
@@ -1653,6 +1699,9 @@ const Profile = () => {
                   >
                     Chưa có lịch sử
                   </div>
+                  <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                    Lịch sử trao đổi sẽ được hiển thị ở đây
+                  </div>
                 </div>
               )
             ) : (
@@ -1679,6 +1728,13 @@ const Profile = () => {
                     : tab === 1
                     ? "Chưa có bài đăng nào đã thích"
                     : "Chưa có nội dung"}
+                </div>
+                <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                  {tab === 0
+                    ? "Hãy tạo bài đăng đầu tiên của bạn!"
+                    : tab === 1
+                    ? "Các bài đăng bạn đã thích sẽ được hiển thị ở đây"
+                    : "Nội dung sẽ được hiển thị ở đây"}
                 </div>
               </div>
             )}

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getProfile } from "../service/user/UserService";
 import { getReview } from "../service/review/ReviewService";
-import { getTradeUser } from "../service/trade/TradeService";
 import {
   FaMapMarkerAlt,
   FaRegHeart,
@@ -15,7 +14,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 
-const allTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
+const userTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
 
 const primary = "#2563eb"; // Blue
 const secondary = "#1f2937";
@@ -32,17 +31,6 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
-  const [trades, setTrades] = useState([]);
-  const [loadingTrades, setLoadingTrades] = useState(false);
-
-  // Compute tabs based on displayHistory
-  const userTabs = React.useMemo(() => {
-    if (!profileData) return allTabs;
-    if (profileData.displayHistory === false) {
-      return allTabs.filter((t) => t !== "Lịch sử");
-    }
-    return allTabs;
-  }, [profileData]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -52,8 +40,13 @@ const Profile = () => {
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
+          console.log("Profile data:", response.data);
+        } else {
+          setError(response.message || "Failed to load profile");
         }
       } catch (err) {
+        setError("Error loading profile");
+        console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);
       }
@@ -62,28 +55,28 @@ const Profile = () => {
     fetchProfile();
   }, [id]);
 
-  // Reset tab to 0 when tabs change (e.g., when displayHistory changes)
-  useEffect(() => {
-    if (profileData && tab >= userTabs.length) {
-      setTab(0);
-    }
-  }, [userTabs.length, profileData]);
-
   // Fetch reviews when tab changes to reviews tab or when id changes
   useEffect(() => {
     const fetchReviews = async () => {
-      const reviewsTabIndex = userTabs.indexOf("Đánh giá");
-      if (tab === reviewsTabIndex && id) {
+      if (tab === 2 && id) {
         try {
           setLoadingReviews(true);
           const response = await getReview(id);
 
           // Handle API response structure
           let reviewsData = [];
-          reviewsData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            reviewsData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            reviewsData = response;
+          } else if (Array.isArray(response?.data)) {
+            reviewsData = response.data;
+          }
 
           setReviews(reviewsData);
         } catch (err) {
+          console.error("Error fetching reviews:", err);
+          setReviews([]);
         } finally {
           setLoadingReviews(false);
         }
@@ -91,31 +84,7 @@ const Profile = () => {
     };
 
     fetchReviews();
-  }, [tab, id, userTabs]);
-
-  // Fetch trades when tab changes to history tab or when id changes
-  useEffect(() => {
-    const fetchTrades = async () => {
-      const historyTabIndex = userTabs.indexOf("Lịch sử");
-      if (tab === historyTabIndex && id) {
-        try {
-          setLoadingTrades(true);
-          const response = await getTradeUser();
-
-          // Handle API response structure
-          let tradesData = [];
-          tradesData = response.data;
-
-          setTrades(tradesData);
-        } catch (err) {
-        } finally {
-          setLoadingTrades(false);
-        }
-      }
-    };
-
-    fetchTrades();
-  }, [tab, id, userTabs]);
+  }, [tab, id]);
 
   // Format date from YYYY-MM-DD to DD/MM/YYYY
   const formatDate = (dateString) => {
@@ -134,24 +103,6 @@ const Profile = () => {
     if (postStatus === "COMPLETED") return "Đã trao đổi";
     if (postStatus === "CANCELLED") return "Đã hủy";
     return "Đang trao đổi";
-  };
-
-  // Get trade status text
-  const getTradeStatus = (status) => {
-    if (!status) return "Chưa xác định";
-    if (status === "COMPLETED") return "Đã hoàn thành";
-    if (status === "COMPLETED_PENDING") return "Đang chờ xác nhận";
-    if (status === "CANCELLED") return "Đã hủy";
-    return "Đang trao đổi";
-  };
-
-  // Get trade status color
-  const getTradeStatusColor = (status) => {
-    if (!status) return muted;
-    if (status === "COMPLETED") return "#22c55e";
-    if (status === "COMPLETED_PENDING") return "#f59e0b";
-    if (status === "CANCELLED") return "#ef4444";
-    return primary;
   };
 
   if (loading) {
@@ -709,53 +660,50 @@ const Profile = () => {
               background: "linear-gradient(180deg, #fafbfc 0%, #ffffff 100%)",
             }}
           >
-            {userTabs.map((t, idx) => {
-              const tabIndex = allTabs.indexOf(t);
-              return (
-                <button
-                  key={t}
-                  style={{
-                    padding: "12px 24px",
-                    border: "none",
-                    borderRadius: 10,
-                    background:
-                      tab === idx
-                        ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-                        : "transparent",
-                    color: tab === idx ? surface : muted,
-                    fontWeight: 600,
-                    fontSize: 15,
-                    marginBottom: -2,
-                    boxShadow:
-                      tab === idx
-                        ? "0 4px 12px rgba(37, 99, 235, 0.3)"
-                        : undefined,
-                    borderBottom:
-                      tab === idx
-                        ? `3px solid ${primary}`
-                        : "3px solid transparent",
-                    cursor: "pointer",
-                    transition: "all 0.3s",
-                    position: "relative",
-                  }}
-                  onClick={() => setTab(idx)}
-                  onMouseEnter={(e) => {
-                    if (tab !== idx) {
-                      e.currentTarget.style.background = "#f1f5f9";
-                      e.currentTarget.style.color = primary;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (tab !== idx) {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = muted;
-                    }
-                  }}
-                >
-                  {t}
-                </button>
-              );
-            })}
+            {userTabs.map((t, idx) => (
+              <button
+                key={t}
+                style={{
+                  padding: "12px 24px",
+                  border: "none",
+                  borderRadius: 10,
+                  background:
+                    tab === idx
+                      ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                      : "transparent",
+                  color: tab === idx ? surface : muted,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  marginBottom: -2,
+                  boxShadow:
+                    tab === idx
+                      ? "0 4px 12px rgba(37, 99, 235, 0.3)"
+                      : undefined,
+                  borderBottom:
+                    tab === idx
+                      ? `3px solid ${primary}`
+                      : "3px solid transparent",
+                  cursor: "pointer",
+                  transition: "all 0.3s",
+                  position: "relative",
+                }}
+                onClick={() => setTab(idx)}
+                onMouseEnter={(e) => {
+                  if (tab !== idx) {
+                    e.currentTarget.style.background = "#f1f5f9";
+                    e.currentTarget.style.color = primary;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== idx) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = muted;
+                  }
+                }}
+              >
+                {t}
+              </button>
+            ))}
             <div style={{ flex: 1 }} />
           </div>
           <div
@@ -1029,7 +977,7 @@ const Profile = () => {
                   </div>
                 </div>
               ))
-            ) : userTabs[tab] === "Đánh giá" ? (
+            ) : tab === 2 ? (
               // Reviews Tab
               loadingReviews ? (
                 <div
@@ -1256,405 +1204,37 @@ const Profile = () => {
                   >
                     Chưa có đánh giá nào
                   </div>
+                  <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                    Đánh giá sẽ được hiển thị ở đây
+                  </div>
                 </div>
               )
-            ) : userTabs[tab] === "Lịch sử" ? (
+            ) : tab === 3 ? (
               // History Tab
-              loadingTrades ? (
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  textAlign: "center",
+                  padding: "60px 20px",
+                  color: muted,
+                }}
+              >
                 <div
                   style={{
-                    gridColumn: "1 / -1",
-                    textAlign: "center",
-                    padding: "60px 20px",
-                    color: muted,
+                    fontSize: 64,
+                    marginBottom: 16,
+                    opacity: 0.5,
                   }}
                 >
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
+                  📋
                 </div>
-              ) : trades.length > 0 ? (
-                trades.map((trade) => (
-                  <div
-                    key={trade.tradeId}
-                    style={{
-                      gridColumn: "1 / -1",
-                      background: surface,
-                      borderRadius: 14,
-                      padding: 18,
-                      boxShadow: "0 1px 4px rgba(15, 23, 42, 0.08)",
-                      border: "1px solid #e2e8f0",
-                      marginBottom: 12,
-                    }}
-                  >
-                    {/* Header with user info and status */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginBottom: 20,
-                        paddingBottom: 16,
-                        borderBottom: "2px solid #f1f5f9",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
-                        }}
-                      >
-                        {/* User Avatar */}
-                        <div
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: "50%",
-                            background: trade.userAvatar
-                              ? "transparent"
-                              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {trade.userAvatar ? (
-                            <img
-                              src={trade.userAvatar}
-                              alt={trade.userName}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ) : (
-                            <span
-                              style={{
-                                color: surface,
-                                fontSize: 20,
-                                fontWeight: 600,
-                              }}
-                            >
-                              {trade.userName?.charAt(0) || "U"}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              fontSize: 16,
-                              color: secondary,
-                              marginBottom: 4,
-                            }}
-                          >
-                            {trade.userName || "Người dùng"}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: 12,
-                              color: muted,
-                            }}
-                          >
-                            Mã trao đổi: #{trade.tradeId}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Trade Items */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1.1fr auto 1.1fr",
-                        gap: 16,
-                        alignItems: "center",
-                        marginBottom: 20,
-                      }}
-                    >
-                      {/* Requester Post */}
-                      <div
-                        style={{
-                          background: "#f8fafc",
-                          borderRadius: 10,
-                          padding: 12,
-                          border: "1px solid #e2e8f0",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: muted,
-                            fontWeight: 600,
-                            marginBottom: 8,
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          Sản phẩm yêu cầu
-                        </div>
-                        {trade.requesterPostImage ? (
-                          <img
-                            src={trade.requesterPostImage}
-                            alt={trade.requesterPostTitle}
-                            style={{
-                              width: "70%",
-                              height: 150,
-                              objectFit: "cover",
-                              borderRadius: 8,
-                              marginBottom: 8,
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          style={{
-                            width: "70%",
-                            height: 150,
-                            background: "#e5e7eb",
-                            borderRadius: 8,
-                            marginBottom: 8,
-                            display: trade.requesterPostImage ? "none" : "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <i
-                            className="bi bi-image text-muted"
-                            style={{ fontSize: "2rem" }}
-                          ></i>
-                        </div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: 14,
-                            color: secondary,
-                            lineHeight: 1.4,
-                          }}
-                        >
-                          {trade.requesterPostTitle}
-                        </div>
-                      </div>
-
-                      {/* Exchange Icon */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: "50%",
-                            background: "#f59e0b",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: surface,
-                            fontSize: 20,
-                            boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
-                          }}
-                        >
-                          <FaExchangeAlt />
-                        </div>
-                      </div>
-
-                      {/* Owner Post */}
-                      <div
-                        style={{
-                          background: "#f8fafc",
-                          borderRadius: 10,
-                          padding: 12,
-                          border: "1px solid #e2e8f0",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: muted,
-                            fontWeight: 600,
-                            marginBottom: 8,
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          Sản phẩm của bạn
-                        </div>
-                        {trade.ownerPostImage ? (
-                          <img
-                            src={trade.ownerPostImage}
-                            alt={trade.ownerPostTitle}
-                            style={{
-                              width: "70%",
-                              height: 150,
-                              objectFit: "cover",
-                              borderRadius: 8,
-                              marginBottom: 8,
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          style={{
-                            width: "70%",
-                            height: 150,
-                            background: "#e5e7eb",
-                            borderRadius: 8,
-                            marginBottom: 8,
-                            display: trade.ownerPostImage ? "none" : "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <i
-                            className="bi bi-image text-muted"
-                            style={{ fontSize: "2rem" }}
-                          ></i>
-                        </div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: 14,
-                            color: secondary,
-                            lineHeight: 1.4,
-                          }}
-                        >
-                          {trade.ownerPostTitle}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 12,
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                      }}
-                    >
-                      {/* Nếu cả hai đều false -> hiển thị "Đang chờ xác nhận" */}
-                      {trade.canComplete === false &&
-                      trade.canRate === false ? (
-                        <div
-                          style={{
-                            padding: "10px 20px",
-                            borderRadius: 8,
-                            background: "#fef3c7",
-                            color: "#d97706",
-                            fontWeight: 600,
-                            fontSize: 14,
-                          }}
-                        >
-                          Đang chờ xác nhận
-                        </div>
-                      ) : (
-                        <>
-                          {/* Nếu canComplete === true -> hiển thị nút "Hoàn thành" */}
-                          {trade.canComplete && (
-                            <button
-                              onClick={() => {
-                                // TODO: Implement complete trade
-                                alert(
-                                  "Chức năng hoàn thành trao đổi đang được phát triển"
-                                );
-                              }}
-                              style={{
-                                padding: "10px 20px",
-                                borderRadius: 8,
-                                background: "#f59e0b",
-                                color: surface,
-                                border: "none",
-                                fontWeight: 600,
-                                fontSize: 14,
-                                cursor: "pointer",
-                                transition: "all 0.3s",
-                                boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.transform =
-                                  "translateY(-2px)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 4px 12px rgba(37, 99, 235, 0.4)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.transform =
-                                  "translateY(0)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 2px 8px rgba(37, 99, 235, 0.3)";
-                              }}
-                            >
-                              Hoàn thành
-                            </button>
-                          )}
-                          {/* Nếu canRate === true -> hiển thị nút "Đánh giá" */}
-                          {trade.canRate && (
-                            <button
-                              onClick={() => {
-                                // Navigate to review page or open review modal
-                                navigate(
-                                  `/post/${trade.requesterPostTitle}?tradeId=${trade.tradeId}&review=true`
-                                );
-                              }}
-                              style={{
-                                padding: "10px 20px",
-                                borderRadius: 8,
-                                background: "transparent",
-                                color: primary,
-                                border: `2px solid ${primary}`,
-                                fontWeight: 600,
-                                fontSize: 14,
-                                cursor: "pointer",
-                                transition: "all 0.3s",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = `${primary}10`;
-                                e.currentTarget.style.transform =
-                                  "translateY(-2px)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background =
-                                  "transparent";
-                                e.currentTarget.style.transform =
-                                  "translateY(0)";
-                              }}
-                            >
-                              Đánh giá
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div
-                  style={{
-                    gridColumn: "1 / -1",
-                    textAlign: "center",
-                    padding: "60px 20px",
-                    color: muted,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 64,
-                      marginBottom: 16,
-                      opacity: 0.5,
-                    }}
-                  >
-                    📋
-                  </div>
-                  <div
-                    style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}
-                  >
-                    Chưa có lịch sử
-                  </div>
+                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+                  Chưa có lịch sử
                 </div>
-              )
+                <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                  Lịch sử trao đổi sẽ được hiển thị ở đây
+                </div>
+              </div>
             ) : (
               <div
                 style={{
@@ -1679,6 +1259,13 @@ const Profile = () => {
                     : tab === 1
                     ? "Chưa có bài đăng nào đã thích"
                     : "Chưa có nội dung"}
+                </div>
+                <div style={{ fontSize: 14, color: "#94a3b8" }}>
+                  {tab === 0
+                    ? "Hãy tạo bài đăng đầu tiên của bạn!"
+                    : tab === 1
+                    ? "Các bài đăng bạn đã thích sẽ được hiển thị ở đây"
+                    : "Nội dung sẽ được hiển thị ở đây"}
                 </div>
               </div>
             )}

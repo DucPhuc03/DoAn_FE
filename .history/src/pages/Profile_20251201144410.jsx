@@ -52,8 +52,13 @@ const Profile = () => {
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
+          console.log("Profile data:", response.data);
+        } else {
+          setError(response.message || "Failed to load profile");
         }
       } catch (err) {
+        setError("Error loading profile");
+        console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);
       }
@@ -80,10 +85,18 @@ const Profile = () => {
 
           // Handle API response structure
           let reviewsData = [];
-          reviewsData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            reviewsData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            reviewsData = response;
+          } else if (Array.isArray(response?.data)) {
+            reviewsData = response.data;
+          }
 
           setReviews(reviewsData);
         } catch (err) {
+          console.error("Error fetching reviews:", err);
+          setReviews([]);
         } finally {
           setLoadingReviews(false);
         }
@@ -104,10 +117,18 @@ const Profile = () => {
 
           // Handle API response structure
           let tradesData = [];
-          tradesData = response.data;
+          if (response?.code === 1000 && response?.data) {
+            tradesData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            tradesData = response;
+          } else if (Array.isArray(response?.data)) {
+            tradesData = response.data;
+          }
 
           setTrades(tradesData);
         } catch (err) {
+          console.error("Error fetching trades:", err);
+          setTrades([]);
         } finally {
           setLoadingTrades(false);
         }
@@ -1282,7 +1303,7 @@ const Profile = () => {
                       background: surface,
                       borderRadius: 14,
                       padding: 18,
-                      boxShadow: "0 1px 4px rgba(15, 23, 42, 0.08)",
+
                       border: "1px solid #e2e8f0",
                       marginBottom: 12,
                     }}
@@ -1401,8 +1422,8 @@ const Profile = () => {
                             src={trade.requesterPostImage}
                             alt={trade.requesterPostTitle}
                             style={{
-                              width: "70%",
-                              height: 150,
+                              width: "55%",
+                              height: 110,
                               objectFit: "cover",
                               borderRadius: 8,
                               marginBottom: 8,
@@ -1411,8 +1432,8 @@ const Profile = () => {
                         ) : null}
                         <div
                           style={{
-                            width: "70%",
-                            height: 150,
+                            width: "100%",
+                            height: 100,
                             background: "#e5e7eb",
                             borderRadius: 8,
                             marginBottom: 8,
@@ -1489,8 +1510,8 @@ const Profile = () => {
                             src={trade.ownerPostImage}
                             alt={trade.ownerPostTitle}
                             style={{
-                              width: "70%",
-                              height: 150,
+                              width: "55%",
+                              height: 110,
                               objectFit: "cover",
                               borderRadius: 8,
                               marginBottom: 8,
@@ -1499,8 +1520,8 @@ const Profile = () => {
                         ) : null}
                         <div
                           style={{
-                            width: "70%",
-                            height: 150,
+                            width: "100%",
+                            height: 100,
                             background: "#e5e7eb",
                             borderRadius: 8,
                             marginBottom: 8,
