@@ -18,6 +18,6 @@ export async function getTradeUser() {
 }
 
 export async function updateTradeStatus(tradeId) {
-  const { data } = await axios.patch(`/api/trade/${tradeId}`);
+  const { data } = await axios.patch(`/api/trade`, tradeId);
   return data;
 }

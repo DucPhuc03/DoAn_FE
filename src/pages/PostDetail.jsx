@@ -7,6 +7,7 @@ import {
   createComment,
   updatePostStatus,
   likePost,
+  deletePost,
 } from "../service/post/PostService";
 
 const PostDetail = () => {
@@ -88,6 +89,25 @@ const PostDetail = () => {
       alert("Có lỗi xảy ra khi cập nhật trạng thái");
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    if (
+      !window.confirm(
+        "Bạn có chắc muốn xóa bài đăng này? Hành động không thể hoàn tác."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await deletePost(id);
+      alert("Đã xóa bài đăng thành công");
+      navigate("/profile");
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("Không thể xóa bài đăng. Vui lòng thử lại.");
     }
   };
 
@@ -462,13 +482,7 @@ const PostDetail = () => {
                 {post.canDelete && (
                   <button
                     className="btn btn-outline-danger py-3 rounded-3"
-                    onClick={() => {
-                      if (
-                        window.confirm("Bạn có chắc muốn xóa bài đăng này?")
-                      ) {
-                        // TODO: Implement delete
-                      }
-                    }}
+                    onClick={handleDeletePost}
                   >
                     <i className="bi bi-trash"></i>
                   </button>

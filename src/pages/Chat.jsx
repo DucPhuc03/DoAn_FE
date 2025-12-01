@@ -17,6 +17,7 @@ import {
   acceptedMeeting,
   cancelMeeting,
 } from "../service/meeting/MeetingService";
+import { updateTradeStatus } from "../service/trade/TradeService";
 
 if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;
@@ -141,9 +142,9 @@ const Chat = () => {
     const token = Cookies.get("access_token");
 
     const connectHeaders = token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
       : {};
 
     client.connect(
@@ -158,28 +159,28 @@ const Chat = () => {
         // Subscribe to the chat topic
         const topic = `/chat-trade/${selectedConversationId}`;
         try {
-        subscriptionRef.current = client.subscribe(topic, (message) => {
-          try {
-            const messageData = JSON.parse(message.body);
-            console.log("Received message:", messageData);
+          subscriptionRef.current = client.subscribe(topic, (message) => {
+            try {
+              const messageData = JSON.parse(message.body);
+              console.log("Received message:", messageData);
 
-            // Update conversations with the new message
-            setConversations((prev) =>
-              prev.map((conversation) =>
-                conversation.conversationId === selectedConversationId
-                  ? {
-                      ...conversation,
-                      messages: [...conversation.messages, messageData],
-                    }
-                  : conversation
-              )
-            );
-          } catch (error) {
-            console.error("Error parsing message:", error);
-          }
-        });
+              // Update conversations with the new message
+              setConversations((prev) =>
+                prev.map((conversation) =>
+                  conversation.conversationId === selectedConversationId
+                    ? {
+                        ...conversation,
+                        messages: [...conversation.messages, messageData],
+                      }
+                    : conversation
+                )
+              );
+            } catch (error) {
+              console.error("Error parsing message:", error);
+            }
+          });
 
-        console.log(`Subscribed to topic: ${topic}`);
+          console.log(`Subscribed to topic: ${topic}`);
         } catch (error) {
           console.error("Error subscribing to topic:", error);
         }
@@ -211,7 +212,7 @@ const Chat = () => {
       // Unsubscribe from the topic
       if (subscriptionRef.current) {
         try {
-        subscriptionRef.current.unsubscribe();
+          subscriptionRef.current.unsubscribe();
         } catch (e) {
           console.warn("Error unsubscribing in cleanup:", e);
         }
@@ -222,9 +223,9 @@ const Chat = () => {
       if (stompClientRef.current) {
         try {
           if (stompClientRef.current.connected) {
-        stompClientRef.current.disconnect(() => {
-          console.log("WebSocket disconnected");
-        });
+            stompClientRef.current.disconnect(() => {
+              console.log("WebSocket disconnected");
+            });
           }
         } catch (e) {
           console.warn("Error disconnecting in cleanup:", e);
@@ -256,26 +257,26 @@ const Chat = () => {
     }
 
     try {
-    // Send message to backend via WebSocket
-    const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+      // Send message to backend via WebSocket
+      const destination = `/app/chat.sendMessage/${selectedConversationId}`;
 
       // Backend expects ChatMessageDTO with senderId and content
-    const messagePayload = JSON.stringify({
+      const messagePayload = JSON.stringify({
         senderId: senderId,
-      content: trimmed,
-    });
+        content: trimmed,
+      });
 
-    stompClientRef.current.send(destination, {}, messagePayload);
+      stompClientRef.current.send(destination, {}, messagePayload);
       console.log(`Sent message to ${destination}:`, {
         senderId,
         content: trimmed,
       });
 
-    // Clear input field
-    setInputValue("");
+      // Clear input field
+      setInputValue("");
       setWsError(null);
 
-    // Note: Message will be received via subscription and added to conversations automatically
+      // Note: Message will be received via subscription and added to conversations automatically
     } catch (error) {
       console.error("Error sending message:", error);
       setWsError("Không thể gửi tin nhắn. Vui lòng thử lại.");
@@ -376,6 +377,31 @@ const Chat = () => {
   const purple = "#a855f7"; // Purple
   const surface = "#ffffff";
   const bgLight = "#f8f9fa";
+  const [showHeaderActions, setShowHeaderActions] = useState(false);
+  const [headerActionLoading, setHeaderActionLoading] = useState(false);
+
+  const handleCompleteTradeFromHeader = async () => {
+    if (!selectedConversation?.tradeId) {
+      alert("Không tìm thấy mã trao đổi");
+      return;
+    }
+    try {
+      setHeaderActionLoading(true);
+      const response = await updateTradeStatus(selectedConversation.tradeId);
+      if (response?.code === 1000) {
+        alert("Đã cập nhật trạng thái trao đổi");
+        await refreshConversations();
+      } else {
+        alert(response?.message || "Không thể cập nhật trạng thái");
+      }
+    } catch (error) {
+      console.error("Error updating trade status:", error);
+      alert("Không thể cập nhật trạng thái. Vui lòng thử lại.");
+    } finally {
+      setHeaderActionLoading(false);
+      setShowHeaderActions(false);
+    }
+  };
 
   return (
     <div style={{ background: bgLight, minHeight: "100vh" }}>
@@ -479,150 +505,150 @@ const Chat = () => {
               </div>
             ) : (
               conversations.map((conversation) => {
-              const lastMessage =
-                conversation.messages[conversation.messages.length - 1];
-              const displayName =
-                conversation.username ||
-                lastMessage?.senderName ||
-                "Người dùng";
+                const lastMessage =
+                  conversation.messages[conversation.messages.length - 1];
+                const displayName =
+                  conversation.username ||
+                  lastMessage?.senderName ||
+                  "Người dùng";
                 const itemTitle = conversation.itemTitle || "Sản phẩm";
-              const preview = lastMessage?.content || "Chưa có tin nhắn";
-              const timestamp = formatTimestamp(lastMessage?.timestamp);
+                const preview = lastMessage?.content || "Chưa có tin nhắn";
+                const timestamp = formatTimestamp(lastMessage?.timestamp);
                 const avatar = conversation.userAvatar || null;
-              const isActive =
-                selectedConversationId === conversation.conversationId;
+                const isActive =
+                  selectedConversationId === conversation.conversationId;
 
-              return (
-                <div
-                  key={conversation.conversationId}
-                  onClick={() =>
-                    setSelectedConversationId(conversation.conversationId)
-                  }
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "16px",
-                    cursor: "pointer",
-                    background: isActive ? "#f3f4f6" : surface,
-                    borderBottom: "1px solid #f3f4f6",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = "#f9fafb";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = surface;
-                    }
-                  }}
-                >
-                  {/* Avatar */}
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      alt={displayName}
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        background: "#e5e7eb",
-                        display: "grid",
-                        placeItems: "center",
-                        color: "#9ca3af",
-                        fontSize: 20,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {displayName.charAt(0)}
-                    </div>
-                  )}
-
-                  {/* Item Image (small) */}
-                  {conversation.itemImage ? (
-                    <img
-                      src={conversation.itemImage}
-                      alt={conversation.itemTitle}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        background: "#ede9fe",
-                        color: "#6d5dfc",
-                        fontSize: 14,
-                        display: "grid",
-                        placeItems: "center",
-                        flexShrink: 0,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {conversation.itemTitle?.charAt(0) || "?"}
-                    </div>
-                  )}
-
-                  {/* Trade Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: "#1f2937",
-                        marginBottom: 4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                        {itemTitle}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#6b7280",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {preview}
-                    </div>
-                  </div>
-
-                  {/* Timestamp */}
+                return (
                   <div
+                    key={conversation.conversationId}
+                    onClick={() =>
+                      setSelectedConversationId(conversation.conversationId)
+                    }
                     style={{
-                      fontSize: 11,
-                      color: "#9ca3af",
-                      flexShrink: 0,
-                      textAlign: "right",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "16px",
+                      cursor: "pointer",
+                      background: isActive ? "#f3f4f6" : surface,
+                      borderBottom: "1px solid #f3f4f6",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = "#f9fafb";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = surface;
+                      }
                     }}
                   >
-                    {timestamp}
+                    {/* Avatar */}
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt={displayName}
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: "50%",
+                          background: "#e5e7eb",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "#9ca3af",
+                          fontSize: 20,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {displayName.charAt(0)}
+                      </div>
+                    )}
+
+                    {/* Item Image (small) */}
+                    {conversation.itemImage ? (
+                      <img
+                        src={conversation.itemImage}
+                        alt={conversation.itemTitle}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 6,
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 6,
+                          background: "#ede9fe",
+                          color: "#6d5dfc",
+                          fontSize: 14,
+                          display: "grid",
+                          placeItems: "center",
+                          flexShrink: 0,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {conversation.itemTitle?.charAt(0) || "?"}
+                      </div>
+                    )}
+
+                    {/* Trade Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 14,
+                          color: "#1f2937",
+                          marginBottom: 4,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {itemTitle}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#6b7280",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {preview}
+                      </div>
+                    </div>
+
+                    {/* Timestamp */}
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#9ca3af",
+                        flexShrink: 0,
+                        textAlign: "right",
+                      }}
+                    >
+                      {timestamp}
+                    </div>
                   </div>
-                </div>
-              );
+                );
               })
             )}
           </div>
@@ -694,11 +720,11 @@ const Chat = () => {
                     width: "200px",
                   }}
                 >
-                {selectedConversation?.username || "Người dùng"}
-              </div>
+                  {selectedConversation?.username || "Người dùng"}
+                </div>
                 <div style={{ fontSize: 13, color: "#6b7280", width: "200px" }}>
-                {selectedConversation?.itemTitle || "Đang trao đổi"}
-              </div>
+                  {selectedConversation?.itemTitle || "Đang trao đổi"}
+                </div>
               </div>
               {/* Meeting Info */}
               {selectedConversation?.meeting && (
@@ -908,28 +934,28 @@ const Chat = () => {
               {selectedConversation?.meeting ? (
                 <>
                   {selectedConversation.meeting.canEdit && (
-              <button
+                    <button
                       onClick={() => setShowPlanModal(true)}
-                style={{
-                  padding: "8px 16px",
-                  border: "none",
-                  borderRadius: 8,
-                  background: yellow,
-                  color: surface,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#f59e0b";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = yellow;
-                }}
-              >
+                      style={{
+                        padding: "8px 16px",
+                        border: "none",
+                        borderRadius: 8,
+                        background: yellow,
+                        color: surface,
+                        fontWeight: 600,
+                        fontSize: 14,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#f59e0b";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = yellow;
+                      }}
+                    >
                       Sửa lịch
-              </button>
+                    </button>
                   )}
                 </>
               ) : (
@@ -956,28 +982,82 @@ const Chat = () => {
                   Lên lịch
                 </button>
               )}
-              <button
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  border: "none",
-                  background: "transparent",
-                  color: "#6b7280",
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#f3f4f6";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                }}
-              >
-                <FaEllipsisV />
-              </button>
+              <div style={{ position: "relative" }}>
+                <button
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    border: "none",
+                    background: "transparent",
+                    color: "#6b7280",
+                    display: "grid",
+                    placeItems: "center",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#f3f4f6";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                  onClick={() => setShowHeaderActions((prev) => !prev)}
+                >
+                  <FaEllipsisV />
+                </button>
+                {showHeaderActions && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "110%",
+                      right: 0,
+                      background: "#ffffff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 8,
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                      minWidth: 180,
+                      zIndex: 10,
+                    }}
+                  >
+                    <button
+                      style={{
+                        width: "100%",
+                        padding: "10px 14px",
+                        border: "none",
+                        background: "transparent",
+                        textAlign: "left",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0f172a",
+                        borderBottom: "1px solid #f1f5f9",
+                      }}
+                      onClick={handleCompleteTradeFromHeader}
+                      disabled={headerActionLoading}
+                    >
+                      {headerActionLoading ? "Đang xử lý..." : "Hoàn thành"}
+                    </button>
+                    <button
+                      style={{
+                        width: "100%",
+                        padding: "10px 14px",
+                        border: "none",
+                        background: "transparent",
+                        textAlign: "left",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#dc2626",
+                      }}
+                      onClick={() => {
+                        setShowHeaderActions(false);
+                        alert("Chức năng báo cáo đang được phát triển");
+                      }}
+                    >
+                      Báo cáo
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -999,40 +1079,40 @@ const Chat = () => {
                 const isMyMessage = msg.senderId === userId;
 
                 return (
-                <div
-                  key={msg.id}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                      alignItems: isMyMessage ? "flex-end" : "flex-start",
-                    marginBottom: 16,
-                  }}
-                >
                   <div
+                    key={msg.id}
                     style={{
-                        background: isMyMessage ? primary : surface,
-                        color: isMyMessage ? surface : "#1f2937",
-                      padding: "12px 16px",
-                      borderRadius: 12,
-                      maxWidth: "70%",
-                      fontSize: 14,
-                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: isMyMessage ? "flex-end" : "flex-start",
+                      marginBottom: 16,
                     }}
                   >
-                    <div>{msg.content}</div>
                     <div
                       style={{
-                        fontSize: 11,
+                        background: isMyMessage ? primary : surface,
+                        color: isMyMessage ? surface : "#1f2937",
+                        padding: "12px 16px",
+                        borderRadius: 12,
+                        maxWidth: "70%",
+                        fontSize: 14,
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <div>{msg.content}</div>
+                      <div
+                        style={{
+                          fontSize: 11,
                           color: isMyMessage
                             ? "rgba(255,255,255,0.8)"
                             : "#9ca3af",
-                        marginTop: 4,
-                      }}
-                    >
-                      {formatTimestamp(msg.timestamp)}
+                          marginTop: 4,
+                        }}
+                      >
+                        {formatTimestamp(msg.timestamp)}
+                      </div>
                     </div>
                   </div>
-                </div>
                 );
               })
             ) : (
