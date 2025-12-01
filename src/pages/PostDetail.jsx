@@ -9,6 +9,7 @@ import {
   likePost,
   deletePost,
 } from "../service/post/PostService";
+import { createTrade } from "../service/trade/TradeService";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -74,8 +75,27 @@ const PostDetail = () => {
       navigate("/login");
       return;
     }
-    // Navigate to exchange proposal page or open modal
-    navigate(`/chat`);
+
+    if (!post?.userId) {
+      alert("Không tìm thấy thông tin người đăng bài để tạo trao đổi.");
+      return;
+    }
+
+    const payload = {
+      ownerPostId: Number(id),
+      userOwnerId: post.userId,
+    };
+
+    createTrade(payload)
+      .then((res) => {
+        // Nếu backend trả về tradeId trong res.data, có thể điều hướng tới chat hoặc chi tiết trade
+        alert("Tạo yêu cầu trao đổi thành công");
+        navigate("/chat");
+      })
+      .catch((error) => {
+        console.error("Error creating trade:", error);
+        alert("Không thể tạo yêu cầu trao đổi. Vui lòng thử lại.");
+      });
   };
 
   const handleUpdateStatus = async (newStatus) => {

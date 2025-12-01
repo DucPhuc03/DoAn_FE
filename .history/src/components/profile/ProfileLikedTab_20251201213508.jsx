@@ -9,27 +9,7 @@ const ProfileLikedTab = ({
   muted,
 }) => {
   if (!likedPosts || likedPosts.length === 0) {
-    return (
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          textAlign: "center",
-          padding: "60px 20px",
-          color: muted,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 64,
-            marginBottom: 16,
-            opacity: 0.5,
-          }}
-        ></div>
-        <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-          Chưa yêu thích bài đăng nào
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -53,12 +33,14 @@ const ProfileLikedTab = ({
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-8px)";
-            e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 0, 0, 0.15)";
+            e.currentTarget.style.boxShadow =
+              "0 12px 32px rgba(0, 0, 0, 0.15)";
             e.currentTarget.style.borderColor = primary;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
+            e.currentTarget.style.boxShadow =
+              "0 2px 8px rgba(0, 0, 0, 0.08)";
             e.currentTarget.style.borderColor = "#e2e8f0";
           }}
         >
@@ -160,7 +142,9 @@ const ProfileLikedTab = ({
                   className="bi bi-heart-fill"
                   style={{ color: "#ec4899" }}
                 ></i>
-                <span style={{ fontWeight: 600 }}>{post.totalLikes || 0}</span>
+                <span style={{ fontWeight: 600 }}>
+                  {post.totalLikes || 0}
+                </span>
               </div>
               {post.category && (
                 <span
@@ -185,3 +169,7 @@ const ProfileLikedTab = ({
 };
 
 export default ProfileLikedTab;
+
+
+
+

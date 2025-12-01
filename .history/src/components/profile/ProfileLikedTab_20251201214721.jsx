@@ -24,9 +24,11 @@ const ProfileLikedTab = ({
             marginBottom: 16,
             opacity: 0.5,
           }}
-        ></div>
+        >
+          ⭐
+        </div>
         <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-          Chưa yêu thích bài đăng nào
+          Chưa có đánh giá nào
         </div>
       </div>
     );

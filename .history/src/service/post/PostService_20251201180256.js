@@ -11,7 +11,7 @@ export async function getPostUser(id) {
 
 export async function getAllPosts(title, categoryName, page) {
   const { data } = await axios.get(
-    `/api/post/search?title=${title}&categoryName=${categoryName}&page=${page}&size=18`
+    `/api/post/search?title=${title}&categoryName=${categoryName}&page=${page}&size=6`
   );
   return data;
 }
