@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
-// dùng chung CSS
+import "./PostManagement.css"; // dùng chung CSS
 
 export default function CategoryManagement() {
   const initialData = React.useMemo(
@@ -254,73 +254,52 @@ export default function CategoryManagement() {
         </div>
       </main>
 
-      {/* Modal thêm / sửa danh mục - dùng Bootstrap + inline style */}
+      {/* Modal thêm / sửa danh mục */}
       {modalOpen && (
-        <div
-          className="modal fade show"
-          style={{
-            display: "block",
-            backgroundColor: "rgba(0,0,0,0.5)",
-          }}
-          onClick={() => setModalOpen(false)}
-        >
+        <div className="cm-modal-backdrop" onClick={() => setModalOpen(false)}>
           <div
-            className="modal-dialog modal-dialog-centered"
-            style={{ maxWidth: "420px" }}
-            onClick={(e) => e.stopPropagation()}
+            className="cm-modal"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
-            <div className="modal-content" style={{ borderRadius: "16px" }}>
-              <div className="modal-header">
-                <h5 className="modal-title fw-bold mb-0">
-                  {modalMode === "add" ? "Thêm danh mục" : "Chỉnh sửa danh mục"}
-                </h5>
+            <div className="cm-modal-header">
+              <h2>
+                {modalMode === "add" ? "Thêm danh mục" : "Chỉnh sửa danh mục"}
+              </h2>
+            </div>
+            <form onSubmit={handleSaveCategory}>
+              <div className="cm-modal-body">
+                <label className="cm-label" htmlFor="categoryName">
+                  Tên danh mục
+                </label>
+                <input
+                  id="categoryName"
+                  type="text"
+                  className="cm-input"
+                  value={modalName}
+                  onChange={(e) => setModalName(e.target.value)}
+                  placeholder="Nhập tên danh mục..."
+                  autoFocus
+                />
+              </div>
+              <div className="cm-modal-footer">
                 <button
                   type="button"
-                  className="btn-close"
+                  className="cm-btn cm-btn-secondary"
                   onClick={() => setModalOpen(false)}
-                ></button>
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="cm-btn cm-btn-primary"
+                  disabled={!modalName.trim()}
+                >
+                  Lưu
+                </button>
               </div>
-
-              <form onSubmit={handleSaveCategory}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="categoryName"
-                      className="form-label fw-semibold"
-                    >
-                      Tên danh mục
-                    </label>
-                    <input
-                      id="categoryName"
-                      type="text"
-                      className="form-control"
-                      style={{ borderRadius: "10px" }}
-                      value={modalName}
-                      onChange={(e) => setModalName(e.target.value)}
-                      placeholder="Nhập tên danh mục..."
-                      autoFocus
-                    />
-                  </div>
-                </div>
-
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary rounded-pill px-3"
-                    onClick={() => setModalOpen(false)}
-                  >
-                    Hủy
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary rounded-pill px-4"
-                    disabled={!modalName.trim()}
-                  >
-                    Lưu
-                  </button>
-                </div>
-              </form>
-            </div>
+            </form>
           </div>
         </div>
       )}

@@ -97,29 +97,30 @@ const Profile = () => {
     fetchReviews();
   }, [tab, id, userTabs]);
 
+  // Fetch trades function
+  const fetchTrades = React.useCallback(async () => {
+    const historyTabIndex = userTabs.indexOf("Lịch sử");
+    if (tab === historyTabIndex && id) {
+      try {
+        setLoadingTrades(true);
+        const response = await getTradeUser();
+
+        // Handle API response structure
+        let tradesData = [];
+        tradesData = response.data;
+
+        setTrades(tradesData);
+      } catch (err) {
+      } finally {
+        setLoadingTrades(false);
+      }
+    }
+  }, [tab, id, userTabs]);
+
   // Fetch trades when tab changes to history tab or when id changes
   useEffect(() => {
-    const fetchTrades = async () => {
-      const historyTabIndex = userTabs.indexOf("Lịch sử");
-      if (tab === historyTabIndex && id) {
-        try {
-          setLoadingTrades(true);
-          const response = await getTradeUser();
-
-          // Handle API response structure
-          let tradesData = [];
-          tradesData = response.data;
-
-          setTrades(tradesData);
-        } catch (err) {
-        } finally {
-          setLoadingTrades(false);
-        }
-      }
-    };
-
     fetchTrades();
-  }, [tab, id, userTabs]);
+  }, [fetchTrades]);
 
   // Format date from YYYY-MM-DD to DD/MM/YYYY
   const formatDate = (dateString) => {
@@ -801,6 +802,7 @@ const Profile = () => {
               <ProfileHistoryTab
                 trades={trades}
                 loadingTrades={loadingTrades}
+                onRefreshTrades={fetchTrades}
                 navigate={navigate}
                 primary={primary}
                 secondary={secondary}

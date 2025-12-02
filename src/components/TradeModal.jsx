@@ -24,7 +24,7 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
         setLoading(true);
         setError(null);
         const response = await getDetailTrade(tradeId);
-        
+
         // Handle API response structure
         const data = response?.data || response;
         if (data) {
@@ -313,86 +313,86 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
                 </div>
               </div>
 
-            {/* Exchange Arrow - Desktop */}
-            <div
-              className="exchange-arrow-desktop"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
+              {/* Exchange Arrow - Desktop */}
               <div
+                className="exchange-arrow-desktop"
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background:
-                    "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-                  display: "grid",
-                  placeItems: "center",
-                  color: surface,
-                  fontSize: 20,
-                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
-                <i className="bi bi-arrow-left-right"></i>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: surface,
+                    fontSize: 20,
+                    boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                  }}
+                >
+                  <i className="bi bi-arrow-left-right"></i>
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: "#6b7280",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Trao đổi
+                </div>
               </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  color: "#6b7280",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                }}
-              >
-                Trao đổi
-              </div>
-            </div>
 
-            {/* Exchange Arrow - Mobile */}
-            <div
-              className="exchange-arrow-mobile"
-              style={{
-                display: "none",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                width: "100%",
-                padding: "12px 0",
-              }}
-            >
+              {/* Exchange Arrow - Mobile */}
               <div
+                className="exchange-arrow-mobile"
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background:
-                    "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-                  display: "grid",
-                  placeItems: "center",
-                  color: surface,
-                  fontSize: 20,
-                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                  display: "none",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  width: "100%",
+                  padding: "12px 0",
                 }}
               >
-                <i className="bi bi-arrow-down"></i>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: surface,
+                    fontSize: 20,
+                    boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                  }}
+                >
+                  <i className="bi bi-arrow-down"></i>
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: "#6b7280",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Trao đổi
+                </div>
               </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  color: "#6b7280",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                }}
-              >
-                Trao đổi
-              </div>
-            </div>
 
               {/* Owner - Right Side */}
               <div
@@ -632,8 +632,3 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
 };
 
 export default TradeModal;
-
-
-
-
-

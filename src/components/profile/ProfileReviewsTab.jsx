@@ -142,8 +142,7 @@ const ProfileReviewsTab = ({
                           index < review.rating ? "bi-star-fill" : "bi-star"
                         }`}
                         style={{
-                          color:
-                            index < review.rating ? "#fbbf24" : "#d1d5db",
+                          color: index < review.rating ? "#fbbf24" : "#d1d5db",
                           fontSize: "14px",
                         }}
                       ></i>
@@ -242,7 +241,4 @@ const ProfileReviewsTab = ({
 };
 
 export default ProfileReviewsTab;
-
-
-
 

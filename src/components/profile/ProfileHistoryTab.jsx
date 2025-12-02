@@ -6,6 +6,7 @@ import { createReview } from "../../service/review/ReviewService";
 const ProfileHistoryTab = ({
   trades,
   loadingTrades,
+  onRefreshTrades,
   primary,
   secondary,
   surface,
@@ -25,6 +26,10 @@ const ProfileHistoryTab = ({
       const response = await updateTradeStatus(tradeId);
       if (response?.code === 1000) {
         alert("Đã cập nhật trạng thái trao đổi thành công");
+        // Refresh danh sách trades để cập nhật trạng thái
+        if (onRefreshTrades) {
+          await onRefreshTrades();
+        }
       } else {
         alert(response?.message || "Có lỗi xảy ra khi cập nhật trạng thái");
       }
@@ -65,6 +70,10 @@ const ProfileHistoryTab = ({
         alert("Đã gửi đánh giá thành công");
         setReviewingTradeId(null);
         setReviewForm({ rating: 5, comment: "" });
+        // Refresh danh sách trades để cập nhật trạng thái
+        if (onRefreshTrades) {
+          await onRefreshTrades();
+        }
       } else {
         alert(response?.message || "Có lỗi xảy ra khi gửi đánh giá");
       }
@@ -382,7 +391,20 @@ const ProfileHistoryTab = ({
               alignItems: "center",
             }}
           >
-            {trade.canComplete === false && trade.canRate === false ? (
+            {trade.reviewed === true && trade.canRate === false ? (
+              <div
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 8,
+                  background: "#d1fae5",
+                  color: "#065f46",
+                  fontWeight: 600,
+                  fontSize: 14,
+                }}
+              >
+                Đã đánh giá
+              </div>
+            ) : trade.canComplete === false && trade.canRate === false ? (
               <div
                 style={{
                   padding: "10px 20px",
@@ -567,5 +589,3 @@ const ProfileHistoryTab = ({
 };
 
 export default ProfileHistoryTab;
-
-

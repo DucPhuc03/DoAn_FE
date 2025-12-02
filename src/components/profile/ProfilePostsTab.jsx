@@ -26,14 +26,12 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-8px)";
-            e.currentTarget.style.boxShadow =
-              "0 12px 32px rgba(0, 0, 0, 0.15)";
+            e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 0, 0, 0.15)";
             e.currentTarget.style.borderColor = primary;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow =
-              "0 2px 8px rgba(0, 0, 0, 0.08)";
+            e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
             e.currentTarget.style.borderColor = "#e2e8f0";
           }}
         >
@@ -61,8 +59,7 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
               style={{
                 width: "100%",
                 height: 140,
-                background:
-                  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 display: "grid",
                 placeItems: "center",
                 color: surface,
@@ -120,7 +117,4 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
 };
 
 export default ProfilePostsTab;
-
-
-
 

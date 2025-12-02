@@ -130,7 +130,10 @@ const MeetingsModal = ({ onClose }) => {
                   {meeting.titleTrade && (
                     <div className="mb-2">
                       <i className="bi bi-box-seam me-1 text-primary"></i>
-                      <small className="text-dark" style={{ fontSize: "0.85rem" }}>
+                      <small
+                        className="text-dark"
+                        style={{ fontSize: "0.85rem" }}
+                      >
                         {meeting.titleTrade}
                       </small>
                     </div>
@@ -188,7 +191,4 @@ const MeetingsModal = ({ onClose }) => {
 };
 
 export default MeetingsModal;
-
-
-
 

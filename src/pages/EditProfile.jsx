@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, updateProfile, updateAvatar } from "../service/user/UserService";
+import {
+  getProfile,
+  updateProfile,
+  updateAvatar,
+} from "../service/user/UserService";
 import Cookies from "js-cookie";
 
 const EditProfile = () => {
@@ -102,7 +106,7 @@ const EditProfile = () => {
       }
       setAvatarFile(file);
       setError("");
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -121,11 +125,11 @@ const EditProfile = () => {
     try {
       setUploadingAvatar(true);
       setError("");
-      
+
       // Create FormData
       const formData = new FormData();
       formData.append("avatar", avatarFile);
-      
+
       const response = await updateAvatar(formData);
       if (response.code === 1000) {
         setSuccess("Cập nhật ảnh đại diện thành công!");
@@ -397,372 +401,375 @@ const EditProfile = () => {
               border: "1px solid #f1f5f9",
             }}
           >
-          <form onSubmit={handleSubmit}>
-            {/* Full Name */}
-            <div style={{ marginBottom: 24 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  color: "#1f2937",
-                  marginBottom: 8,
-                }}
-              >
-                <i className="bi bi-person me-2" style={{ color: primary }}></i>
-                Họ và tên
-              </label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={handleChange("fullName")}
-                placeholder="Nhập họ và tên"
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  outline: "none",
-                  transition: "all 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div style={{ marginBottom: 24 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  color: "#1f2937",
-                  marginBottom: 8,
-                }}
-              >
-                <i
-                  className="bi bi-envelope me-2"
-                  style={{ color: primary }}
-                ></i>
-                Email
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={handleChange("email")}
-                placeholder="Nhập email"
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  outline: "none",
-                  transition: "all 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-                required
-              />
-            </div>
-
-            {/* Phone */}
-            <div style={{ marginBottom: 24 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  color: "#1f2937",
-                  marginBottom: 8,
-                }}
-              >
-                <i
-                  className="bi bi-telephone me-2"
-                  style={{ color: primary }}
-                ></i>
-                Số điện thoại
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={handleChange("phoneNumber")}
-                placeholder="Nhập số điện thoại"
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  outline: "none",
-                  transition: "all 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Address */}
-            <div style={{ marginBottom: 24 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  color: "#1f2937",
-                  marginBottom: 8,
-                }}
-              >
-                <i
-                  className="bi bi-geo-alt me-2"
-                  style={{ color: primary }}
-                ></i>
-                Địa chỉ
-              </label>
-              <input
-                type="text"
-                value={formData.address}
-                onChange={handleChange("address")}
-                placeholder="Nhập địa chỉ"
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  outline: "none",
-                  transition: "all 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Bio */}
-            <div style={{ marginBottom: 32 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  color: "#1f2937",
-                  marginBottom: 8,
-                }}
-              >
-                <i
-                  className="bi bi-info-circle me-2"
-                  style={{ color: primary }}
-                ></i>
-                Giới thiệu
-              </label>
-              <textarea
-                value={formData.bio}
-                onChange={handleChange("bio")}
-                placeholder="Viết vài dòng giới thiệu về bản thân..."
-                rows={5}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  outline: "none",
-                  resize: "vertical",
-                  transition: "all 0.2s",
-                  fontFamily: "inherit",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div
-                style={{
-                  padding: "12px 16px",
-                  background: "#fef2f2",
-                  border: "1px solid #fecaca",
-                  borderRadius: 10,
-                  color: "#dc2626",
-                  marginBottom: 20,
-                  fontSize: 14,
-                }}
-              >
-                <i className="bi bi-exclamation-circle me-2"></i>
-                {error}
-              </div>
-            )}
-
-            {/* Success Message */}
-            {success && (
-              <div
-                style={{
-                  padding: "12px 16px",
-                  background: "#f0fdf4",
-                  border: "1px solid #bbf7d0",
-                  borderRadius: 10,
-                  color: "#16a34a",
-                  marginBottom: 20,
-                  fontSize: 14,
-                }}
-              >
-                <i className="bi bi-check-circle me-2"></i>
-                {success}
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", gap: 12 }}>
-                <button
-                  type="button"
-                  onClick={() => navigate(`/profile/${id}`)}
+            <form onSubmit={handleSubmit}>
+              {/* Full Name */}
+              <div style={{ marginBottom: 24 }}>
+                <label
                   style={{
-                    padding: "12px 24px",
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#1f2937",
+                    marginBottom: 8,
+                  }}
+                >
+                  <i
+                    className="bi bi-person me-2"
+                    style={{ color: primary }}
+                  ></i>
+                  Họ và tên
+                </label>
+                <input
+                  type="text"
+                  value={formData.fullName}
+                  onChange={handleChange("fullName")}
+                  placeholder="Nhập họ và tên"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
                     border: "1px solid #e5e7eb",
                     borderRadius: 10,
-                    background: surface,
-                    color: "#6b7280",
+                    fontSize: 15,
+                    outline: "none",
+                    transition: "all 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = primary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div style={{ marginBottom: 24 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#1f2937",
+                    marginBottom: 8,
+                  }}
+                >
+                  <i
+                    className="bi bi-envelope me-2"
+                    style={{ color: primary }}
+                  ></i>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange("email")}
+                  placeholder="Nhập email"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    fontSize: 15,
+                    outline: "none",
+                    transition: "all 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = primary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                  required
+                />
+              </div>
+
+              {/* Phone */}
+              <div style={{ marginBottom: 24 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#1f2937",
+                    marginBottom: 8,
+                  }}
+                >
+                  <i
+                    className="bi bi-telephone me-2"
+                    style={{ color: primary }}
+                  ></i>
+                  Số điện thoại
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phoneNumber}
+                  onChange={handleChange("phoneNumber")}
+                  placeholder="Nhập số điện thoại"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    fontSize: 15,
+                    outline: "none",
+                    transition: "all 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = primary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              {/* Address */}
+              <div style={{ marginBottom: 24 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#1f2937",
+                    marginBottom: 8,
+                  }}
+                >
+                  <i
+                    className="bi bi-geo-alt me-2"
+                    style={{ color: primary }}
+                  ></i>
+                  Địa chỉ
+                </label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  onChange={handleChange("address")}
+                  placeholder="Nhập địa chỉ"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    fontSize: 15,
+                    outline: "none",
+                    transition: "all 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = primary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              {/* Bio */}
+              <div style={{ marginBottom: 32 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#1f2937",
+                    marginBottom: 8,
+                  }}
+                >
+                  <i
+                    className="bi bi-info-circle me-2"
+                    style={{ color: primary }}
+                  ></i>
+                  Giới thiệu
+                </label>
+                <textarea
+                  value={formData.bio}
+                  onChange={handleChange("bio")}
+                  placeholder="Viết vài dòng giới thiệu về bản thân..."
+                  rows={5}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    fontSize: 15,
+                    outline: "none",
+                    resize: "vertical",
+                    transition: "all 0.2s",
+                    fontFamily: "inherit",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = primary;
+                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div
+                  style={{
+                    padding: "12px 16px",
+                    background: "#fef2f2",
+                    border: "1px solid #fecaca",
+                    borderRadius: 10,
+                    color: "#dc2626",
+                    marginBottom: 20,
+                    fontSize: 14,
+                  }}
+                >
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  {error}
+                </div>
+              )}
+
+              {/* Success Message */}
+              {success && (
+                <div
+                  style={{
+                    padding: "12px 16px",
+                    background: "#f0fdf4",
+                    border: "1px solid #bbf7d0",
+                    borderRadius: 10,
+                    color: "#16a34a",
+                    marginBottom: 20,
+                    fontSize: 14,
+                  }}
+                >
+                  <i className="bi bi-check-circle me-2"></i>
+                  {success}
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/profile/${id}`)}
+                    style={{
+                      padding: "12px 24px",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 10,
+                      background: surface,
+                      color: "#6b7280",
+                      fontWeight: 600,
+                      fontSize: 15,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#f9fafb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = surface;
+                    }}
+                    disabled={submitting}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    style={{
+                      padding: "12px 24px",
+                      border: "none",
+                      borderRadius: 10,
+                      background: submitting
+                        ? "#9ca3af"
+                        : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                      color: surface,
+                      fontWeight: 600,
+                      fontSize: 15,
+                      cursor: submitting ? "not-allowed" : "pointer",
+                      transition: "all 0.3s",
+                      boxShadow: submitting
+                        ? "none"
+                        : "0 4px 12px rgba(37, 99, 235, 0.3)",
+                    }}
+                    disabled={submitting}
+                    onMouseEnter={(e) => {
+                      if (!submitting) {
+                        e.currentTarget.style.transform = "translateY(-2px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 6px 16px rgba(37, 99, 235, 0.4)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!submitting) {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 12px rgba(37, 99, 235, 0.3)";
+                      }
+                    }}
+                  >
+                    {submitting ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Đang lưu...
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-check-lg me-2"></i>
+                        Lưu thay đổi
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={{
+                    padding: "12px 24px",
+                    border: "1px solid #fecaca",
+                    borderRadius: 10,
+                    background: "#fef2f2",
+                    color: "#dc2626",
                     fontWeight: 600,
                     fontSize: 15,
                     cursor: "pointer",
                     transition: "all 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#f9fafb";
+                    e.currentTarget.style.background = "#fee2e2";
+                    e.currentTarget.style.borderColor = "#fca5a5";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = surface;
-                  }}
-                  disabled={submitting}
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "12px 24px",
-                    border: "none",
-                    borderRadius: 10,
-                    background: submitting
-                      ? "#9ca3af"
-                      : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                    color: surface,
-                    fontWeight: 600,
-                    fontSize: 15,
-                    cursor: submitting ? "not-allowed" : "pointer",
-                    transition: "all 0.3s",
-                    boxShadow: submitting
-                      ? "none"
-                      : "0 4px 12px rgba(37, 99, 235, 0.3)",
-                  }}
-                  disabled={submitting}
-                  onMouseEnter={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 16px rgba(37, 99, 235, 0.4)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(37, 99, 235, 0.3)";
-                    }
+                    e.currentTarget.style.background = "#fef2f2";
+                    e.currentTarget.style.borderColor = "#fecaca";
                   }}
                 >
-                  {submitting ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Đang lưu...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-check-lg me-2"></i>
-                      Lưu thay đổi
-                    </>
-                  )}
+                  <i className="bi bi-box-arrow-right"></i>
+                  Đăng xuất
                 </button>
               </div>
-
-              {/* Logout Button */}
-              <button
-                type="button"
-                onClick={handleLogout}
-                style={{
-                  padding: "12px 24px",
-                  border: "1px solid #fecaca",
-                  borderRadius: 10,
-                  background: "#fef2f2",
-                  color: "#dc2626",
-                  fontWeight: 600,
-                  fontSize: 15,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#fee2e2";
-                  e.currentTarget.style.borderColor = "#fca5a5";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#fef2f2";
-                  e.currentTarget.style.borderColor = "#fecaca";
-                }}
-              >
-                <i className="bi bi-box-arrow-right"></i>
-                Đăng xuất
-              </button>
-            </div>
-          </form>
+            </form>
           </div>
         </div>
       </div>

@@ -59,6 +59,9 @@ const PostDetail = () => {
   };
 
   const handleLike = async () => {
+    // Không cho phép like nếu là chủ bài đăng
+    if (post?.owner) return;
+    
     // TODO: Implement like API call
     await likePost(id);
     if (post) {
@@ -387,7 +390,12 @@ const PostDetail = () => {
               <button
                 className="btn btn-link p-0 text-decoration-none d-flex align-items-center gap-2"
                 onClick={handleLike}
-                style={{ fontSize: "1.2rem" }}
+                disabled={post.owner}
+                style={{ 
+                  fontSize: "1.2rem",
+                  opacity: post.owner ? 0.5 : 1,
+                  cursor: post.owner ? "not-allowed" : "pointer"
+                }}
               >
                 <i
                   className={`bi ${
@@ -470,17 +478,19 @@ const PostDetail = () => {
 
               {/* Action Buttons */}
               <div className="d-flex gap-2 flex-wrap">
-                <button
-                  className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
-                  onClick={handleProposeExchange}
-                  style={{ fontSize: "1rem" }}
-                  disabled={
-                    post.postStatus === "PENDING" ||
-                    post.postStatus === "COMPLETED"
-                  }
-                >
-                  Bắt đầu trao đổi
-                </button>
+                {!post.owner && (
+                  <button
+                    className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
+                    onClick={handleProposeExchange}
+                    style={{ fontSize: "1rem" }}
+                    disabled={
+                      post.postStatus === "PENDING" ||
+                      post.postStatus === "COMPLETED"
+                    }
+                  >
+                    Bắt đầu trao đổi
+                  </button>
+                )}
                 {post.canUpdateStatus && (
                   <button
                     className="btn btn-outline-secondary py-3 rounded-3"

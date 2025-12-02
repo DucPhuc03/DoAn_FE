@@ -450,7 +450,3 @@ const SelectionCard = ({
 
 export default EditPost;
 
-
-
-
-
