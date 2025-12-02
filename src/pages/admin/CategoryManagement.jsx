@@ -1,329 +1,635 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-// dùng chung CSS
+
+const emptyForm = {
+  id: null,
+  name: "",
+  imageUrl: "",
+};
 
 export default function CategoryManagement() {
-  const initialData = React.useMemo(
-    () => [
-      { id: 1, name: "Xe máy" },
-      { id: 2, name: "Xe ô tô" },
-      { id: 3, name: "Đồ gia dụng" },
-      { id: 4, name: "Điện tử" },
-      { id: 5, name: "Quần áo" },
-      { id: 6, name: "Sách" },
-      { id: 7, name: "Đồ chơi" },
-      { id: 8, name: "Nội thất" },
-      { id: 9, name: "Thực phẩm" },
-      { id: 10, name: "Thể thao" },
-    ],
-    []
-  );
+  // Fake data
+  const [categories, setCategories] = useState([
+    {
+      id: 1,
+      name: "Điện thoại",
+      imageUrl:
+        "https://images.pexels.com/photos/6078124/pexels-photo-6078124.jpeg",
+    },
+    {
+      id: 2,
+      name: "Laptop",
+      imageUrl: "https://images.pexels.com/photos/18104/pexels-photo.jpg",
+    },
+    {
+      id: 3,
+      name: "Sách",
+      imageUrl:
+        "https://images.pexels.com/photos/46274/pexels-photo-46274.jpeg",
+    },
+  ]);
 
-  const [data, setData] = React.useState(initialData);
-  const [inputValue, setInputValue] = React.useState("");
-  const [query, setQuery] = React.useState("");
-  const [page, setPage] = React.useState(1);
-  const perPage = 5;
+  const [error, setError] = useState("");
+  const [form, setForm] = useState(emptyForm);
+  const [isEdit, setIsEdit] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+  const [previewSrc, setPreviewSrc] = useState("");
 
-  // state cho modal thêm / sửa
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [modalMode, setModalMode] = React.useState("add"); // 'add' | 'edit'
-  const [modalName, setModalName] = React.useState("");
-  const [editingId, setEditingId] = React.useState(null);
+  const filteredCategories = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return categories;
+    return categories.filter((c) => {
+      const name = (c.name || "").toLowerCase();
+      const idText = String(c.id ?? "").toLowerCase();
+      return name.includes(q) || idText.includes(q);
+    });
+  }, [categories, search]);
 
-  function clearSearch() {
-    setInputValue("");
-    setQuery("");
-    setPage(1);
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function applySearch() {
-    setQuery(inputValue.trim());
-    setPage(1);
+  function handleImageFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const result = ev.target?.result;
+      if (typeof result === "string") {
+        setForm((prev) => ({ ...prev, imageUrl: result }));
+        setPreviewSrc(result);
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
-  function onInputKeyDown(e) {
-    if (e.key === "Enter") applySearch();
+  function openCreateForm() {
+    setForm(emptyForm);
+    setIsEdit(false);
+    setError("");
+    setPreviewSrc("");
+    setShowForm(true);
   }
 
-  const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return data;
-    return data.filter((item) => item.name.toLowerCase().includes(q));
-  }, [data, query]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
-  const pageData = filtered.slice((page - 1) * perPage, page * perPage);
-
-  function goto(p) {
-    const next = Math.min(Math.max(1, p), totalPages);
-    setPage(next);
+  function openEditForm(cat) {
+    setForm({
+      id: cat.id ?? null,
+      name: cat.name || "",
+      imageUrl: cat.imageUrl || cat.image || "",
+    });
+    setIsEdit(true);
+    setPreviewSrc(cat.imageUrl || cat.image || "");
+    setError("");
+    setShowForm(true);
   }
 
-  function openAddModal() {
-    setModalMode("add");
-    setEditingId(null);
-    setModalName("");
-    setModalOpen(true);
+  function closeForm() {
+    setShowForm(false);
+    setForm(emptyForm);
+    setIsEdit(false);
+    setPreviewSrc("");
+    setError("");
   }
 
-  function openEditModal(id) {
-    const item = data.find((d) => d.id === id);
-    if (!item) return;
-    setModalMode("edit");
-    setEditingId(id);
-    setModalName(item.name);
-    setModalOpen(true);
+  function handleDelete(id) {
+    if (!window.confirm("Bạn có chắc muốn xóa danh mục này?")) return;
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    if (form.id === id) {
+      closeForm();
+    }
   }
 
-  function handleSaveCategory(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    const name = modalName.trim();
-    if (!name) return;
+    const trimmedName = form.name.trim();
+    if (!trimmedName) {
+      setError("Tên danh mục không được để trống.");
+      return;
+    }
+    setError("");
 
-    if (modalMode === "add") {
-      const maxId = data.reduce((max, item) => Math.max(max, item.id), 0);
-      const newItem = { id: maxId + 1, name };
-      setData((prev) => [newItem, ...prev]);
-      setPage(1);
-    } else if (modalMode === "edit" && editingId != null) {
-      setData((prev) =>
-        prev.map((item) => (item.id === editingId ? { ...item, name } : item))
+    if (isEdit && form.id != null) {
+      // Cập nhật local
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === form.id
+            ? {
+                ...c,
+                name: trimmedName,
+                imageUrl: form.imageUrl.trim() || c.imageUrl,
+              }
+            : c
+        )
       );
+    } else {
+      // Thêm mới local
+      const nextId =
+        categories.reduce((max, c) => Math.max(max, c.id ?? 0), 0) + 1;
+      setCategories((prev) => [
+        ...prev,
+        {
+          id: nextId,
+          name: trimmedName,
+          imageUrl: form.imageUrl.trim(),
+        },
+      ]);
     }
 
-    setModalOpen(false);
+    closeForm();
   }
-
-  function handleDeleteCategory(id) {
-    const item = data.find((d) => d.id === id);
-    if (!item) return;
-    const ok = window.confirm(
-      `Bạn có chắc muốn xóa danh mục "${item.name}"? Hành động này không thể hoàn tác.`
-    );
-    if (!ok) return;
-
-    setData((prev) => prev.filter((d) => d.id !== id));
-  }
-
-  // visible pages helper (3 pages centered)
-  function getVisiblePages(total, current) {
-    if (total <= 3) return Array.from({ length: total }).map((_, i) => i + 1);
-    if (current === 1) return [1, 2, 3];
-    if (current === total) return [total - 2, total - 1, total];
-    return [current - 1, current, current + 1];
-  }
-  const visiblePages = getVisiblePages(totalPages, page);
 
   return (
-    <div className="pm-root">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background:
+          "linear-gradient(135deg, #eef2ff 0%, #f9fafb 40%, #e0f2fe 100%)",
+      }}
+    >
       <Sidebar active="cats" />
 
-      <main className="pm-main">
-        <div className="pm-wrapper">
-          <div className="pm-header">
-            <h1>Quản lý danh mục</h1>
-            <p className="pm-subtitle">
-              Thêm, chỉnh sửa và xóa các danh mục hiển thị trong hệ thống.
-            </p>
-          </div>
-
-          {/* Search row with single Add button on right; use class 'spaced' to add top margin */}
-          <div className="search-row spaced">
-            <div className="input-wrapper">
-              <input
-                className="pm-input"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={onInputKeyDown}
-                placeholder="Tìm kiếm..."
-                aria-label="Tìm danh mục"
-              />
-
-              <img
-                src="/clear_search_icon.png"
-                alt="Clear"
-                className={`clear-icon ${inputValue ? "visible" : ""}`}
-                onClick={clearSearch}
-              />
-
-              <img
-                src="/search_icon.png"
-                alt="Search"
-                className="search-icon"
-                onClick={applySearch}
-              />
-            </div>
-
-            <div className="add-btn-wrap">
-              <button
-                type="button"
-                className="add-category-btn"
-                onClick={openAddModal}
+      <main style={{ flex: 1 }}>
+        <div
+          style={{
+            padding: "24px 32px",
+            maxWidth: 1120,
+            margin: "0 auto",
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 12,
+                  letterSpacing: 1,
+                  textTransform: "uppercase",
+                  color: "#6b7280",
+                  marginBottom: 4,
+                }}
               >
-                + Thêm danh mục
-              </button>
+                Bảng điều khiển / Danh mục
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 8,
+                }}
+              >
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 26,
+                    fontWeight: 700,
+                    color: "#0f172a",
+                  }}
+                >
+                  Quản lý danh mục
+                </h2>
+                <span
+                  style={{
+                    fontSize: 13,
+                    color: "#6b7280",
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    background: "rgba(59,130,246,0.06)",
+                    border: "1px solid rgba(59,130,246,0.2)",
+                  }}
+                >
+                  {categories.length} danh mục
+                </span>
+              </div>
             </div>
+
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={openCreateForm}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                paddingInline: 16,
+                borderRadius: 999,
+                boxShadow: "0 10px 20px rgba(37,99,235,0.25)",
+              }}
+            >
+              <span style={{ fontSize: 16, lineHeight: 1 }}>＋</span>
+              <span>Thêm danh mục</span>
+            </button>
           </div>
 
-          <div className="table-wrapper">
-            <table className="pm-table">
-              <colgroup>
-                <col style={{ width: "12%" }} /> {/* STT */}
-                <col style={{ width: "48%" }} /> {/* Tên danh mục */}
-                <col style={{ width: "20%" }} /> {/* Sửa */}
-                <col style={{ width: "20%" }} /> {/* Xóa */}
-              </colgroup>
+          {/* Card danh sách */}
+          <div
+            style={{
+              background: "rgba(255,255,255,0.96)",
+              backdropFilter: "blur(6px)",
+              borderRadius: 18,
+              padding: 20,
+              boxShadow: "0 18px 40px rgba(15,23,42,0.18)",
+              border: "1px solid rgba(148,163,184,0.35)",
+            }}
+          >
+            {/* Thanh tìm kiếm */}
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginBottom: 16,
+                alignItems: "center",
+              }}
+            >
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Tìm theo ID hoặc tên danh mục..."
+                aria-label="Tìm kiếm danh mục"
+                style={{
+                  flex: 1,
+                  padding: "8px 12px",
+                  borderRadius: 999,
+                  border: "1px solid #d1d5db",
+                  fontSize: 14,
+                  outline: "none",
+                  background:
+                    "linear-gradient(135deg, #f9fafb 0%, #ffffff 40%, #eff6ff 100%)",
+                }}
+              />
+            </div>
 
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Tên danh mục</th>
-                  <th>Chỉnh sửa</th>
-                  <th>Xóa</th>
-                </tr>
-              </thead>
+            {error && (
+              <div
+                style={{
+                  background: "#fee2e2",
+                  color: "#b91c1c",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  marginBottom: 12,
+                }}
+              >
+                {error}
+              </div>
+            )}
 
-              <tbody>
-                {pageData.map((row, idx) => (
-                  <tr
-                    key={row.id}
-                    className={idx % 2 === 0 ? "row-even" : "row-odd"}
+            {/* Header bảng */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "80px 100px 1fr 160px",
+                padding: "8px 12px",
+                borderRadius: 10,
+                background: "#f9fafb",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#6b7280",
+                marginBottom: 8,
+              }}
+            >
+              <div>ID</div>
+              <div>Ảnh</div>
+              <div>Tên danh mục</div>
+              <div>Hành động</div>
+            </div>
+
+            {/* Dòng dữ liệu */}
+            <div>
+              {filteredCategories.map((cat, idx) => {
+                const name = cat.name || "";
+                const img = cat.imageUrl || cat.image || "";
+                return (
+                  <div
+                    key={cat.id ?? idx}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "80px 100px 1fr 160px",
+                      alignItems: "center",
+                      padding: "8px 12px",
+                      borderRadius: 12,
+                      background:
+                        idx % 2 === 0 ? "#ffffff" : "rgba(249, 250, 251, 0.9)",
+                      border: "1px solid #f3f4f6",
+                      marginBottom: 6,
+                    }}
                   >
-                    <td className="cell-strong">
-                      {(page - 1) * perPage + idx + 1}
-                    </td>
-                    <td>{row.name}</td>
-                    <td>
+                    <div style={{ fontSize: 14, color: "#374151" }}>
+                      {cat.id}
+                    </div>
+                    <div>
+                      {img ? (
+                        <img
+                          src={img}
+                          alt={name}
+                          style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: 12,
+                            objectFit: "cover",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: 12,
+                            background: "#f3f4f6",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 11,
+                            color: "#9ca3af",
+                          }}
+                        >
+                          Không có
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        color: "#111827",
+                        fontWeight: 500,
+                        paddingRight: 8,
+                      }}
+                    >
+                      {name}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        justifyContent: "flex-start",
+                      }}
+                    >
                       <button
-                        className="view-btn"
-                        onClick={() => openEditModal(row.id)}
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => openEditForm(cat)}
                       >
                         Sửa
                       </button>
-                    </td>
-                    <td>
                       <button
-                        className="action-btn"
-                        onClick={() => handleDeleteCategory(row.id)}
+                        type="button"
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDelete(cat.id)}
                       >
                         Xóa
                       </button>
-                    </td>
-                  </tr>
-                ))}
+                    </div>
+                  </div>
+                );
+              })}
 
-                {pageData.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="no-data">
-                      Không có dữ liệu
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="pagination">
-            <button
-              onClick={() => goto(page - 1)}
-              disabled={page === 1}
-              className="page-btn"
-            >
-              {"<"}
-            </button>
-
-            {visiblePages.map((p) => (
-              <button
-                key={p}
-                onClick={() => goto(p)}
-                className={`page-btn ${p === page ? "active" : ""}`}
-              >
-                {p}
-              </button>
-            ))}
-
-            <button
-              onClick={() => goto(page + 1)}
-              disabled={page === totalPages}
-              className="page-btn"
-            >
-              {">"}
-            </button>
+              {filteredCategories.length === 0 && (
+                <div
+                  style={{
+                    padding: "32px 12px",
+                    textAlign: "center",
+                    color: "#9ca3af",
+                    fontSize: 14,
+                  }}
+                >
+                  Không có danh mục nào.
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </main>
 
-      {/* Modal thêm / sửa danh mục - dùng Bootstrap + inline style */}
-      {modalOpen && (
-        <div
-          className="modal fade show"
-          style={{
-            display: "block",
-            backgroundColor: "rgba(0,0,0,0.5)",
-          }}
-          onClick={() => setModalOpen(false)}
-        >
+        {/* Modal Form kiểu admin */}
+        {showForm && (
           <div
-            className="modal-dialog modal-dialog-centered"
-            style={{ maxWidth: "420px" }}
-            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1050,
+            }}
+            onClick={closeForm}
           >
-            <div className="modal-content" style={{ borderRadius: "16px" }}>
-              <div className="modal-header">
-                <h5 className="modal-title fw-bold mb-0">
-                  {modalMode === "add" ? "Thêm danh mục" : "Chỉnh sửa danh mục"}
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 520,
+                background: "#ffffff",
+                borderRadius: 16,
+                boxShadow: "0 24px 55px rgba(15,23,42,0.45)",
+                border: "1px solid #e5e7eb",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  padding: "16px 20px",
+                  borderBottom: "1px solid #e5e7eb",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <h5
+                  style={{
+                    margin: 0,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#111827",
+                  }}
+                >
+                  {isEdit ? "Sửa danh mục" : "Thêm danh mục mới"}
                 </h5>
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => setModalOpen(false)}
-                ></button>
+                  aria-label="Close"
+                  onClick={closeForm}
+                />
               </div>
 
-              <form onSubmit={handleSaveCategory}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="categoryName"
-                      className="form-label fw-semibold"
+              <form onSubmit={handleSubmit}>
+                <div style={{ padding: "16px 20px" }}>
+                  {error && (
+                    <div
+                      style={{
+                        background: "#fee2e2",
+                        color: "#b91c1c",
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        fontSize: 14,
+                        marginBottom: 12,
+                      }}
                     >
-                      Tên danh mục
+                      {error}
+                    </div>
+                  )}
+
+                  {isEdit && form.id != null && (
+                    <div style={{ marginBottom: 12 }}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#6b7280",
+                          marginBottom: 4,
+                        }}
+                      >
+                        ID
+                      </label>
+                      <input
+                        value={form.id}
+                        disabled
+                        style={{
+                          width: "100%",
+                          padding: "8px 10px",
+                          borderRadius: 8,
+                          border: "1px solid #e5e7eb",
+                          fontSize: 14,
+                          background: "#f9fafb",
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div style={{ marginBottom: 12 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#6b7280",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Tên danh mục <span style={{ color: "#dc2626" }}>*</span>
                     </label>
                     <input
-                      id="categoryName"
-                      type="text"
-                      className="form-control"
-                      style={{ borderRadius: "10px" }}
-                      value={modalName}
-                      onChange={(e) => setModalName(e.target.value)}
-                      placeholder="Nhập tên danh mục..."
-                      autoFocus
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="Nhập tên danh mục"
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #d1d5db",
+                        fontSize: 14,
+                        outline: "none",
+                      }}
                     />
                   </div>
+
+                  <div style={{ marginBottom: 12 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#6b7280",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Chọn ảnh
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      style={{ width: "100%", fontSize: 13 }}
+                    />
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontSize: 12,
+                        color: "#9ca3af",
+                      }}
+                    >
+                      Chọn ảnh từ máy (base64).
+                    </div>
+                  </div>
+
+                  {previewSrc && (
+                    <div style={{ marginBottom: 4 }}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#6b7280",
+                          marginBottom: 4,
+                        }}
+                      >
+                        Xem trước ảnh
+                      </label>
+                      <div
+                        style={{
+                          borderRadius: 12,
+                          border: "1px dashed #d1d5db",
+                          padding: 8,
+                          textAlign: "center",
+                          background: "#f9fafb",
+                        }}
+                      >
+                        <img
+                          src={previewSrc}
+                          alt="Xem trước"
+                          style={{
+                            maxHeight: 180,
+                            width: "100%",
+                            objectFit: "cover",
+                            borderRadius: 8,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="modal-footer">
+                <div
+                  style={{
+                    padding: "12px 20px",
+                    borderTop: "1px solid #e5e7eb",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: 8,
+                    background: "#f9fafb",
+                    borderBottomLeftRadius: 16,
+                    borderBottomRightRadius: 16,
+                  }}
+                >
                   <button
                     type="button"
-                    className="btn btn-outline-secondary rounded-pill px-3"
-                    onClick={() => setModalOpen(false)}
+                    className="btn btn-outline-secondary"
+                    onClick={closeForm}
                   >
                     Hủy
                   </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary rounded-pill px-4"
-                    disabled={!modalName.trim()}
-                  >
-                    Lưu
+                  <button type="submit" className="btn btn-primary">
+                    {isEdit ? "Cập nhật" : "Thêm mới"}
                   </button>
                 </div>
               </form>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </main>
     </div>
   );
 }

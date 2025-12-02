@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { login as loginApi } from "../service/auth";
+import { connectNotificationWebSocket } from "../service/notificationWebSocket";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -61,6 +62,13 @@ const LoginPage = () => {
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
       }
+
+      // Sau khi lưu token & user, kết nối WebSocket để nhận thông báo
+      // Kết nối này dùng STOMP subscribe tới /user/queue/notification
+      // Backend đang dùng: convertAndSendToUser(username, "/queue/notification", payload)
+      connectNotificationWebSocket();
+
+      // Điều hướng về trang chủ
       navigate("/");
     } catch (err) {
       const message = err?.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.";
