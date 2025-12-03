@@ -275,7 +275,7 @@ export default function CategoryManagement() {
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.2s",
-                marginLeft: "250px",
+                marginLeft: "300px",
               }}
             >
               <svg
@@ -402,7 +402,7 @@ export default function CategoryManagement() {
                         fontWeight: 600,
                         color: "#6b7280",
                         borderBottom: "1px solid #e5e7eb",
-                        width: "500px",
+                        width: "250px",
                       }}
                     >
                       Hành động

@@ -275,7 +275,7 @@ export default function CategoryManagement() {
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.2s",
-                marginLeft: "250px",
+                marginLeft: "auto",
               }}
             >
               <svg
@@ -389,7 +389,7 @@ export default function CategoryManagement() {
                         fontWeight: 600,
                         color: "#6b7280",
                         borderBottom: "1px solid #e5e7eb",
-                        width: "200px",
+                        width: "140px",
                       }}
                     >
                       Trạng thái
@@ -402,7 +402,7 @@ export default function CategoryManagement() {
                         fontWeight: 600,
                         color: "#6b7280",
                         borderBottom: "1px solid #e5e7eb",
-                        width: "500px",
+                        width: "200px",
                       }}
                     >
                       Hành động
@@ -778,9 +778,7 @@ export default function CategoryManagement() {
                           color: "#374151",
                           marginBottom: "6px",
                         }}
-                      >
-                        {" "}
-                      </label>
+                      ></label>
                       <div
                         style={{
                           border: "1px dashed #d1d5db",

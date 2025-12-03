@@ -70,10 +70,6 @@ const LoginPage = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
-      if (user && user.role === "ADMIN") {
-        navigate("/admin/pending_management");
-        return;
-      }
       connectNotificationWebSocket();
 
       // Điều hướng về trang chủ

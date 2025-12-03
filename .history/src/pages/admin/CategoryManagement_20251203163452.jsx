@@ -337,7 +337,7 @@ export default function CategoryManagement() {
             >
               <table
                 style={{
-                  width: "100%",
+                  width: "80%",
                   borderCollapse: "collapse",
                 }}
               >

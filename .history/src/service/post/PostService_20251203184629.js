@@ -35,11 +35,6 @@ export async function updatePostStatus(id, status) {
   });
   return data;
 }
-
-// Alias theo tên mà phía admin đang sử dụng
-export async function updateStatusPost(id, status) {
-  return updatePostStatus(id, status);
-}
 export async function deletePost(id) {
   const { data } = await axios.delete(`/api/post/${id}`);
   return data;

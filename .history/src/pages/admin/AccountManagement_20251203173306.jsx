@@ -253,23 +253,10 @@ export default function AccountManagement() {
                       fontWeight: 600,
                       color: "#6b7280",
                       borderBottom: "1px solid #e5e7eb",
-                      width: "70px",
-                    }}
-                  >
-                    ID
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
                       width: "80px",
                     }}
                   >
-                    Ảnh
+                    ID
                   </th>
                   <th
                     style={{
@@ -389,40 +376,6 @@ export default function AccountManagement() {
                       >
                         {account.id}
                       </td>
-                      <td style={{ padding: "12px 16px" }}>
-                        {account.avatarUrl ? (
-                          <img
-                            src={account.avatarUrl}
-                            alt={account.fullName || account.username}
-                            style={{
-                              width: "36px",
-                              height: "36px",
-                              borderRadius: "999px",
-                              objectFit: "cover",
-                              border: "1px solid #e5e7eb",
-                            }}
-                          />
-                        ) : (
-                          <div
-                            style={{
-                              width: "36px",
-                              height: "36px",
-                              borderRadius: "999px",
-                              background: "#e5e7eb",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: "14px",
-                              fontWeight: 600,
-                              color: "#4b5563",
-                            }}
-                          >
-                            {(account.fullName || account.username || "?")
-                              .charAt(0)
-                              .toUpperCase()}
-                          </div>
-                        )}
-                      </td>
                       <td
                         style={{
                           padding: "12px 16px",
@@ -538,7 +491,7 @@ export default function AccountManagement() {
                 {pageData.length === 0 && (
                   <tr>
                     <td
-                      colSpan={9}
+                      colSpan={8}
                       style={{
                         padding: "40px",
                         textAlign: "center",

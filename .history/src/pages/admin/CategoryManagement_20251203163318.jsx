@@ -275,7 +275,7 @@ export default function CategoryManagement() {
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.2s",
-                marginLeft: "250px",
+                marginLeft: "200px",
               }}
             >
               <svg

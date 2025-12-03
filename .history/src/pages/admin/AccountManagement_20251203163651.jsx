@@ -1,230 +1,174 @@
 import React, { useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 
-export default function ReportManagement() {
+export default function AccountManagement() {
   // Fake data
-  const [reports, setReports] = useState([
+  const [accounts, setAccounts] = useState([
     {
       id: 1,
-      reporterName: "Nguyễn Văn A",
-      reporterEmail: "nguyenvana@example.com",
-      reportedType: "post",
-      reportedId: 101,
-      reportedTitle: "Xe đạp cũ cần trao đổi",
-      reportedBy: "Trần Thị B",
-      reason: "Nội dung không phù hợp",
-      status: "pending",
-      date: "15-01-2025",
+      name: "Nguyễn Văn A",
+      email: "nguyenvana@example.com",
+      phone: "0123456789",
+      status: "active",
+      role: "user",
+      createdAt: "15-01-2025",
     },
     {
       id: 2,
-      reporterName: "Lê Văn C",
-      reporterEmail: "levanc@example.com",
-      reportedType: "user",
-      reportedId: 102,
-      reportedTitle: null,
-      reportedBy: "Phạm Thị D",
-      reason: "Hành vi lừa đảo",
-      status: "pending",
-      date: "14-01-2025",
+      name: "Trần Thị B",
+      email: "tranthib@example.com",
+      phone: "0987654321",
+      status: "active",
+      role: "user",
+      createdAt: "14-01-2025",
     },
     {
       id: 3,
-      reporterName: "Hoàng Văn E",
-      reporterEmail: "hoangvane@example.com",
-      reportedType: "post",
-      reportedId: 103,
-      reportedTitle: "Laptop Dell cũ",
-      reportedBy: "Vũ Thị F",
-      reason: "Ảnh không đúng sản phẩm",
-      status: "resolved",
-      date: "13-01-2025",
+      name: "Lê Văn C",
+      email: "levanc@example.com",
+      phone: "0912345678",
+      status: "inactive",
+      role: "user",
+      createdAt: "13-01-2025",
     },
     {
       id: 4,
-      reporterName: "Đỗ Văn G",
-      reporterEmail: "dovang@example.com",
-      reportedType: "user",
-      reportedId: 104,
-      reportedTitle: null,
-      reportedBy: "Bùi Thị H",
-      reason: "Spam tin nhắn",
-      status: "pending",
-      date: "12-01-2025",
+      name: "Phạm Thị D",
+      email: "phamthid@example.com",
+      phone: "0923456789",
+      status: "active",
+      role: "admin",
+      createdAt: "12-01-2025",
     },
     {
       id: 5,
-      reporterName: "Ngô Văn I",
-      reporterEmail: "ngovani@example.com",
-      reportedType: "post",
-      reportedId: 105,
-      reportedTitle: "Quần áo trẻ em",
-      reportedBy: "Lý Thị K",
-      reason: "Giá cả không minh bạch",
-      status: "resolved",
-      date: "11-01-2025",
+      name: "Hoàng Văn E",
+      email: "hoangvane@example.com",
+      phone: "0934567890",
+      status: "active",
+      role: "user",
+      createdAt: "11-01-2025",
     },
     {
       id: 6,
-      reporterName: "Đinh Văn L",
-      reporterEmail: "dinhvanl@example.com",
-      reportedType: "post",
-      reportedId: 106,
-      reportedTitle: "Sách giáo khoa lớp 10",
-      reportedBy: "Võ Thị M",
-      reason: "Nội dung vi phạm",
-      status: "pending",
-      date: "10-01-2025",
+      name: "Vũ Thị F",
+      email: "vuthif@example.com",
+      phone: "0945678901",
+      status: "banned",
+      role: "user",
+      createdAt: "10-01-2025",
     },
     {
       id: 7,
-      reporterName: "Dương Văn N",
-      reporterEmail: "duongvann@example.com",
-      reportedType: "user",
-      reportedId: 107,
-      reportedTitle: null,
-      reportedBy: "Hồ Thị O",
-      reason: "Tài khoản giả mạo",
-      status: "resolved",
-      date: "09-01-2025",
+      name: "Đỗ Văn G",
+      email: "dovang@example.com",
+      phone: "0956789012",
+      status: "active",
+      role: "user",
+      createdAt: "09-01-2025",
     },
     {
       id: 8,
-      reporterName: "Trương Văn P",
-      reporterEmail: "truongvanp@example.com",
-      reportedType: "post",
-      reportedId: 108,
-      reportedTitle: "Đồ chơi LEGO",
-      reportedBy: "Nguyễn Văn Q",
-      reason: "Sản phẩm đã bán",
-      status: "pending",
-      date: "08-01-2025",
+      name: "Bùi Thị H",
+      email: "buithih@example.com",
+      phone: "0967890123",
+      status: "active",
+      role: "user",
+      createdAt: "08-01-2025",
     },
     {
       id: 9,
-      reporterName: "Lê Thị R",
-      reporterEmail: "lethir@example.com",
-      reportedType: "post",
-      reportedId: 109,
-      reportedTitle: "Tủ lạnh cũ",
-      reportedBy: "Phạm Văn S",
-      reason: "Thông tin sai lệch",
-      status: "resolved",
-      date: "07-01-2025",
+      name: "Ngô Văn I",
+      email: "ngovani@example.com",
+      phone: "0978901234",
+      status: "inactive",
+      role: "user",
+      createdAt: "07-01-2025",
     },
     {
       id: 10,
-      reporterName: "Hoàng Thị T",
-      reporterEmail: "hoangthit@example.com",
-      reportedType: "user",
-      reportedId: 110,
-      reportedTitle: null,
-      reportedBy: "Vũ Văn U",
-      reason: "Quấy rối",
-      status: "pending",
-      date: "06-01-2025",
+      name: "Lý Thị K",
+      email: "lythik@example.com",
+      phone: "0989012345",
+      status: "active",
+      role: "user",
+      createdAt: "06-01-2025",
     },
     {
       id: 11,
-      reporterName: "Đỗ Thị V",
-      reporterEmail: "dothiv@example.com",
-      reportedType: "post",
-      reportedId: 111,
-      reportedTitle: "Giày thể thao Nike",
-      reportedBy: "Bùi Văn W",
-      reason: "Hàng giả",
-      status: "pending",
-      date: "05-01-2025",
+      name: "Đinh Văn L",
+      email: "dinhvanl@example.com",
+      phone: "0990123456",
+      status: "active",
+      role: "user",
+      createdAt: "05-01-2025",
     },
     {
       id: 12,
-      reporterName: "Ngô Thị X",
-      reporterEmail: "ngothix@example.com",
-      reportedType: "post",
-      reportedId: 112,
-      reportedTitle: "Đồ dùng học tập",
-      reportedBy: "Lý Văn Y",
-      reason: "Mô tả không đúng",
-      status: "resolved",
-      date: "04-01-2025",
+      name: "Võ Thị M",
+      email: "vothim@example.com",
+      phone: "0901234567",
+      status: "banned",
+      role: "user",
+      createdAt: "04-01-2025",
     },
     {
       id: 13,
-      reporterName: "Đinh Thị Z",
-      reporterEmail: "dinhthiz@example.com",
-      reportedType: "user",
-      reportedId: 113,
-      reportedTitle: null,
-      reportedBy: "Võ Văn AA",
-      reason: "Tài khoản bị hack",
-      status: "pending",
-      date: "03-01-2025",
+      name: "Dương Văn N",
+      email: "duongvann@example.com",
+      phone: "0912345678",
+      status: "active",
+      role: "user",
+      createdAt: "03-01-2025",
     },
     {
       id: 14,
-      reporterName: "Dương Thị BB",
-      reporterEmail: "duongthibb@example.com",
-      reportedType: "post",
-      reportedId: 114,
-      reportedTitle: "Máy tính bảng iPad",
-      reportedBy: "Hồ Văn CC",
-      reason: "Không liên hệ được",
-      status: "resolved",
-      date: "02-01-2025",
+      name: "Hồ Thị O",
+      email: "hothio@example.com",
+      phone: "0923456789",
+      status: "active",
+      role: "user",
+      createdAt: "02-01-2025",
     },
     {
       id: 15,
-      reporterName: "Trương Thị DD",
-      reporterEmail: "truongthidd@example.com",
-      reportedType: "post",
-      reportedId: 115,
-      reportedTitle: "Tủ quần áo gỗ",
-      reportedBy: "Nguyễn Văn EE",
-      reason: "Sản phẩm đã hết",
-      status: "pending",
-      date: "01-01-2025",
+      name: "Trương Văn P",
+      email: "truongvanp@example.com",
+      phone: "0934567890",
+      status: "inactive",
+      role: "user",
+      createdAt: "01-01-2025",
     },
   ]);
 
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all"); // all, pending, resolved
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const filteredReports = useMemo(() => {
-    let result = reports;
-
-    // Filter by status
-    if (filterStatus !== "all") {
-      result = result.filter((r) => r.status === filterStatus);
-    }
-
-    // Filter by search
+  const filteredAccounts = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (q) {
-      result = result.filter((r) => {
-        const reporterName = (r.reporterName || "").toLowerCase();
-        const reportedBy = (r.reportedBy || "").toLowerCase();
-        const reason = (r.reason || "").toLowerCase();
-        const reportedTitle = (r.reportedTitle || "").toLowerCase();
-        const idText = String(r.id ?? "").toLowerCase();
-        return (
-          reporterName.includes(q) ||
-          reportedBy.includes(q) ||
-          reason.includes(q) ||
-          reportedTitle.includes(q) ||
-          idText.includes(q)
-        );
-      });
-    }
+    if (!q) return accounts;
+    return accounts.filter((acc) => {
+      const name = (acc.name || "").toLowerCase();
+      const email = (acc.email || "").toLowerCase();
+      const phone = (acc.phone || "").toLowerCase();
+      const idText = String(acc.id ?? "").toLowerCase();
+      return (
+        name.includes(q) ||
+        email.includes(q) ||
+        phone.includes(q) ||
+        idText.includes(q)
+      );
+    });
+  }, [accounts, search]);
 
-    return result;
-  }, [reports, search, filterStatus]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredReports.length / rowsPerPage));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredAccounts.length / rowsPerPage)
+  );
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const pageData = filteredReports.slice(startIndex, endIndex);
+  const pageData = filteredAccounts.slice(startIndex, endIndex);
 
   function goto(p) {
     const next = Math.min(Math.max(1, p), totalPages);
@@ -233,54 +177,48 @@ export default function ReportManagement() {
 
   function getStatusColor(status) {
     switch (status) {
-      case "pending":
-        return { bg: "#fef3c7", color: "#92400e", text: "Chờ xử lý" };
-      case "resolved":
-        return { bg: "#d1fae5", color: "#065f46", text: "Đã xử lý" };
+      case "active":
+        return { bg: "#d1fae5", color: "#065f46", text: "Hoạt động" };
+      case "inactive":
+        return { bg: "#fef3c7", color: "#92400e", text: "Không hoạt động" };
+      case "banned":
+        return { bg: "#fee2e2", color: "#991b1b", text: "Bị khóa" };
       default:
         return { bg: "#f3f4f6", color: "#6b7280", text: status };
     }
   }
 
-  function getReportedTypeText(type) {
-    switch (type) {
-      case "post":
-        return "Bài đăng";
+  function getRoleColor(role) {
+    switch (role) {
+      case "admin":
+        return { bg: "#dbeafe", color: "#1e40af", text: "Quản trị viên" };
       case "user":
-        return "Người dùng";
+        return { bg: "#f3f4f6", color: "#374151", text: "Người dùng" };
       default:
-        return type;
+        return { bg: "#f3f4f6", color: "#6b7280", text: role };
     }
   }
 
-  function handleView(id) {
-    const report = reports.find((r) => r.id === id);
-    if (report) {
-      alert(
-        `Chi tiết báo cáo #${id}\n\n` +
-          `Người báo cáo: ${report.reporterName} (${report.reporterEmail})\n` +
-          `Loại: ${getReportedTypeText(report.reportedType)}\n` +
-          `Bị báo cáo: ${report.reportedBy}\n` +
-          `${report.reportedTitle ? `Bài đăng: ${report.reportedTitle}\n` : ""}` +
-          `Lý do: ${report.reason}\n` +
-          `Trạng thái: ${getStatusColor(report.status).text}\n` +
-          `Ngày: ${report.date}`
-      );
-    }
-  }
-
-  function handleResolve(id) {
-    if (!window.confirm("Bạn có chắc muốn đánh dấu báo cáo này là đã xử lý?"))
-      return;
-    setReports((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "resolved" } : r))
+  function handleToggleStatus(id) {
+    setAccounts((prev) =>
+      prev.map((acc) => {
+        if (acc.id === id) {
+          if (acc.status === "active") {
+            return { ...acc, status: "inactive" };
+          } else if (acc.status === "inactive") {
+            return { ...acc, status: "banned" };
+          } else {
+            return { ...acc, status: "active" };
+          }
+        }
+        return acc;
+      })
     );
-    alert(`Đã đánh dấu báo cáo #${id} là đã xử lý`);
   }
 
   function handleDelete(id) {
-    if (!window.confirm("Bạn có chắc muốn xóa báo cáo này?")) return;
-    setReports((prev) => prev.filter((r) => r.id !== id));
+    if (!window.confirm("Bạn có chắc muốn xóa tài khoản này?")) return;
+    setAccounts((prev) => prev.filter((acc) => acc.id !== id));
     if (page > 1 && pageData.length === 1) {
       setPage(page - 1);
     }
@@ -294,7 +232,7 @@ export default function ReportManagement() {
         background: "#F8F8F8",
       }}
     >
-      <Sidebar active="report" />
+      <Sidebar active="users" />
 
       <main style={{ flex: 1, padding: "24px" }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
@@ -308,18 +246,17 @@ export default function ReportManagement() {
                 color: "#000",
               }}
             >
-              Quản lý báo cáo
+              Quản lý tài khoản
             </h1>
           </div>
 
-          {/* Top Bar: Filter, Search, Status Filter */}
+          {/* Top Bar: Filter, Search */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: "12px",
               marginBottom: "16px",
-              flexWrap: "wrap",
             }}
           >
             <button
@@ -401,74 +338,6 @@ export default function ReportManagement() {
                 />
               </svg>
             </div>
-
-            {/* Status Filter */}
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
-              <button
-                onClick={() => {
-                  setFilterStatus("all");
-                  setPage(1);
-                }}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  background: filterStatus === "all" ? "#000080" : "#ffffff",
-                  color: filterStatus === "all" ? "#ffffff" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
-                Tất cả
-              </button>
-              <button
-                onClick={() => {
-                  setFilterStatus("pending");
-                  setPage(1);
-                }}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  background: filterStatus === "pending" ? "#fef3c7" : "#ffffff",
-                  color: filterStatus === "pending" ? "#92400e" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
-                Chờ xử lý
-              </button>
-              <button
-                onClick={() => {
-                  setFilterStatus("resolved");
-                  setPage(1);
-                }}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  background:
-                    filterStatus === "resolved" ? "#d1fae5" : "#ffffff",
-                  color: filterStatus === "resolved" ? "#065f46" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
-                Đã xử lý
-              </button>
-            </div>
           </div>
 
           {/* Table */}
@@ -509,10 +378,21 @@ export default function ReportManagement() {
                       fontWeight: 600,
                       color: "#6b7280",
                       borderBottom: "1px solid #e5e7eb",
-                      width: "150px",
                     }}
                   >
-                    Người báo cáo
+                    Tên
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "left",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      color: "#6b7280",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Email
                   </th>
                   <th
                     style={{
@@ -525,7 +405,7 @@ export default function ReportManagement() {
                       width: "120px",
                     }}
                   >
-                    Loại
+                    Số điện thoại
                   </th>
                   <th
                     style={{
@@ -535,22 +415,10 @@ export default function ReportManagement() {
                       fontWeight: 600,
                       color: "#6b7280",
                       borderBottom: "1px solid #e5e7eb",
-                      width: "150px",
+                      width: "130px",
                     }}
                   >
-                    Bị báo cáo
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                    }}
-                  >
-                    Lý do
+                    Vai trò
                   </th>
                   <th
                     style={{
@@ -576,7 +444,7 @@ export default function ReportManagement() {
                       width: "120px",
                     }}
                   >
-                    Ngày báo cáo
+                    Ngày tạo
                   </th>
                   <th
                     style={{
@@ -586,7 +454,7 @@ export default function ReportManagement() {
                       fontWeight: 600,
                       color: "#6b7280",
                       borderBottom: "1px solid #e5e7eb",
-                      width: "220px",
+                      width: "180px",
                     }}
                   >
                     Hành động
@@ -594,11 +462,12 @@ export default function ReportManagement() {
                 </tr>
               </thead>
               <tbody>
-                {pageData.map((report) => {
-                  const statusStyle = getStatusColor(report.status);
+                {pageData.map((account) => {
+                  const statusStyle = getStatusColor(account.status);
+                  const roleStyle = getRoleColor(account.role);
                   return (
                     <tr
-                      key={report.id}
+                      key={account.id}
                       style={{
                         borderBottom: "1px solid #f3f4f6",
                       }}
@@ -617,7 +486,17 @@ export default function ReportManagement() {
                           fontWeight: 600,
                         }}
                       >
-                        {report.id}
+                        {account.id}
+                      </td>
+                      <td
+                        style={{
+                          padding: "12px 16px",
+                          fontSize: "14px",
+                          color: "#111827",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {account.name}
                       </td>
                       <td
                         style={{
@@ -626,54 +505,31 @@ export default function ReportManagement() {
                           color: "#111827",
                         }}
                       >
-                        <div>{report.reporterName}</div>
-                        <div
+                        {account.email}
+                      </td>
+                      <td
+                        style={{
+                          padding: "12px 16px",
+                          fontSize: "14px",
+                          color: "#111827",
+                        }}
+                      >
+                        {account.phone}
+                      </td>
+                      <td style={{ padding: "12px 16px" }}>
+                        <span
                           style={{
+                            display: "inline-block",
+                            padding: "4px 12px",
+                            borderRadius: "12px",
                             fontSize: "12px",
-                            color: "#6b7280",
-                            marginTop: "2px",
+                            fontWeight: 600,
+                            background: roleStyle.bg,
+                            color: roleStyle.color,
                           }}
                         >
-                          {report.reporterEmail}
-                        </div>
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
-                        {getReportedTypeText(report.reportedType)}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
-                        <div>{report.reportedBy}</div>
-                        {report.reportedTitle && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#6b7280",
-                              marginTop: "2px",
-                            }}
-                          >
-                            {report.reportedTitle}
-                          </div>
-                        )}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
-                        {report.reason}
+                          {roleStyle.text}
+                        </span>
                       </td>
                       <td style={{ padding: "12px 16px" }}>
                         <span
@@ -697,18 +553,17 @@ export default function ReportManagement() {
                           color: "#6b7280",
                         }}
                       >
-                        {report.date}
+                        {account.createdAt}
                       </td>
                       <td style={{ padding: "12px 16px" }}>
                         <div
                           style={{
                             display: "flex",
                             gap: "8px",
-                            flexWrap: "wrap",
                           }}
                         >
                           <button
-                            onClick={() => handleView(report.id)}
+                            onClick={() => handleToggleStatus(account.id)}
                             style={{
                               padding: "6px 12px",
                               borderRadius: "6px",
@@ -719,9 +574,6 @@ export default function ReportManagement() {
                               fontWeight: 500,
                               cursor: "pointer",
                               transition: "all 0.2s",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = "#000080";
@@ -732,64 +584,14 @@ export default function ReportManagement() {
                               e.currentTarget.style.color = "#000080";
                             }}
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 3C5 3 2.73 5.11 1.5 8c1.23 2.89 3.5 5 6.5 5s5.27-2.11 6.5-5c-1.23-2.89-3.5-5-6.5-5zM8 11.5c-1.93 0-3.5-1.57-3.5-3.5S6.07 4.5 8 4.5s3.5 1.57 3.5 3.5S9.93 11.5 8 11.5zM8 6c-.83 0-1.5.67-1.5 1.5S7.17 9 8 9s1.5-.67 1.5-1.5S8.83 6 8 6z"
-                                fill="currentColor"
-                              />
-                            </svg>
-                            Xem
+                            {account.status === "active"
+                              ? "Khóa"
+                              : account.status === "inactive"
+                              ? "Kích hoạt"
+                              : "Mở khóa"}
                           </button>
-                          {report.status === "pending" && (
-                            <button
-                              onClick={() => handleResolve(report.id)}
-                              style={{
-                                padding: "6px 12px",
-                                borderRadius: "6px",
-                                border: "1px solid #22c55e",
-                                background: "#ffffff",
-                                color: "#22c55e",
-                                fontSize: "12px",
-                                fontWeight: 500,
-                                cursor: "pointer",
-                                transition: "all 0.2s",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = "#22c55e";
-                                e.currentTarget.style.color = "#ffffff";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = "#ffffff";
-                                e.currentTarget.style.color = "#22c55e";
-                              }}
-                            >
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M13.5 4.5l-7 7-4-4"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                              Xử lý
-                            </button>
-                          )}
                           <button
-                            onClick={() => handleDelete(report.id)}
+                            onClick={() => handleDelete(account.id)}
                             style={{
                               padding: "6px 12px",
                               borderRadius: "6px",
@@ -800,9 +602,6 @@ export default function ReportManagement() {
                               fontWeight: 500,
                               cursor: "pointer",
                               transition: "all 0.2s",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = "#dc2626";
@@ -813,20 +612,6 @@ export default function ReportManagement() {
                               e.currentTarget.style.color = "#dc2626";
                             }}
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M4 4h8M6 4V2h4v2M3 6h10l-1 8H4l-1-8z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
                             Xóa
                           </button>
                         </div>
@@ -870,8 +655,8 @@ export default function ReportManagement() {
                 color: "#6b7280",
               }}
             >
-              {startIndex + 1}-{Math.min(endIndex, filteredReports.length)} of{" "}
-              {filteredReports.length}
+              {startIndex + 1}-{Math.min(endIndex, filteredAccounts.length)} of{" "}
+              {filteredAccounts.length}
             </div>
 
             <div
@@ -890,7 +675,6 @@ export default function ReportManagement() {
                   color: "#6b7280",
                 }}
               >
-                <label>Rows per page:</label>
                 <select
                   value={rowsPerPage}
                   onChange={(e) => {
@@ -951,12 +735,7 @@ export default function ReportManagement() {
                     }
                   }}
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                       d="M10 12L6 8l4-4"
                       stroke="currentColor"
@@ -1006,12 +785,7 @@ export default function ReportManagement() {
                     }
                   }}
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                       d="M6 12l4-4-4-4"
                       stroke="currentColor"
@@ -1029,6 +803,3 @@ export default function ReportManagement() {
     </div>
   );
 }
-
-
-

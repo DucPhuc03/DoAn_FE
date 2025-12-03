@@ -71,7 +71,7 @@ const LoginPage = () => {
       }
 
       if (user && user.role === "ADMIN") {
-        navigate("/admin/pending_management");
+        navigate("/admin/account_management");
         return;
       }
       connectNotificationWebSocket();

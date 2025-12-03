@@ -19,7 +19,3 @@ export async function getAllUser() {
   const { data } = await axios.get(`/api/user/admin`);
   return data;
 }
-export async function updateUserStatus(id) {
-  const { data } = await axios.patch(`/api/user/admin/status/${id}`);
-  return data;
-}

@@ -70,14 +70,12 @@ const LoginPage = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
-      if (user && user.role === "ADMIN") {
+      if (res.data.user.role === "ADMIN") {
         navigate("/admin/pending_management");
-        return;
+      } else {
+        connectNotificationWebSocket();
+        navigate("/explore");
       }
-      connectNotificationWebSocket();
-
-      // Điều hướng về trang chủ
-      navigate("/");
     } catch (err) {
       const message =
         err?.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.";

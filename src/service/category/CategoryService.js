@@ -5,17 +5,38 @@ export async function getCategoryList() {
   return data;
 }
 
-export async function createCategory(category) {
-  const { data } = await axios.post("/api/category", category);
+export async function getCategoryListAdmin() {
+  const { data } = await axios.get("/api/category/admin");
   return data;
 }
 
-export async function updateCategory(id, category) {
-  const { data } = await axios.put(`/api/category/${id}`, category);
+export async function createCategory({ name, imageFile }) {
+  const formData = new FormData();
+  formData.append("category", JSON.stringify({ name }));
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const { data } = await axios.post("/api/category/admin", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+}
+
+export async function updateCategory(id, { name, imageFile }) {
+  const formData = new FormData();
+  formData.append("category", JSON.stringify({ name }));
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const { data } = await axios.put(`/api/category/admin/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 }
 
 export async function deleteCategory(id) {
-  const { data } = await axios.delete(`/api/category/${id}`);
+  const { data } = await axios.delete(`/api/category/admin/${id}`);
   return data;
 }
