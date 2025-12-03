@@ -10,6 +10,12 @@ import "./Sidebar.css";
 
 const menuItems = [
   {
+    id: "posts",
+    label: "Quản lý bài đăng",
+    Icon: FaRegNewspaper,
+    path: "/admin/post_management",
+  },
+  {
     id: "pending",
     label: "Chờ duyệt",
     Icon: AiOutlineCheckCircle,

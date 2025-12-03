@@ -10,9 +10,9 @@ import PostCategory from "./pages/PostCategory";
 import Chat from "./pages/Chat";
 import NewPost from "./pages/NewPost";
 // import PostManagement from "./pages/admin/PostManagement";
-import AccountManagement from "./pages/admin/AccountManagement";
-import ReportManagement from "./pages/admin/ReportManagement";
-import PendingManagement from "./pages/admin/PendingManagement";
+// import AccountManagement from "./pages/admin/AccountManagement";
+// import ReportManagement from "./pages/admin/ReportManagement";
+// import PendingManagement from "./pages/admin/PendingManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import EditPost from "./pages/EditPost";
 import EditProfile from "./pages/EditProfile";
@@ -32,7 +32,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/new-post" element={<NewPost />} />
 
-        {/* <Route path="/admin/post_management" element={<PostManagement />} /> */}
+        {/* <Route path="/admin/post_management" element={<PostManagement />} />
         <Route
           path="/admin/account_management"
           element={<AccountManagement />}
@@ -41,7 +41,7 @@ function App() {
         <Route
           path="/admin/pending_management"
           element={<PendingManagement />}
-        />
+        /> */}
         <Route
           path="/admin/category_management"
           element={<CategoryManagement />}

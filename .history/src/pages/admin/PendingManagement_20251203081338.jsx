@@ -1,100 +1,74 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
+import "./PendingManagement.css";
 
-export default function PostManagement() {
-  const placeholder = "/mnt/data/887cc92c-3a5f-4b42-9bc2-be399aca267b.png";
-
+const PendingManagement = () => {
+  // Fake data
   const initialData = React.useMemo(
     () => [
       {
         id: 1,
-        title: "Bài đăng test 1",
+        title: "Xe đạp cũ cần trao đổi",
         category: "Xe",
-        author: "Người A",
-        date: "01-11-2025",
-        image: placeholder,
-        locked: false,
+        author: "Nguyễn Văn A",
+        date: "15-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 2,
-        title: "Bài đăng test 2",
-        category: "Đồ gia dụng",
-        author: "Người B",
-        date: "02-11-2025",
-        image: placeholder,
-        locked: true,
+        title: "Bàn ghế gỗ tự nhiên",
+        category: "Nội thất",
+        author: "Trần Thị B",
+        date: "14-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 3,
-        title: "Bài đăng test 3",
-        category: "Quần áo",
-        author: "Người C",
-        date: "03-11-2025",
-        image: placeholder,
-        locked: false,
+        title: "Laptop Dell cũ",
+        category: "Điện tử",
+        author: "Lê Văn C",
+        date: "13-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 4,
-        title: "Bài đăng test 4",
-        category: "Điện tử",
-        author: "Người D",
-        date: "04-11-2025",
-        image: placeholder,
-        locked: true,
+        title: "Quần áo trẻ em",
+        category: "Quần áo",
+        author: "Phạm Thị D",
+        date: "12-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 5,
-        title: "Bài đăng test 5",
+        title: "Sách giáo khoa lớp 10",
         category: "Sách",
-        author: "Người E",
-        date: "05-11-2025",
-        image: placeholder,
-        locked: false,
+        author: "Hoàng Văn E",
+        date: "11-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 6,
-        title: "Bài đăng test 6",
+        title: "Đồ chơi LEGO",
         category: "Đồ chơi",
-        author: "Người F",
-        date: "06-11-2025",
-        image: placeholder,
-        locked: true,
+        author: "Vũ Thị F",
+        date: "10-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 7,
-        title: "Bài đăng test 7",
-        category: "Nội thất",
-        author: "Người G",
-        date: "07-11-2025",
-        image: placeholder,
-        locked: false,
+        title: "Tủ lạnh cũ",
+        category: "Đồ gia dụng",
+        author: "Đỗ Văn G",
+        date: "09-01-2025",
+        image: "https://via.placeholder.com/150",
       },
       {
         id: 8,
-        title: "Bài đăng test 8",
-        category: "Thực phẩm",
-        author: "Người H",
-        date: "08-11-2025",
-        image: placeholder,
-        locked: true,
-      },
-      {
-        id: 9,
-        title: "Bài đăng test 9",
-        category: "Đồ dùng học tập",
-        author: "Người I",
-        date: "09-11-2025",
-        image: placeholder,
-        locked: false,
-      },
-      {
-        id: 10,
-        title: "Bài đăng test 10",
+        title: "Giày thể thao Nike",
         category: "Thể thao",
-        author: "Người J",
-        date: "10-11-2025",
-        image: placeholder,
-        locked: true,
+        author: "Bùi Thị H",
+        date: "08-01-2025",
+        image: "https://via.placeholder.com/150",
       },
     ],
     []
@@ -103,7 +77,6 @@ export default function PostManagement() {
   const [data, setData] = React.useState(initialData);
   const [inputValue, setInputValue] = React.useState("");
   const [query, setQuery] = React.useState("");
-  const [filter, setFilter] = React.useState("all"); // 'all' | 'unlocked' | 'locked'
   const [page, setPage] = React.useState(1);
   const perPage = 5;
 
@@ -124,21 +97,16 @@ export default function PostManagement() {
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
-    return data
-      .filter((item) => {
-        if (filter === "unlocked") return !item.locked;
-        if (filter === "locked") return item.locked;
-        return true;
-      })
-      .filter((item) => {
-        if (!q) return true;
-        return (
-          item.title.toLowerCase().includes(q) ||
-          item.author.toLowerCase().includes(q) ||
-          item.category.toLowerCase().includes(q)
-        );
-      });
-  }, [data, query, filter]);
+    return data.filter((item) => {
+      if (!q) return true;
+      return (
+        item.title.toLowerCase().includes(q) ||
+        item.author.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q) ||
+        item.id.toString().includes(q)
+      );
+    });
+  }, [data, query]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const pageData = filtered.slice((page - 1) * perPage, page * perPage);
@@ -148,12 +116,26 @@ export default function PostManagement() {
     setPage(next);
   }
 
-  function toggleLock(id) {
-    setData((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, locked: !item.locked } : item
-      )
-    );
+  function handleView(id) {
+    // TODO: Navigate to post detail
+    console.log("View post:", id);
+    alert(`Xem chi tiết bài đăng ID: ${id}`);
+  }
+
+  function handleApprove(id) {
+    // TODO: Call API to approve
+    console.log("Approve post:", id);
+    setData((prev) => prev.filter((item) => item.id !== id));
+    alert(`Đã duyệt bài đăng ID: ${id}`);
+  }
+
+  function handleDelete(id) {
+    // TODO: Call API to delete
+    if (window.confirm(`Bạn có chắc chắn muốn xóa bài đăng ID: ${id}?`)) {
+      console.log("Delete post:", id);
+      setData((prev) => prev.filter((item) => item.id !== id));
+      alert(`Đã xóa bài đăng ID: ${id}`);
+    }
   }
 
   function getVisiblePages(total, current) {
@@ -166,12 +148,12 @@ export default function PostManagement() {
 
   return (
     <div className="pm-root">
-      <Sidebar active="posts" />
+      <Sidebar active="pending" />
 
       <main className="pm-main">
         <div className="pm-wrapper">
           <div className="pm-header">
-            <h1>Quản lý bài đăng</h1>
+            <h1>Quản lý bài đăng chờ duyệt</h1>
           </div>
 
           <div className="search-row">
@@ -209,67 +191,28 @@ export default function PostManagement() {
                 }}
               />
             </div>
-
-            <div
-              className="filter-group"
-              role="radiogroup"
-              aria-label="Bộ lọc trạng thái"
-            >
-              <button
-                className={`filter-btn ${filter === "all" ? "active" : ""}`}
-                onClick={() => {
-                  setFilter("all");
-                  setPage(1);
-                }}
-                aria-pressed={filter === "all"}
-              >
-                Tất cả
-              </button>
-
-              <button
-                className={`filter-btn ${
-                  filter === "unlocked" ? "active" : ""
-                }`}
-                onClick={() => {
-                  setFilter("unlocked");
-                  setPage(1);
-                }}
-                aria-pressed={filter === "unlocked"}
-              >
-                Không khóa
-              </button>
-
-              <button
-                className={`filter-btn ${filter === "locked" ? "active" : ""}`}
-                onClick={() => {
-                  setFilter("locked");
-                  setPage(1);
-                }}
-                aria-pressed={filter === "locked"}
-              >
-                Đã khóa
-              </button>
-            </div>
           </div>
 
           <div className="table-wrapper">
             <table className="pm-table">
               <colgroup>
-                <col style={{ width: "17%" }} />
+                <col style={{ width: "8%" }} />
+                <col style={{ width: "15%" }} />
                 <col style={{ width: "20%" }} />
-                <col style={{ width: "17%" }} />
-                <col style={{ width: "17%" }} />
-                <col style={{ width: "17%" }} />
+                <col style={{ width: "15%" }} />
+                <col style={{ width: "15%" }} />
                 <col style={{ width: "12%" }} />
+                <col style={{ width: "15%" }} />
               </colgroup>
               <thead>
                 <tr>
-                  <th>Hình ảnh</th>
+                  <th>ID</th>
+                  <th>Ảnh</th>
                   <th>Tiêu đề</th>
-                  <th>Phân loại</th>
+                  <th>Danh mục</th>
                   <th>Người đăng</th>
-                  <th>Thời gian</th>
-                  <th></th>
+                  <th>Ngày đăng</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -278,6 +221,7 @@ export default function PostManagement() {
                     key={row.id}
                     className={idx % 2 === 0 ? "row-even" : "row-odd"}
                   >
+                    <td className="cell-strong">{row.id}</td>
                     <td>
                       <img src={row.image} alt="" className="img-thumb" />
                     </td>
@@ -286,19 +230,36 @@ export default function PostManagement() {
                     <td>{row.author}</td>
                     <td>{row.date}</td>
                     <td>
-                      <button
-                        className={`action-btn ${row.locked ? "locked" : ""}`}
-                        onClick={() => toggleLock(row.id)}
-                      >
-                        {row.locked ? "Bỏ khóa" : "Khóa"}
-                      </button>
+                      <div className="action-buttons">
+                        <button
+                          className="action-icon-btn view-btn"
+                          onClick={() => handleView(row.id)}
+                          title="Xem chi tiết"
+                        >
+                          👁️
+                        </button>
+                        <button
+                          className="action-icon-btn approve-btn"
+                          onClick={() => handleApprove(row.id)}
+                          title="Duyệt"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          className="action-icon-btn delete-btn"
+                          onClick={() => handleDelete(row.id)}
+                          title="Xóa"
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
 
                 {pageData.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="no-data">
+                    <td colSpan={7} className="no-data">
                       Không có dữ liệu
                     </td>
                   </tr>
@@ -338,4 +299,6 @@ export default function PostManagement() {
       </main>
     </div>
   );
-}
+};
+
+export default PendingManagement;
