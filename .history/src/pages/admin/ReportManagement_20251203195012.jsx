@@ -189,7 +189,7 @@ export default function ReportManagement() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all"); // all, pending, resolved
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const filteredReports = useMemo(() => {
     let result = reports;
@@ -221,10 +221,7 @@ export default function ReportManagement() {
     return result;
   }, [reports, search, filterStatus]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredReports.length / rowsPerPage)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredReports.length / rowsPerPage));
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
   const pageData = filteredReports.slice(startIndex, endIndex);
@@ -264,9 +261,7 @@ export default function ReportManagement() {
           `Người báo cáo: ${report.reporterName} (${report.reporterEmail})\n` +
           `Loại: ${getReportedTypeText(report.reportedType)}\n` +
           `Bị báo cáo: ${report.reportedBy}\n` +
-          `${
-            report.reportedTitle ? `Bài đăng: ${report.reportedTitle}\n` : ""
-          }` +
+          `${report.reportedTitle ? `Bài đăng: ${report.reportedTitle}\n` : ""}` +
           `Lý do: ${report.reason}\n` +
           `Trạng thái: ${getStatusColor(report.status).text}\n` +
           `Ngày: ${report.date}`
@@ -443,8 +438,7 @@ export default function ReportManagement() {
                   padding: "8px 16px",
                   borderRadius: "8px",
                   border: "1px solid #d1d5db",
-                  background:
-                    filterStatus === "pending" ? "#fef3c7" : "#ffffff",
+                  background: filterStatus === "pending" ? "#fef3c7" : "#ffffff",
                   color: filterStatus === "pending" ? "#92400e" : "#6b7280",
                   fontSize: "13px",
                   fontWeight: 600,
@@ -957,7 +951,12 @@ export default function ReportManagement() {
                     }
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
                     <path
                       d="M10 12L6 8l4-4"
                       stroke="currentColor"
@@ -1007,7 +1006,12 @@ export default function ReportManagement() {
                     }
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
                     <path
                       d="M6 12l4-4-4-4"
                       stroke="currentColor"
@@ -1025,3 +1029,6 @@ export default function ReportManagement() {
     </div>
   );
 }
+
+
+

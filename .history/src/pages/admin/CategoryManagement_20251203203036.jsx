@@ -27,7 +27,7 @@ export default function CategoryManagement() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     loadCategories();
@@ -753,130 +753,99 @@ export default function CategoryManagement() {
             </div>
           </div>
 
-          {/* Modal Form */}
-          {showForm && (
+        {/* Modal Form */}
+        {showForm && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1050,
+            }}
+            onClick={closeForm}
+          >
             <div
               style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1050,
+                width: "100%",
+                maxWidth: "520px",
+                background: "#ffffff",
+                borderRadius: "12px",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
               }}
-              onClick={closeForm}
+              onClick={(e) => e.stopPropagation()}
             >
               <div
                 style={{
-                  width: "100%",
-                  maxWidth: "520px",
-                  background: "#ffffff",
-                  borderRadius: "12px",
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "16px 20px",
+                  borderBottom: "1px solid #e5e7eb",
                 }}
-                onClick={(e) => e.stopPropagation()}
               >
-                <div
+                <h2
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "16px 20px",
-                    borderBottom: "1px solid #e5e7eb",
+                    margin: 0,
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    color: "#111827",
                   }}
                 >
-                  <h2
-                    style={{
-                      margin: 0,
-                      fontSize: "18px",
-                      fontWeight: 700,
-                      color: "#111827",
-                    }}
-                  >
-                    {isEdit ? "Sửa danh mục" : "Thêm danh mục mới"}
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={closeForm}
-                    aria-label="Close"
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      border: "none",
-                      background: "transparent",
-                      fontSize: "24px",
-                      color: "#6b7280",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "6px",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "#f3f4f6";
-                      e.currentTarget.style.color = "#111827";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "#6b7280";
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
+                  {isEdit ? "Sửa danh mục" : "Thêm danh mục mới"}
+                </h2>
+                <button
+                  type="button"
+                  onClick={closeForm}
+                  aria-label="Close"
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    border: "none",
+                    background: "transparent",
+                    fontSize: "24px",
+                    color: "#6b7280",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "6px",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#f3f4f6";
+                    e.currentTarget.style.color = "#111827";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#6b7280";
+                  }}
+                >
+                  ×
+                </button>
+              </div>
 
-                <form onSubmit={handleSubmit}>
-                  <div style={{ padding: "20px" }}>
-                    {formError && (
-                      <div
-                        style={{
-                          background: "#fee2e2",
-                          color: "#b91c1c",
-                          padding: "10px 12px",
-                          borderRadius: "8px",
-                          fontSize: "14px",
-                          marginBottom: "16px",
-                        }}
-                      >
-                        {formError}
-                      </div>
-                    )}
+              <form onSubmit={handleSubmit}>
+                <div style={{ padding: "20px" }}>
+                  {formError && (
+                    <div
+                      style={{
+                        background: "#fee2e2",
+                        color: "#b91c1c",
+                        padding: "10px 12px",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      {formError}
+                    </div>
+                  )}
 
-                    {isEdit && form.id != null && (
-                      <div style={{ marginBottom: "16px" }}>
-                        <label
-                          style={{
-                            display: "block",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            color: "#374151",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          ID
-                        </label>
-                        <input
-                          value={form.id}
-                          disabled
-                          style={{
-                            width: "100%",
-                            padding: "8px 12px",
-                            borderRadius: "8px",
-                            border: "1px solid #d1d5db",
-                            fontSize: "14px",
-                            outline: "none",
-                            boxSizing: "border-box",
-                            background: "#f9fafb",
-                            color: "#6b7280",
-                            cursor: "not-allowed",
-                          }}
-                        />
-                      </div>
-                    )}
-
+                  {isEdit && form.id != null && (
                     <div style={{ marginBottom: "16px" }}>
                       <label
                         style={{
@@ -887,13 +856,11 @@ export default function CategoryManagement() {
                           marginBottom: "6px",
                         }}
                       >
-                        Tên danh mục <span style={{ color: "#dc2626" }}>*</span>
+                        ID
                       </label>
                       <input
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        placeholder="Nhập tên danh mục"
+                        value={form.id}
+                        disabled
                         style={{
                           width: "100%",
                           padding: "8px 12px",
@@ -902,19 +869,80 @@ export default function CategoryManagement() {
                           fontSize: "14px",
                           outline: "none",
                           boxSizing: "border-box",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "#000080";
-                          e.currentTarget.style.boxShadow =
-                            "0 0 0 3px rgba(0, 0, 128, 0.1)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "#d1d5db";
-                          e.currentTarget.style.boxShadow = "none";
+                          background: "#f9fafb",
+                          color: "#6b7280",
+                          cursor: "not-allowed",
                         }}
                       />
                     </div>
+                  )}
 
+                  <div style={{ marginBottom: "16px" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: "#374151",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Tên danh mục <span style={{ color: "#dc2626" }}>*</span>
+                    </label>
+                    <input
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="Nhập tên danh mục"
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        borderRadius: "8px",
+                        border: "1px solid #d1d5db",
+                        fontSize: "14px",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#000080";
+                        e.currentTarget.style.boxShadow =
+                          "0 0 0 3px rgba(0, 0, 128, 0.1)";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#d1d5db";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "16px" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: "#374151",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Chọn ảnh
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      style={{ width: "100%", fontSize: "13px" }}
+                    />
+                    <div
+                      style={{
+                        marginTop: "4px",
+                        fontSize: "12px",
+                        color: "#9ca3af",
+                      }}
+                    ></div>
+                  </div>
+
+                  {(previewSrc || form.imageUrl) && (
                     <div style={{ marginBottom: "16px" }}>
                       <label
                         style={{
@@ -925,127 +953,98 @@ export default function CategoryManagement() {
                           marginBottom: "6px",
                         }}
                       >
-                        Chọn ảnh
+                        {" "}
                       </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageFileChange}
-                        style={{ width: "100%", fontSize: "13px" }}
-                      />
                       <div
                         style={{
-                          marginTop: "4px",
-                          fontSize: "12px",
-                          color: "#9ca3af",
+                          border: "1px dashed #d1d5db",
+                          borderRadius: "8px",
+                          padding: "8px",
+                          background: "#f9fafb",
+                          textAlign: "center",
                         }}
-                      ></div>
-                    </div>
-
-                    {(previewSrc || form.imageUrl) && (
-                      <div style={{ marginBottom: "16px" }}>
-                        <label
+                      >
+                        <img
+                          src={previewSrc || form.imageUrl}
+                          alt="Xem trước"
                           style={{
-                            display: "block",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            color: "#374151",
-                            marginBottom: "6px",
+                            maxHeight: "180px",
+                            width: "100%",
+                            objectFit: "cover",
+                            borderRadius: "6px",
                           }}
-                        >
-                          {" "}
-                        </label>
-                        <div
-                          style={{
-                            border: "1px dashed #d1d5db",
-                            borderRadius: "8px",
-                            padding: "8px",
-                            background: "#f9fafb",
-                            textAlign: "center",
-                          }}
-                        >
-                          <img
-                            src={previewSrc || form.imageUrl}
-                            alt="Xem trước"
-                            style={{
-                              maxHeight: "180px",
-                              width: "100%",
-                              objectFit: "cover",
-                              borderRadius: "6px",
-                            }}
-                          />
-                        </div>
+                        />
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                </div>
 
-                  <div
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "8px",
+                    padding: "16px 20px",
+                    borderTop: "1px solid #e5e7eb",
+                    background: "#f9fafb",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={closeForm}
                     style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      gap: "8px",
-                      padding: "16px 20px",
-                      borderTop: "1px solid #e5e7eb",
-                      background: "#f9fafb",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid #d1d5db",
+                      background: "#ffffff",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#f9fafb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#ffffff";
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={closeForm}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        background: "#ffffff",
-                        color: "#374151",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f9fafb";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ffffff";
-                      }}
-                    >
-                      Hủy
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #000080",
-                        background: "#000080",
-                        color: "#ffffff",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        opacity: submitting ? 0.7 : 1,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#0000a0";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#000080";
-                      }}
-                    >
-                      {submitting
-                        ? "Đang xử lý..."
-                        : isEdit
-                        ? "Cập nhật"
-                        : "Thêm mới"}
-                    </button>
-                  </div>
-                </form>
-              </div>
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid #000080",
+                      background: "#000080",
+                      color: "#ffffff",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      opacity: submitting ? 0.7 : 1,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#0000a0";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#000080";
+                    }}
+                  >
+                    {submitting
+                      ? "Đang xử lý..."
+                      : isEdit
+                      ? "Cập nhật"
+                      : "Thêm mới"}
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );
