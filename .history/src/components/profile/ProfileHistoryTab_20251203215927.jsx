@@ -293,11 +293,6 @@ const ProfileHistoryTab = ({
                   color: secondary,
                   marginTop: 8,
                   lineHeight: 1.4,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  minHeight: 40,
                 }}
               >
                 {trade.requesterPostTitle}
@@ -371,7 +366,6 @@ const ProfileHistoryTab = ({
                   height: 150,
                   background: "#e5e7eb",
                   borderRadius: 8,
-                  marginLeft: "50px",
                   marginBottom: 8,
                   display: trade.ownerPostImage ? "none" : "flex",
                   alignItems: "center",
@@ -387,14 +381,8 @@ const ProfileHistoryTab = ({
                 style={{
                   fontWeight: 600,
                   fontSize: 14,
-                  marginLeft: "50px",
                   color: secondary,
                   lineHeight: 1.4,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  minHeight: 40,
                 }}
               >
                 {trade.ownerPostTitle}

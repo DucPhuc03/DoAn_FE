@@ -367,9 +367,6 @@ const Chat = () => {
   };
 
   const handleCancelMeeting = async () => {
-    if (!window.confirm("Bạn có chắc chắn muốn hủy lịch hẹn này không?")) {
-      return;
-    }
     if (!selectedConversation?.meeting?.meetingId) return;
 
     try {

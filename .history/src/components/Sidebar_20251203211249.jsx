@@ -12,7 +12,7 @@ import "./Sidebar.css";
 const menuItems = [
   {
     id: "pending",
-    label: "Đang chờ duyệt",
+    label: "Chờ duyệt",
     Icon: AiOutlineCheckCircle,
     path: "/admin/pending_management",
   },

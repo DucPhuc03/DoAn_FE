@@ -417,7 +417,7 @@ export default function CategoryManagement() {
                         fontWeight: 600,
                         color: "#6b7280",
                         borderBottom: "1px solid #e5e7eb",
-                        width: "200px",
+                        width: "400px",
                       }}
                     >
                       Hành động

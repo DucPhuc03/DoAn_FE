@@ -43,7 +43,8 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
+              e.currentTarget.style.boxShadow =
+                "0 2px 8px rgba(0, 0, 0, 0.08)";
               e.currentTarget.style.borderColor = "#e2e8f0";
             }}
           >
@@ -110,7 +111,7 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
                 {post.category && (
                   <span
                     style={{
-                      fontSize: 14,
+                      fontSize: 11,
                       color: primary,
                       fontWeight: 600,
                       overflow: "hidden",
@@ -148,3 +149,10 @@ const ProfilePostsTab = ({ posts, navigate, primary, secondary, surface }) => {
 };
 
 export default ProfilePostsTab;
+
+
+
+
+
+
+

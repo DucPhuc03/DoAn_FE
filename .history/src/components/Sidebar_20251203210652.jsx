@@ -12,7 +12,7 @@ import "./Sidebar.css";
 const menuItems = [
   {
     id: "pending",
-    label: "Đang chờ duyệt",
+    label: "Chờ duyệt",
     Icon: AiOutlineCheckCircle,
     path: "/admin/pending_management",
   },
@@ -39,10 +39,6 @@ const menuItems = [
 export default function Sidebar({ active: activeProp = null, onNavigate }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [adminInfo, setAdminInfo] = React.useState({
-    name: "Admin",
-    avatarUrl: null,
-  });
 
   // determine active from location if not explicitly provided by prop
   const activeFromLocation = React.useMemo(() => {
@@ -55,31 +51,6 @@ export default function Sidebar({ active: activeProp = null, onNavigate }) {
   }, [location.pathname]);
 
   const active = activeProp ?? activeFromLocation;
-
-  React.useEffect(() => {
-    try {
-      // Thử lấy thông tin admin từ một số key phổ biến trong localStorage
-      const rawUser =
-        localStorage.getItem("user") ||
-        localStorage.getItem("userInfo") ||
-        localStorage.getItem("admin");
-
-      if (!rawUser) return;
-
-      const parsed = JSON.parse(rawUser);
-      const name =
-        parsed.fullName ||
-        parsed.username ||
-        parsed.name ||
-        parsed.displayName ||
-        "Admin";
-      const avatarUrl = parsed.avatarUrl || parsed.avatar || null;
-
-      setAdminInfo({ name, avatarUrl });
-    } catch {
-      // ignore parse errors, keep default admin info
-    }
-  }, []);
 
   function handleClick(item) {
     if (item.path) {
@@ -103,23 +74,8 @@ export default function Sidebar({ active: activeProp = null, onNavigate }) {
   return (
     <aside className="sidebar" aria-label="Main navigation">
       <div className="sidebar-inner">
-        <div className="sidebar-user">
-          {adminInfo.avatarUrl ? (
-            <img
-              src={adminInfo.avatarUrl}
-              alt={adminInfo.name}
-              className="sidebar-user-avatar"
-            />
-          ) : (
-            <div className="sidebar-user-avatar sidebar-user-initials">
-              {(adminInfo.name || "A").charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div className="sidebar-user-text">
-            <span className="sidebar-user-name" style={{ fontSize: "16px" }}>
-              {adminInfo.name}
-            </span>
-          </div>
+        <div className="sidebar-brand">
+          <div className="brand-logo">TD</div>
         </div>
 
         <nav className="menu" aria-label="Sidebar menu">

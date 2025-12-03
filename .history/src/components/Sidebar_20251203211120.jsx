@@ -12,7 +12,7 @@ import "./Sidebar.css";
 const menuItems = [
   {
     id: "pending",
-    label: "Đang chờ duyệt",
+    label: "Chờ duyệt",
     Icon: AiOutlineCheckCircle,
     path: "/admin/pending_management",
   },
@@ -116,9 +116,7 @@ export default function Sidebar({ active: activeProp = null, onNavigate }) {
             </div>
           )}
           <div className="sidebar-user-text">
-            <span className="sidebar-user-name" style={{ fontSize: "16px" }}>
-              {adminInfo.name}
-            </span>
+            <span className="sidebar-user-name">{adminInfo.name}</span>
           </div>
         </div>
 
