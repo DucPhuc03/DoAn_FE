@@ -291,7 +291,7 @@ const ProfileHistoryTab = ({
                   width: "70%",
                   fontSize: 14,
                   color: secondary,
-
+                  marginTop: 8,
                   marginLeft: "50px",
                   lineHeight: 1.4,
                   display: "-webkit-box",

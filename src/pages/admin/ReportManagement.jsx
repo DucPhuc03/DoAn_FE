@@ -1025,3 +1025,4 @@ export default function ReportManagement() {
     </div>
   );
 }
+
