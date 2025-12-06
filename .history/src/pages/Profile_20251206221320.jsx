@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, followUser } from "../service/user/UserService";
+import {
+  getProfile,
+  followUser,
+  unfollowUser,
+} from "../service/user/UserService";
 import { getReview } from "../service/review/ReviewService";
 import { getTradeUser } from "../service/trade/TradeService";
 import ProfilePostsTab from "../components/profile/ProfilePostsTab";
@@ -166,54 +170,44 @@ const Profile = () => {
 
   // Handle follow/unfollow
   const handleFollow = React.useCallback(async () => {
-    if (!id || !profileData) return;
-
-    // Optimistic update - change status immediately
-    const currentStatus = profileData.followStatus;
-    let newStatus;
-
-    if (currentStatus === "FOLLOWING") {
-      newStatus = "NOT_FOLLOWING";
-    } else if (
-      currentStatus === "NOT_FOLLOWING" ||
-      currentStatus === "FOLLOW_BACK"
-    ) {
-      newStatus = "FOLLOWING";
-    } else {
-      return;
-    }
-
-    // Update UI immediately
-    setProfileData({
-      ...profileData,
-      followStatus: newStatus,
-    });
-
-    // Call API in background
+    if (!id) return;
     try {
       const response = await followUser(id);
-      if (response?.code === 200) {
-        // Refresh profile to sync with backend
+      if (response?.code === 1000) {
+        setIsFollowing(true);
+        // Refresh profile to update followStatus
         const profileResponse = await getProfile(id);
         if (profileResponse.code === 1000) {
           setProfileData(profileResponse.data);
         }
       } else {
-        // Revert on error
-        setProfileData({
-          ...profileData,
-          followStatus: currentStatus,
-        });
+        alert(response?.message || "Có lỗi xảy ra khi theo dõi");
       }
     } catch (error) {
       console.error("Follow error:", error);
-      // Revert on error
-      setProfileData({
-        ...profileData,
-        followStatus: currentStatus,
-      });
+      alert("Có lỗi xảy ra khi theo dõi");
     }
-  }, [id, profileData]);
+  }, [id]);
+
+  const handleUnfollow = React.useCallback(async () => {
+    if (!id) return;
+    try {
+      const response = await unfollowUser(id);
+      if (response?.code === 1000) {
+        setIsFollowing(false);
+        // Refresh profile to update followStatus
+        const profileResponse = await getProfile(id);
+        if (profileResponse.code === 1000) {
+          setProfileData(profileResponse.data);
+        }
+      } else {
+        alert(response?.message || "Có lỗi xảy ra khi hủy theo dõi");
+      }
+    } catch (error) {
+      console.error("Unfollow error:", error);
+      alert("Có lỗi xảy ra khi hủy theo dõi");
+    }
+  }, [id]);
 
   // Get follow button text and action based on followStatus
   const followButtonInfo = React.useMemo(() => {
@@ -225,7 +219,7 @@ const Profile = () => {
     if (status === "FOLLOWING") {
       return {
         text: "Hủy Theo dõi",
-        action: handleFollow,
+        action: handleUnfollow,
         style: {
           background: "#ef4444",
           color: surface,
@@ -238,7 +232,7 @@ const Profile = () => {
         text: "Theo dõi lại",
         action: handleFollow,
         style: {
-          background: "#caf310ff",
+          background: primary,
           color: surface,
         },
       };
@@ -249,14 +243,20 @@ const Profile = () => {
         text: "Theo dõi",
         action: handleFollow,
         style: {
-          background: "#303a05ff",
+          background: primary,
           color: surface,
         },
       };
     }
 
     return null;
-  }, [profileData?.followStatus, primary, surface, handleFollow]);
+  }, [
+    profileData?.followStatus,
+    primary,
+    surface,
+    handleFollow,
+    handleUnfollow,
+  ]);
 
   if (loading) {
     return (

@@ -166,54 +166,24 @@ const Profile = () => {
 
   // Handle follow/unfollow
   const handleFollow = React.useCallback(async () => {
-    if (!id || !profileData) return;
-
-    // Optimistic update - change status immediately
-    const currentStatus = profileData.followStatus;
-    let newStatus;
-
-    if (currentStatus === "FOLLOWING") {
-      newStatus = "NOT_FOLLOWING";
-    } else if (
-      currentStatus === "NOT_FOLLOWING" ||
-      currentStatus === "FOLLOW_BACK"
-    ) {
-      newStatus = "FOLLOWING";
-    } else {
-      return;
-    }
-
-    // Update UI immediately
-    setProfileData({
-      ...profileData,
-      followStatus: newStatus,
-    });
-
-    // Call API in background
+    if (!id) return;
     try {
       const response = await followUser(id);
-      if (response?.code === 200) {
-        // Refresh profile to sync with backend
+      if (response?.code === 1000) {
+        setIsFollowing(true);
+        // Refresh profile to update followStatus
         const profileResponse = await getProfile(id);
         if (profileResponse.code === 1000) {
           setProfileData(profileResponse.data);
         }
       } else {
-        // Revert on error
-        setProfileData({
-          ...profileData,
-          followStatus: currentStatus,
-        });
+        alert(response?.message || "Có lỗi xảy ra khi theo dõi");
       }
     } catch (error) {
       console.error("Follow error:", error);
-      // Revert on error
-      setProfileData({
-        ...profileData,
-        followStatus: currentStatus,
-      });
+      alert("Có lỗi xảy ra khi theo dõi");
     }
-  }, [id, profileData]);
+  }, [id]);
 
   // Get follow button text and action based on followStatus
   const followButtonInfo = React.useMemo(() => {

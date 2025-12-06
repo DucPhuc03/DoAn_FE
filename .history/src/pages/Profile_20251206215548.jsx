@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, followUser } from "../service/user/UserService";
+import { getProfile } from "../service/user/UserService";
 import { getReview } from "../service/review/ReviewService";
 import { getTradeUser } from "../service/trade/TradeService";
 import ProfilePostsTab from "../components/profile/ProfilePostsTab";
@@ -38,7 +38,6 @@ const Profile = () => {
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [trades, setTrades] = useState([]);
   const [loadingTrades, setLoadingTrades] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
 
   // Compute tabs based on displayHistory
   const userTabs = React.useMemo(() => {
@@ -57,10 +56,6 @@ const Profile = () => {
         const response = await getProfile(userId);
         if (response.code === 1000) {
           setProfileData(response.data);
-          // Set follow status based on followStatus from API
-          if (response.data.followStatus) {
-            setIsFollowing(response.data.followStatus);
-          }
         }
       } catch (err) {
       } finally {
@@ -163,100 +158,6 @@ const Profile = () => {
     if (status === "CANCELLED") return "#ef4444";
     return primary;
   };
-
-  // Handle follow/unfollow
-  const handleFollow = React.useCallback(async () => {
-    if (!id || !profileData) return;
-
-    // Optimistic update - change status immediately
-    const currentStatus = profileData.followStatus;
-    let newStatus;
-
-    if (currentStatus === "FOLLOWING") {
-      newStatus = "NOT_FOLLOWING";
-    } else if (
-      currentStatus === "NOT_FOLLOWING" ||
-      currentStatus === "FOLLOW_BACK"
-    ) {
-      newStatus = "FOLLOWING";
-    } else {
-      return;
-    }
-
-    // Update UI immediately
-    setProfileData({
-      ...profileData,
-      followStatus: newStatus,
-    });
-
-    // Call API in background
-    try {
-      const response = await followUser(id);
-      if (response?.code === 200) {
-        // Refresh profile to sync with backend
-        const profileResponse = await getProfile(id);
-        if (profileResponse.code === 1000) {
-          setProfileData(profileResponse.data);
-        }
-      } else {
-        // Revert on error
-        setProfileData({
-          ...profileData,
-          followStatus: currentStatus,
-        });
-      }
-    } catch (error) {
-      console.error("Follow error:", error);
-      // Revert on error
-      setProfileData({
-        ...profileData,
-        followStatus: currentStatus,
-      });
-    }
-  }, [id, profileData]);
-
-  // Get follow button text and action based on followStatus
-  const followButtonInfo = React.useMemo(() => {
-    if (!profileData?.followStatus) return null;
-
-    const status = profileData.followStatus;
-    if (status === "SELF") return null;
-
-    if (status === "FOLLOWING") {
-      return {
-        text: "Hủy Theo dõi",
-        action: handleFollow,
-        style: {
-          background: "#ef4444",
-          color: surface,
-        },
-      };
-    }
-
-    if (status === "FOLLOW_BACK") {
-      return {
-        text: "Theo dõi lại",
-        action: handleFollow,
-        style: {
-          background: "#caf310ff",
-          color: surface,
-        },
-      };
-    }
-
-    if (status === "NOT_FOLLOWING") {
-      return {
-        text: "Theo dõi",
-        action: handleFollow,
-        style: {
-          background: "#303a05ff",
-          color: surface,
-        },
-      };
-    }
-
-    return null;
-  }, [profileData?.followStatus, primary, surface, handleFollow]);
 
   if (loading) {
     return (
@@ -565,43 +466,12 @@ const Profile = () => {
                 style={{
                   fontSize: 15,
                   color: muted,
-                  marginBottom: 12,
+                  marginBottom: 20,
                   fontWeight: 500,
                 }}
               >
                 @{profileData.username}
               </div>
-              {/* Follow Button */}
-              {followButtonInfo && (
-                <div style={{ marginBottom: 20 }}>
-                  <button
-                    onClick={followButtonInfo.action}
-                    style={{
-                      padding: "10px 24px",
-                      borderRadius: 8,
-                      border: "none",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      transition: "all 0.3s",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      ...followButtonInfo.style,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(0, 0, 0, 0.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 2px 8px rgba(0, 0, 0, 0.1)";
-                    }}
-                  >
-                    {followButtonInfo.text}
-                  </button>
-                </div>
-              )}
               <div
                 style={{
                   display: "flex",
@@ -711,7 +581,7 @@ const Profile = () => {
                       marginBottom: 6,
                     }}
                   >
-                    {profileData.followers.length || 0}
+                    {profileData.followers.size() || 0}
                   </div>
                   <div
                     style={{
@@ -760,7 +630,7 @@ const Profile = () => {
                       marginBottom: 6,
                     }}
                   >
-                    {profileData.following.length || 0}
+                    {profileData.following.size() || 0}
                   </div>
                   <div
                     style={{
