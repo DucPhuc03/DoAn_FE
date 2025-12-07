@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function MapSearchAutocomplete({ onLocationChange }) {
+export default function MapSearchAutocomplete() {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -34,7 +34,7 @@ export default function MapSearchAutocomplete({ onLocationChange }) {
       const lng = e.lngLat.lng;
 
       setMarker(map, lat, lng);
-      onLocationChange?.({ lat, lng });
+      console.log("Lat:", lat, "Lng:", lng);
     });
   }, []);
 
@@ -83,9 +83,12 @@ export default function MapSearchAutocomplete({ onLocationChange }) {
     const lat = detail.result.geometry.location.lat;
     const lng = detail.result.geometry.location.lng;
 
+    console.log("Selected:", item.description);
+    console.log("Lat:", lat);
+    console.log("Lng:", lng);
+
     const map = mapInstanceRef.current;
     setMarker(map, lat, lng);
-    onLocationChange?.({ lat, lng });
   };
 
   return (

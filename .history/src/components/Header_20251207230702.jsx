@@ -128,46 +128,6 @@ const Header = () => {
     }
   };
 
-  // Handle marking notification as read
-  const handleMarkAsRead = async (notificationId, e) => {
-    // Find the notification
-    const notification = notifications.find((n) => n.id === notificationId);
-
-    // If already read, don't do anything
-    if (!notification || notification.read) {
-      return;
-    }
-
-    // Optimistic update - update UI immediately
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((n) =>
-        n.id === notificationId ? { ...n, read: true } : n
-      )
-    );
-
-    // Call API to update read status
-    try {
-      const response = await updateIsRead(notificationId);
-      if (response && response.code !== 1000) {
-        // Revert on error
-        setNotifications((prevNotifications) =>
-          prevNotifications.map((n) =>
-            n.id === notificationId ? { ...n, read: false } : n
-          )
-        );
-        console.error("Failed to mark notification as read:", response);
-      }
-    } catch (error) {
-      // Revert on error
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((n) =>
-          n.id === notificationId ? { ...n, read: false } : n
-        )
-      );
-      console.error("Error marking notification as read:", error);
-    }
-  };
-
   return (
     <header className="bg-white border-bottom border-1 border-light shadow-sm sticky-top">
       <div className="container-fluid px-4">
@@ -319,10 +279,7 @@ const Header = () => {
                             className={`notification-item ${
                               !notification.read ? "unread" : ""
                             }`}
-                            onClick={(e) => {
-                              handleMarkAsRead(notification.id, e);
-                              setShowNotifications(false);
-                            }}
+                            onClick={() => setShowNotifications(false)}
                           >
                             <div
                               className="notification-icon"
@@ -364,16 +321,6 @@ const Header = () => {
                         </div>
                       )}
                     </div>
-                    {notifications.length > 0 && (
-                      <div className="notifications-footer">
-                        <Link
-                          className="text-decoration-none text-primary fw-semibold"
-                          onClick={() => setShowNotifications(false)}
-                        >
-                          Đóng
-                        </Link>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>

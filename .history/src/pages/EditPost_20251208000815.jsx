@@ -103,8 +103,6 @@ const EditPost = () => {
         meetingSpot: post.tradeLocation || "",
         category: post.category?.id ? String(post.category.id) : "",
         condition: post.itemCondition || "",
-        latitude: post.latitude || null,
-        longitude: post.longitude || null,
         images: [],
         existingImages: post.imageUrls || [],
       });
@@ -171,8 +169,6 @@ const EditPost = () => {
         itemCondition: formData.condition,
         tradeLocation: formData.meetingSpot,
         categoryId: Number(formData.category),
-        latitude: location.lat,
-        longitude: location.lng,
         userId: currentUser.id,
       };
 

@@ -297,7 +297,7 @@ const Explore = () => {
                         >
                           {card.title}
                         </h6>
-                        <p className="card-text text-muted mb-1 small d-flex justify-content-between align-items-center">
+                        <p className="card-text text-muted mb-0 small d-flex justify-content-between align-items-center">
                           <span>
                             <i className="bi bi-person me-1"></i>
                             {card.username}
@@ -309,13 +309,11 @@ const Explore = () => {
                             ></i>
                             <span>{card.totalLikes || 0}</span>
                           </span>
+                          <span>
+                            <i className="bi bi-person me-1"></i>
+                            {card.distance || 0} km
+                          </span>
                         </p>
-                        {card.distance !== undefined && card.distance !== null && (
-                          <p className="card-text text-muted mb-0 small d-flex align-items-center">
-                            <i className="bi bi-geo-alt me-1" style={{ fontSize: "0.75rem" }}></i>
-                            <span>{card.distance} km</span>
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>

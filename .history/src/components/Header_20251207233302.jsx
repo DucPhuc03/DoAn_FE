@@ -367,10 +367,11 @@ const Header = () => {
                     {notifications.length > 0 && (
                       <div className="notifications-footer">
                         <Link
+                          to="/notifications"
                           className="text-decoration-none text-primary fw-semibold"
                           onClick={() => setShowNotifications(false)}
                         >
-                          Đóng
+                          Xem tất cả thông báo
                         </Link>
                       </div>
                     )}
