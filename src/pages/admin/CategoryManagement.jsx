@@ -5,7 +5,7 @@ import {
   deleteCategory,
   getCategoryListAdmin,
   updateCategory,
-} from "../../service/category/CategoryService";
+} from "../../service/CategoryService";
 
 const emptyForm = {
   id: null,

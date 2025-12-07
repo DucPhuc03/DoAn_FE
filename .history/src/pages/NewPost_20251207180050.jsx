@@ -4,7 +4,7 @@ import { PiImageSquareDuotone } from "react-icons/pi";
 import { LuMapPin, LuTag } from "react-icons/lu";
 import { getCategoryList } from "../service/CategoryService.js";
 import { createPost } from "../service/PostService.js";
-import ModelMap from "../components/ModelMap.jsx";
+import TestMap from "../components/TestMap.jsx";
 
 const palette = {
   primary: "#6d5dfc",
@@ -263,7 +263,7 @@ const NewPost = () => {
                     Chọn địa điểm
                   </button>
                 </div>
-                <ModelMap />
+                <TestMap />
                 <input
                   type="text"
                   className="form-control rounded-4 mt-2"

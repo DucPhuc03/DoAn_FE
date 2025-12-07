@@ -12,12 +12,12 @@ import {
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Cookies from "js-cookie";
-import { getConversation } from "../service/conversation/ConversationService";
+import { getConversation } from "../service/ConversationService";
 import {
   acceptedMeeting,
   cancelMeeting,
-} from "../service/meeting/MeetingService";
-import { updateTradeStatus } from "../service/trade/TradeService";
+} from "../service/MeetingService";
+import { updateTradeStatus } from "../service/TradeService";
 
 if (typeof window !== "undefined" && typeof window.global === "undefined") {
   window.global = window;

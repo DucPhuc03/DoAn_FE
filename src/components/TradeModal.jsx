@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getDetailTrade } from "../service/trade/TradeService";
+import { getDetailTrade } from "../service/TradeService";
 import ListPostModal from "./ListPostModal";
 
 const TradeModal = ({ onClose, conversation, tradeId }) => {

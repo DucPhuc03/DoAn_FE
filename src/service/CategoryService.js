@@ -1,4 +1,4 @@
-import axios from "../../config/config-axios";
+import axios from "../config/config-axios";
 
 export async function getCategoryList() {
   const { data } = await axios.get("/api/category");
@@ -40,3 +40,4 @@ export async function deleteCategory(id) {
   const { data } = await axios.delete(`/api/category/admin/${id}`);
   return data;
 }
+

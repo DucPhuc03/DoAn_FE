@@ -8,8 +8,8 @@ import {
   updatePostStatus,
   likePost,
   deletePost,
-} from "../service/post/PostService";
-import { createTrade } from "../service/trade/TradeService";
+} from "../service/PostService";
+import { createTrade } from "../service/TradeService";
 
 const PostDetail = () => {
   const { id } = useParams();

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createMeeting } from "../service/meeting/MeetingService";
+import { createMeeting } from "../service/MeetingService";
 
 const PlanModal = ({ onClose, conversation, onSuccess }) => {
   const [formData, setFormData] = useState({

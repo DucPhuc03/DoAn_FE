@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getCategoryList } from "../service/category/CategoryService";
-import { getAllPosts } from "../service/post/PostService";
+import { getCategoryList } from "../service/CategoryService";
+import { getAllPosts } from "../service/PostService";
 
 const Explore = () => {
   const navigate = useNavigate();

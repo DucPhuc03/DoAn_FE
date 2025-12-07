@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
-import { updateTradeStatus } from "../../service/trade/TradeService";
-import { createReview } from "../../service/review/ReviewService";
+import { updateTradeStatus } from "../../service/TradeService";
+import { createReview } from "../../service/ReviewService";
 
 const ProfileHistoryTab = ({
   trades,

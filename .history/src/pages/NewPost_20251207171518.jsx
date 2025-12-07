@@ -4,7 +4,8 @@ import { PiImageSquareDuotone } from "react-icons/pi";
 import { LuMapPin, LuTag } from "react-icons/lu";
 import { getCategoryList } from "../service/CategoryService.js";
 import { createPost } from "../service/PostService.js";
-import ModelMap from "../components/ModelMap.jsx";
+import Map from "../components/Map";
+import TestMap from "../components/TestMap.jsx";
 
 const palette = {
   primary: "#6d5dfc",
@@ -223,6 +224,33 @@ const NewPost = () => {
                   />
                 </div>
               </div>
+
+              <div
+                className="mt-4 p-3 rounded-4"
+                style={{ background: "#fff9f0" }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <span className="fw-semibold">
+                    Điểm gặp mặt <LuMapPin className="ms-1" />
+                  </span>
+                  <button
+                    type="button"
+                    className="btn btn-link text-decoration-none fw-semibold"
+                    style={{ color: palette.primary }}
+                  >
+                    Chọn địa điểm
+                  </button>
+                </div>
+{<iframe src=https://maps.goong.io/maps/embed?mid=dd67e230-a7bc-474d-bb04-dce56a661105&lat=21.026745&long=105.801982&z=12 width="640" height="480"></iframe>}
+                <input
+                  type="text"
+                  className="form-control rounded-4 mt-2"
+                  placeholder="Chọn địa điểm"
+                  value={formData.meetingSpot}
+                  onChange={handleChange("meetingSpot")}
+                />
+              </div>
+
               <div className="row g-3 mt-1 mt-md-3">
                 <SelectionCard
                   label="Danh mục"
@@ -245,31 +273,6 @@ const NewPost = () => {
                     label: item,
                   }))}
                   onChange={handleChange("condition")}
-                />
-              </div>
-              <div
-                className="mt-4 p-3 rounded-4"
-                style={{ background: "#fff9f0" }}
-              >
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <span className="fw-semibold">
-                    Điểm gặp mặt <LuMapPin className="ms-1" />
-                  </span>
-                  <button
-                    type="button"
-                    className="btn btn-link text-decoration-none fw-semibold"
-                    style={{ color: palette.primary }}
-                  >
-                    Chọn địa điểm
-                  </button>
-                </div>
-                <ModelMap />
-                <input
-                  type="text"
-                  className="form-control rounded-4 mt-2"
-                  placeholder="Chọn địa điểm"
-                  value={formData.meetingSpot}
-                  onChange={handleChange("meetingSpot")}
                 />
               </div>
             </div>

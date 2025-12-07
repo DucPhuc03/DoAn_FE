@@ -1,4 +1,4 @@
-import axios from "../../config/config-axios";
+import axios from "../config/config-axios";
 
 export async function getProfile(id) {
   const { data } = await axios.get(`/api/user/profile/${id}`);
@@ -33,3 +33,4 @@ export async function unfollowUser(userId) {
   const { data } = await axios.delete(`/api/user/follow/${userId}`);
   return data;
 }
+

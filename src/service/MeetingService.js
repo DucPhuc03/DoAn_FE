@@ -1,4 +1,4 @@
-import axios from "../../config/config-axios";
+import axios from "../config/config-axios";
 export async function createMeeting(meeting) {
   const { data } = await axios.post(`/api/meeting`, meeting);
   return data;
@@ -15,3 +15,4 @@ export async function getMeetingUser() {
   const { data } = await axios.get(`/api/meeting`);
   return data;
 }
+

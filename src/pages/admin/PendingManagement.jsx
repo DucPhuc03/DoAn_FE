@@ -4,7 +4,7 @@ import {
   getPostAdmin,
   updateStatusPost,
   deletePost,
-} from "../../service/post/PostService";
+} from "../../service/PostService";
 
 export default function PendingManagement() {
   const [posts, setPosts] = useState([]);

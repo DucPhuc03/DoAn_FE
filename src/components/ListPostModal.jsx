@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getPostUser } from "../service/post/PostService";
-import { updateTradePost } from "../service/trade/TradeService";
+import { getPostUser } from "../service/PostService";
+import { updateTradePost } from "../service/TradeService";
 
 const ListPostModal = ({ onClose, userId, tradeId, onSelectPost }) => {
   const surface = "#ffffff";

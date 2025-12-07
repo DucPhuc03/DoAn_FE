@@ -4,7 +4,7 @@ import { PiImageSquareDuotone } from "react-icons/pi";
 import { LuMapPin, LuTag } from "react-icons/lu";
 import { getCategoryList } from "../service/CategoryService.js";
 import { createPost } from "../service/PostService.js";
-import ModelMap from "../components/ModelMap.jsx";
+import Map from "../components/Map";
 
 const palette = {
   primary: "#6d5dfc",
@@ -36,8 +36,6 @@ const NewPost = () => {
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [categoryError, setCategoryError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [mapCenter, setMapCenter] = useState([105.83416, 21.02776]); // Hà Nội
-  const [showMap, setShowMap] = useState(false);
 
   const previews = useMemo(
     () => formData.images.map((img) => ({ src: img.preview, name: img.name })),
@@ -223,6 +221,37 @@ const NewPost = () => {
                   />
                 </div>
               </div>
+
+              <div
+                className="mt-4 p-3 rounded-4"
+                style={{ background: "#fff9f0" }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <span className="fw-semibold">
+                    Điểm gặp mặt <LuMapPin className="ms-1" />
+                  </span>
+                  <button
+                    type="button"
+                    className="btn btn-link text-decoration-none fw-semibold"
+                    style={{ color: palette.primary }}
+                  >
+                    Chọn địa điểm
+                  </button>
+                </div>
+                {formData.meetingSpot ? (
+                  <p className="mb-0 text-dark">{formData.meetingSpot}</p>
+                ) : (
+                  <p className="mb-0 text-danger small"></p>
+                )}
+                <input
+                  type="text"
+                  className="form-control rounded-4 mt-2"
+                  placeholder=""
+                  value={formData.meetingSpot}
+                  onChange={handleChange("meetingSpot")}
+                />
+              </div>
+
               <div className="row g-3 mt-1 mt-md-3">
                 <SelectionCard
                   label="Danh mục"
@@ -245,31 +274,6 @@ const NewPost = () => {
                     label: item,
                   }))}
                   onChange={handleChange("condition")}
-                />
-              </div>
-              <div
-                className="mt-4 p-3 rounded-4"
-                style={{ background: "#fff9f0" }}
-              >
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <span className="fw-semibold">
-                    Điểm gặp mặt <LuMapPin className="ms-1" />
-                  </span>
-                  <button
-                    type="button"
-                    className="btn btn-link text-decoration-none fw-semibold"
-                    style={{ color: palette.primary }}
-                  >
-                    Chọn địa điểm
-                  </button>
-                </div>
-                <ModelMap />
-                <input
-                  type="text"
-                  className="form-control rounded-4 mt-2"
-                  placeholder="Chọn địa điểm"
-                  value={formData.meetingSpot}
-                  onChange={handleChange("meetingSpot")}
                 />
               </div>
             </div>

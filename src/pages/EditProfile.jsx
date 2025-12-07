@@ -5,7 +5,7 @@ import {
   getProfile,
   updateProfile,
   updateAvatar,
-} from "../service/user/UserService";
+} from "../service/UserService";
 import Cookies from "js-cookie";
 
 const EditProfile = () => {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, followUser } from "../service/user/UserService";
-import { getReview } from "../service/review/ReviewService";
-import { getTradeUser } from "../service/trade/TradeService";
+import { getProfile, followUser } from "../service/UserService";
+import { getReview } from "../service/ReviewService";
+import { getTradeUser } from "../service/TradeService";
 import ProfilePostsTab from "../components/profile/ProfilePostsTab";
 import ProfileLikedTab from "../components/profile/ProfileLikedTab";
 import ProfileReviewsTab from "../components/profile/ProfileReviewsTab";

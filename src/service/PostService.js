@@ -1,4 +1,4 @@
-import axios from "../../config/config-axios";
+import axios from "../config/config-axios";
 
 export async function getPostDetail(id) {
   const { data } = await axios.get(`/api/post/${id}`);
@@ -60,3 +60,4 @@ export async function createComment(postId, content) {
   });
   return data;
 }
+

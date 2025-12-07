@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getMeetingUser } from "../service/meeting/MeetingService";
+import { getMeetingUser } from "../service/MeetingService";
 
 const MeetingsModal = ({ onClose }) => {
   const [meetings, setMeetings] = useState([]);
@@ -191,6 +191,7 @@ const MeetingsModal = ({ onClose }) => {
 };
 
 export default MeetingsModal;
+
 
 
 

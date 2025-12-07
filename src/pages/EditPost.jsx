@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { PiImageSquareDuotone } from "react-icons/pi";
 import { LuMapPin, LuTag } from "react-icons/lu";
-import { getCategoryList } from "../service/category/CategoryService.js";
-import { getPostDetail, updatePost } from "../service/post/PostService.js";
+import { getCategoryList } from "../service/CategoryService.js";
+import { getPostDetail, updatePost } from "../service/PostService.js";
 
 const palette = {
   primary: "#6d5dfc",
@@ -449,6 +449,7 @@ const SelectionCard = ({
 );
 
 export default EditPost;
+
 
 
 

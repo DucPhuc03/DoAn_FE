@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { getAllUser, updateUserStatus } from "../../service/user/UserService";
+import { getAllUser, updateUserStatus } from "../../service/UserService";
 
 export default function AccountManagement() {
   const [accounts, setAccounts] = useState([]);
