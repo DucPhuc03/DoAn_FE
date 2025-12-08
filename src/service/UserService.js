@@ -34,6 +34,13 @@ export async function unfollowUser(userId) {
   return data;
 }
 
+export async function reportUser(userId, reason) {
+  const { data } = await axios.post(`/api/user/report/${userId}`, { reason });
+  return data;
+}
+
+
+
 
 
 

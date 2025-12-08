@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, followUser, reportUser } from "../service/UserService";
+import { getProfile, followUser } from "../service/UserService";
 import { getReview } from "../service/ReviewService";
 import { getTradeUser } from "../service/TradeService";
 import ProfilePostsTab from "../components/profile/ProfilePostsTab";
@@ -17,13 +17,11 @@ import {
   FaEdit,
   FaTrash,
   FaCog,
-  FaFlag,
-  FaTrophy,
 } from "react-icons/fa";
 
 const allTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
 
-const primary = "#6366F1"; // Blue
+const primary = "#2563eb"; // Blue
 const secondary = "#1f2937";
 const muted = "#6b7280";
 const surface = "#ffffff";
@@ -41,9 +39,6 @@ const Profile = () => {
   const [trades, setTrades] = useState([]);
   const [loadingTrades, setLoadingTrades] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState("");
-  const [reporting, setReporting] = useState(false);
 
   // Compute tabs based on displayHistory
   const userTabs = React.useMemo(() => {
@@ -263,54 +258,6 @@ const Profile = () => {
     return null;
   }, [profileData?.followStatus, primary, surface, handleFollow]);
 
-  // Handle report user
-  const handleReport = React.useCallback(async () => {
-    if (!id || !reportReason.trim()) return;
-
-    setReporting(true);
-    try {
-      const response = await reportUser(id, reportReason.trim());
-      if (response?.code === 200) {
-        setShowReportModal(false);
-        setReportReason("");
-        alert("Báo cáo đã được gửi thành công!");
-      } else {
-        alert("Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại.");
-      }
-    } catch (error) {
-      console.error("Report error:", error);
-      alert("Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại.");
-    } finally {
-      setReporting(false);
-    }
-  }, [id, reportReason]);
-
-  // Get level badge color and text
-  const getLevelInfo = React.useMemo(() => {
-    if (!profileData?.level) return null;
-
-    const level = profileData.level;
-    let color = "#6b7280";
-    let bgColor = "#f3f4f6";
-    let text = `Cấp ${level}`;
-
-    if (level >= 10) {
-      color = "#f59e0b";
-      bgColor = "#fef3c7";
-      text = `Cấp ${level} - Vàng`;
-    } else if (level >= 5) {
-      color = "#6366f1";
-      bgColor = "#e0e7ff";
-      text = `Cấp ${level} - Bạc`;
-    } else {
-      color = "#10b981";
-      bgColor = "#d1fae5";
-      text = `Cấp ${level} - Đồng`;
-    }
-
-    return { color, bgColor, text };
-  }, [profileData?.level]);
-
   if (loading) {
     return (
       <div style={{ background: bgProfile, minHeight: "100vh" }}>
@@ -492,75 +439,45 @@ const Profile = () => {
             marginTop: "200px",
           }}
         >
-          {/* Level Badge and Edit Profile Button - Top Right */}
-          <div
-            style={{
-              position: "absolute",
-              top: 24,
-              right: 24,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            {/* Level Badge */}
-            {getLevelInfo && (
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "6px 14px",
-                  borderRadius: 20,
-                  background: getLevelInfo.bgColor,
-                  color: getLevelInfo.color,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  marginRight: "100px",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <FaTrophy style={{ fontSize: 20 }} />
-                {getLevelInfo.text}
-              </div>
-            )}
-            {/* Edit Profile Button */}
-            {profileData.canSetting && (
-              <button
-                onClick={() => navigate(`/edit-profile/${id}`)}
-                style={{
-                  background: "#f8f9fa",
-                  color: "#6b7280",
-                  border: "1px solid #e5e7eb",
-                  padding: "10px",
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  transition: "all 0.3s",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#e9ecef";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(0, 0, 0, 0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#f8f9fa";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 8px rgba(0, 0, 0, 0.1)";
-                }}
-                title="Chỉnh sửa hồ sơ"
-              >
-                <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
-              </button>
-            )}
-          </div>
+          {/* Edit Profile Button - Top Right */}
+          {profileData.canSetting && (
+            <button
+              onClick={() => navigate(`/edit-profile/${id}`)}
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 24,
+                background: "#f8f9fa",
+                color: "#6b7280",
+                border: "1px solid #e5e7eb",
+                padding: "10px",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.3s",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#e9ecef";
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#f8f9fa";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(0, 0, 0, 0.1)";
+              }}
+              title="Chỉnh sửa hồ sơ"
+            >
+              <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
+            </button>
+          )}
 
           <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
             {/* Avatar */}
@@ -659,16 +576,9 @@ const Profile = () => {
               >
                 @{profileData.username}
               </div>
-              {/* Follow Button and Report Button */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginBottom: 20,
-                  flexWrap: "wrap",
-                }}
-              >
-                {followButtonInfo && (
+              {/* Follow Button */}
+              {followButtonInfo && (
+                <div style={{ marginBottom: 20 }}>
                   <button
                     onClick={followButtonInfo.action}
                     style={{
@@ -695,44 +605,8 @@ const Profile = () => {
                   >
                     {followButtonInfo.text}
                   </button>
-                )}
-                {/* Report Button */}
-                {profileData.canReport && (
-                  <button
-                    onClick={() => setShowReportModal(true)}
-                    style={{
-                      padding: "10px 24px",
-                      borderRadius: 8,
-                      marginLeft: "480px",
-
-                      color: "#ef4444",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      transition: "all 0.3s",
-                      border: "none",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "#fee2e2";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(239, 68, 68, 0.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = surface;
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 2px 8px rgba(0, 0, 0, 0.1)";
-                    }}
-                  >
-                    <FaFlag style={{ fontSize: 18 }} />
-                  </button>
-                )}
-              </div>
+                </div>
+              )}
               <div
                 style={{
                   display: "flex",
@@ -1098,127 +972,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-
-      {/* Report Modal */}
-      {showReportModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          onClick={() => {
-            if (!reporting) {
-              setShowReportModal(false);
-              setReportReason("");
-            }
-          }}
-        >
-          <div
-            style={{
-              background: surface,
-              borderRadius: 16,
-              padding: "32px",
-              maxWidth: 500,
-              width: "90%",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                color: secondary,
-                marginBottom: 8,
-              }}
-            >
-              Báo cáo người dùng
-            </div>
-            <div
-              style={{
-                fontSize: 14,
-                color: muted,
-                marginBottom: 24,
-              }}
-            >
-              Vui lòng nhập lý do báo cáo cho @{profileData?.username}
-            </div>
-            <textarea
-              value={reportReason}
-              onChange={(e) => setReportReason(e.target.value)}
-              placeholder="Nhập lý do báo cáo..."
-              style={{
-                width: "100%",
-                minHeight: 120,
-                padding: "12px",
-                borderRadius: 8,
-                border: "1px solid #e5e7eb",
-                fontSize: 14,
-                fontFamily: "inherit",
-                resize: "vertical",
-                marginBottom: 24,
-              }}
-              disabled={reporting}
-            />
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                onClick={() => {
-                  setShowReportModal(false);
-                  setReportReason("");
-                }}
-                disabled={reporting}
-                style={{
-                  padding: "10px 24px",
-                  borderRadius: 8,
-                  border: "1px solid #e5e7eb",
-                  background: surface,
-                  color: secondary,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: reporting ? "not-allowed" : "pointer",
-                  opacity: reporting ? 0.5 : 1,
-                }}
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleReport}
-                disabled={reporting || !reportReason.trim()}
-                style={{
-                  padding: "10px 24px",
-                  borderRadius: 8,
-                  border: "none",
-                  background: "#ef4444",
-                  color: surface,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor:
-                    reporting || !reportReason.trim()
-                      ? "not-allowed"
-                      : "pointer",
-                  opacity: reporting || !reportReason.trim() ? 0.5 : 1,
-                }}
-              >
-                {reporting ? "Đang gửi..." : "Gửi báo cáo"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

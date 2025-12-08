@@ -14,9 +14,9 @@ export async function getPostAdmin() {
   return data;
 }
 
-export async function getAllPosts(title, categoryName, maxDistance, page) {
+export async function getAllPosts(title, categoryName, page) {
   const { data } = await axios.get(
-    `/api/post/search?title=${title}&categoryName=${categoryName}&maxDistance=${maxDistance}&page=${page}&size=18`
+    `/api/post/search?title=${title}&categoryName=${categoryName}&page=${page}&size=18`
   );
   return data;
 }
@@ -60,3 +60,9 @@ export async function createComment(postId, content) {
   });
   return data;
 }
+
+
+
+
+
+

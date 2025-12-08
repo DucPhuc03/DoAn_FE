@@ -492,75 +492,45 @@ const Profile = () => {
             marginTop: "200px",
           }}
         >
-          {/* Level Badge and Edit Profile Button - Top Right */}
-          <div
-            style={{
-              position: "absolute",
-              top: 24,
-              right: 24,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            {/* Level Badge */}
-            {getLevelInfo && (
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "6px 14px",
-                  borderRadius: 20,
-                  background: getLevelInfo.bgColor,
-                  color: getLevelInfo.color,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  marginRight: "100px",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <FaTrophy style={{ fontSize: 20 }} />
-                {getLevelInfo.text}
-              </div>
-            )}
-            {/* Edit Profile Button */}
-            {profileData.canSetting && (
-              <button
-                onClick={() => navigate(`/edit-profile/${id}`)}
-                style={{
-                  background: "#f8f9fa",
-                  color: "#6b7280",
-                  border: "1px solid #e5e7eb",
-                  padding: "10px",
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  transition: "all 0.3s",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#e9ecef";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(0, 0, 0, 0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#f8f9fa";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 8px rgba(0, 0, 0, 0.1)";
-                }}
-                title="Chỉnh sửa hồ sơ"
-              >
-                <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
-              </button>
-            )}
-          </div>
+          {/* Edit Profile Button - Top Right */}
+          {profileData.canSetting && (
+            <button
+              onClick={() => navigate(`/edit-profile/${id}`)}
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 24,
+                background: "#f8f9fa",
+                color: "#6b7280",
+                border: "1px solid #e5e7eb",
+                padding: "10px",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.3s",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#e9ecef";
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#f8f9fa";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(0, 0, 0, 0.1)";
+              }}
+              title="Chỉnh sửa hồ sơ"
+            >
+              <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
+            </button>
+          )}
 
           <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
             {/* Avatar */}
@@ -651,13 +621,41 @@ const Profile = () => {
               </div>
               <div
                 style={{
-                  fontSize: 15,
-                  color: muted,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
                   marginBottom: 12,
-                  fontWeight: 500,
+                  flexWrap: "wrap",
                 }}
               >
-                @{profileData.username}
+                <div
+                  style={{
+                    fontSize: 15,
+                    color: muted,
+                    fontWeight: 500,
+                  }}
+                >
+                  @{profileData.username}
+                </div>
+                {/* Level Badge */}
+                {getLevelInfo && (
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "4px 12px",
+                      borderRadius: 20,
+                      background: getLevelInfo.bgColor,
+                      color: getLevelInfo.color,
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
+                  >
+                    <FaTrophy style={{ fontSize: 12 }} />
+                    {getLevelInfo.text}
+                  </div>
+                )}
               </div>
               {/* Follow Button and Report Button */}
               <div
@@ -703,8 +701,9 @@ const Profile = () => {
                     style={{
                       padding: "10px 24px",
                       borderRadius: 8,
-                      marginLeft: "480px",
+                      marginLeft: "430px",
 
+                      background: surface,
                       color: "#ef4444",
                       fontWeight: 600,
                       fontSize: 14,

@@ -619,17 +619,6 @@ const Chat = () => {
                         cursor: "pointer",
                         background: "#f9fafb",
                         borderBottom: "1px solid #f3f4f6",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = "#f9fafb";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = surface;
-                        }
                       }}
                     >
                       {/* Avatar partner */}
@@ -729,32 +718,16 @@ const Chat = () => {
                               cursor: "pointer",
                               background: isActive ? "#eef2ff" : "#ffffff",
                               borderBottom: "1px solid #f3f4f6",
-                              borderLeft: isActive
-                                ? "3px solid #2563eb"
-                                : "3px solid transparent",
-                              transition: "all 0.3s ease",
-                              transform: "translateX(0)",
-                              boxShadow: "none",
+                              transition: "all 0.2s",
                             }}
                             onMouseEnter={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#f9fafb";
-                                e.currentTarget.style.transform =
-                                  "translateX(4px)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 2px 8px rgba(0, 0, 0, 0.08)";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid #93c5fd";
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#ffffff";
-                                e.currentTarget.style.transform =
-                                  "translateX(0)";
-                                e.currentTarget.style.boxShadow = "none";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid transparent";
                               }
                             }}
                           >

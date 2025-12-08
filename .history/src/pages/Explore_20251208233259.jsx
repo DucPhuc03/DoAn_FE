@@ -177,12 +177,12 @@ const Explore = () => {
                         style={{
                           fontSize: 13,
                           fontWeight: 600,
-
+                          textTransform: "uppercase",
                           letterSpacing: "0.04em",
                           color: "#6b7280",
                         }}
                       >
-                        Chọn khoảng cách bạn muốn
+                        Lọc theo khoảng cách
                       </div>
                     </div>
                     <span
@@ -244,7 +244,7 @@ const Explore = () => {
                       Đặt lại
                     </button>
                     <button
-                      className="btn btn-sm btn-secondary"
+                      className="btn btn-sm btn-primary"
                       style={{
                         fontSize: 13,
                         borderRadius: 999,

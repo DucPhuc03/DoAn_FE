@@ -514,7 +514,7 @@ const Profile = () => {
                   borderRadius: 20,
                   background: getLevelInfo.bgColor,
                   color: getLevelInfo.color,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: 600,
                   marginRight: "100px",
                   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",

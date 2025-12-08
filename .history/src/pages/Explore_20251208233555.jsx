@@ -177,12 +177,12 @@ const Explore = () => {
                         style={{
                           fontSize: 13,
                           fontWeight: 600,
-
+                          textTransform: "uppercase",
                           letterSpacing: "0.04em",
                           color: "#6b7280",
                         }}
                       >
-                        Chọn khoảng cách bạn muốn
+                        Lọc theo khoảng cách
                       </div>
                     </div>
                     <span

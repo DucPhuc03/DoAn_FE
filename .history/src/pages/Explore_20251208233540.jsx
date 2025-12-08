@@ -177,20 +177,28 @@ const Explore = () => {
                         style={{
                           fontSize: 13,
                           fontWeight: 600,
-
+                          textTransform: "uppercase",
                           letterSpacing: "0.04em",
                           color: "#6b7280",
                         }}
                       >
-                        Chọn khoảng cách bạn muốn
+                        Lọc theo khoảng cách
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#9ca3af",
+                        }}
+                      >
+                        Chọn bán kính tìm kiếm quanh vị trí của bạn
                       </div>
                     </div>
                     <span
                       style={{
                         padding: "4px 10px",
                         borderRadius: 999,
-                        backgroundColor: "#eff6ff",
-                        color: "#1d4ed8",
+                        backgroundColor: "#f3f4f6",
+                        color: "#374151",
                         fontSize: 12,
                         fontWeight: 600,
                         whiteSpace: "nowrap",
@@ -216,7 +224,7 @@ const Explore = () => {
                         width: "100%",
                         height: "6px",
                         cursor: "pointer",
-                        accentColor: "#2563eb", // màu primary cho thanh trượt
+                        accentColor: "#6b7280", // xám
                       }}
                     />
                     <div className="d-flex justify-content-between mt-1">
@@ -228,11 +236,14 @@ const Explore = () => {
                   {/* Buttons */}
                   <div className="d-flex justify-content-end gap-2 mt-2">
                     <button
-                      className="btn btn-sm btn-outline-secondary"
+                      className="btn btn-sm"
                       style={{
                         fontSize: 13,
                         borderRadius: 999,
                         padding: "6px 14px",
+                        border: "1px solid #d1d5db",
+                        backgroundColor: "#ffffff",
+                        color: "#4b5563",
                       }}
                       onClick={() => {
                         setMaxDistance(100);
@@ -244,11 +255,15 @@ const Explore = () => {
                       Đặt lại
                     </button>
                     <button
-                      className="btn btn-sm btn-secondary"
+                      className="btn btn-sm"
                       style={{
                         fontSize: 13,
                         borderRadius: 999,
                         padding: "6px 16px",
+                        border: "none",
+                        backgroundColor: "#4b5563", // xám đậm
+                        color: "#f9fafb",
+                        fontWeight: 600,
                       }}
                       onClick={() => {
                         setMaxDistance(tempDistance);

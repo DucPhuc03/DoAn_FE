@@ -619,17 +619,6 @@ const Chat = () => {
                         cursor: "pointer",
                         background: "#f9fafb",
                         borderBottom: "1px solid #f3f4f6",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = "#f9fafb";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = surface;
-                        }
                       }}
                     >
                       {/* Avatar partner */}
@@ -729,32 +718,16 @@ const Chat = () => {
                               cursor: "pointer",
                               background: isActive ? "#eef2ff" : "#ffffff",
                               borderBottom: "1px solid #f3f4f6",
-                              borderLeft: isActive
-                                ? "3px solid #2563eb"
-                                : "3px solid transparent",
-                              transition: "all 0.3s ease",
-                              transform: "translateX(0)",
-                              boxShadow: "none",
+                              transition: "all 0.2s",
                             }}
                             onMouseEnter={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#f9fafb";
-                                e.currentTarget.style.transform =
-                                  "translateX(4px)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 2px 8px rgba(0, 0, 0, 0.08)";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid #93c5fd";
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#ffffff";
-                                e.currentTarget.style.transform =
-                                  "translateX(0)";
-                                e.currentTarget.style.boxShadow = "none";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid transparent";
                               }
                             }}
                           >
@@ -927,7 +900,7 @@ const Chat = () => {
               )}
             </div>
 
-            {/* MIDDLE: title + time + location + status + buttons */}
+            {/* MIDDLE: title + time + location + status */}
             <div
               style={{
                 flex: 1,
@@ -938,7 +911,7 @@ const Chat = () => {
                 gap: 2,
               }}
             >
-              {/* Title sản phẩm (Size 6 Boots) */}
+              {/* Title sản phẩm (giống "Size 6 Boots") */}
               <div
                 style={{
                   fontWeight: 600,
@@ -952,7 +925,7 @@ const Chat = () => {
                 {selectedConversation?.itemTitle || "Đang trao đổi"}
               </div>
 
-              {/* Dòng thời gian + địa điểm */}
+              {/* Dòng thời gian + địa điểm (Dec 08, 10:00 PM · address) */}
               <div
                 style={{
                   fontSize: 13,
@@ -981,93 +954,32 @@ const Chat = () => {
                   : selectedConversation?.username || "Người dùng"}
               </div>
 
-              {/* Trạng thái + nút Đồng ý / Hủy bỏ nếu WAITING & không phải creator */}
+              {/* Trạng thái meeting: Waiting for confirmation */}
               {selectedConversation?.meeting && (
-                <>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      marginTop: 2,
-                      color:
-                        selectedConversation.meeting.status === "WAITING"
-                          ? "#ef4444"
-                          : selectedConversation.meeting.status === "SCHEDULED"
-                          ? "#16a34a"
-                          : "#6b7280",
-                    }}
-                  >
-                    {selectedConversation.meeting.status === "WAITING" &&
-                      (selectedConversation.meeting.creator
-                        ? "Đang chờ xác nhận"
-                        : "Lịch hẹn chờ bạn xác nhận")}
-                    {selectedConversation.meeting.status === "SCHEDULED" &&
-                      "Đã xác nhận lịch hẹn"}
-                    {selectedConversation.meeting.status === "CANCELLED" &&
-                      "Lịch hẹn đã hủy"}
-                  </div>
-
-                  {/* Nếu WAITING + không phải creator → hiện 2 nút */}
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    marginTop: 2,
+                    color:
+                      selectedConversation.meeting.status === "WAITING"
+                        ? "#ef4444"
+                        : selectedConversation.meeting.status === "SCHEDULED"
+                        ? "#16a34a"
+                        : "#6b7280",
+                  }}
+                >
                   {selectedConversation.meeting.status === "WAITING" &&
-                    !selectedConversation.meeting.creator && (
-                      <div
-                        style={{
-                          marginTop: 6,
-                          display: "flex",
-                          gap: 8,
-                        }}
-                      >
-                        <button
-                          onClick={handleAcceptMeeting}
-                          style={{
-                            padding: "6px 14px",
-                            borderRadius: 999,
-                            border: "none",
-                            background: green,
-                            color: surface,
-                            fontSize: 12,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            transition: "all 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "#059669";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = green;
-                          }}
-                        >
-                          Đồng ý
-                        </button>
-                        <button
-                          onClick={handleRejectMeeting}
-                          style={{
-                            padding: "6px 14px",
-                            borderRadius: 999,
-                            border: "none",
-                            background: "#ef4444",
-                            color: surface,
-                            fontSize: 12,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            transition: "all 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "#dc2626";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = "#ef4444";
-                          }}
-                        >
-                          Hủy bỏ
-                        </button>
-                      </div>
-                    )}
-                </>
+                    "Đang chờ xác nhận"}
+                  {selectedConversation.meeting.status === "SCHEDULED" &&
+                    "Đã xác nhận lịch hẹn"}
+                  {selectedConversation.meeting.status === "CANCELLED" &&
+                    "Lịch hẹn đã hủy"}
+                </div>
               )}
             </div>
 
-            {/* RIGHT: các nút action khác */}
+            {/* RIGHT: các nút action giữ nguyên như cũ */}
             <div
               style={{
                 display: "flex",

@@ -182,7 +182,7 @@ const Explore = () => {
                           color: "#6b7280",
                         }}
                       >
-                        Chọn khoảng cách bạn muốn
+                        Chọn khoảng cách bạn muốn tìm kiếm
                       </div>
                     </div>
                     <span

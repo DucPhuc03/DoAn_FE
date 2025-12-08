@@ -619,17 +619,6 @@ const Chat = () => {
                         cursor: "pointer",
                         background: "#f9fafb",
                         borderBottom: "1px solid #f3f4f6",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = "#f9fafb";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = surface;
-                        }
                       }}
                     >
                       {/* Avatar partner */}
@@ -693,7 +682,31 @@ const Chat = () => {
                           alignItems: "center",
                           gap: 8,
                         }}
-                      ></div>
+                      >
+                        <span
+                          style={{
+                            padding: "2px 8px",
+                            borderRadius: 999,
+                            background: "#e5e7eb",
+                            fontSize: 11,
+                            color: "#4b5563",
+                          }}
+                        >
+                          {totalConvs}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 14,
+                            color: "#9ca3af",
+                            transform: isOpen
+                              ? "rotate(90deg)"
+                              : "rotate(0deg)",
+                            transition: "transform 0.15s ease",
+                          }}
+                        >
+                          ▶
+                        </span>
+                      </div>
                     </div>
 
                     {/* LIST CÁC CUỘC TRAO ĐỔI VỚI NGƯỜI NÀY */}
@@ -729,32 +742,16 @@ const Chat = () => {
                               cursor: "pointer",
                               background: isActive ? "#eef2ff" : "#ffffff",
                               borderBottom: "1px solid #f3f4f6",
-                              borderLeft: isActive
-                                ? "3px solid #2563eb"
-                                : "3px solid transparent",
-                              transition: "all 0.3s ease",
-                              transform: "translateX(0)",
-                              boxShadow: "none",
+                              transition: "all 0.2s",
                             }}
                             onMouseEnter={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#f9fafb";
-                                e.currentTarget.style.transform =
-                                  "translateX(4px)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 2px 8px rgba(0, 0, 0, 0.08)";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid #93c5fd";
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!isActive) {
                                 e.currentTarget.style.background = "#ffffff";
-                                e.currentTarget.style.transform =
-                                  "translateX(0)";
-                                e.currentTarget.style.boxShadow = "none";
-                                e.currentTarget.style.borderLeft =
-                                  "3px solid transparent";
                               }
                             }}
                           >
@@ -853,180 +850,173 @@ const Chat = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 16,
-              padding: "12px 20px",
+              gap: 12,
+              padding: "16px 20px",
               borderBottom: "1px solid #e5e7eb",
             }}
           >
-            {/* LEFT: avatar + thumbnail sản phẩm */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                flexShrink: 0,
-              }}
-            >
-              {/* Avatar */}
-              {selectedConversation?.userAvatar ? (
-                <img
-                  src={selectedConversation.userAvatar}
-                  alt={selectedConversation.username || "Người dùng"}
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: "50%",
-                    background: "#e5e7eb",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "#9ca3af",
-                    fontSize: 20,
-                  }}
-                >
-                  {selectedConversation?.username?.charAt(0) || "U"}
-                </div>
-              )}
+            {/* Avatar */}
+            {selectedConversation?.userAvatar ? (
+              <img
+                src={selectedConversation.userAvatar}
+                alt={selectedConversation.username || "Người dùng"}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "#e5e7eb",
+                  display: "grid",
+                  placeItems: "center",
+                  color: "#9ca3af",
+                  fontSize: 20,
+                }}
+              >
+                {selectedConversation?.username?.charAt(0) || "U"}
+              </div>
+            )}
 
-              {/* Thumbnail sản phẩm */}
-              {selectedConversation?.itemImage ? (
-                <img
-                  src={selectedConversation.itemImage}
-                  alt={selectedConversation.itemTitle || "Sản phẩm"}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 8,
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 8,
-                    background: "#ede9fe",
-                    color: "#6d5dfc",
-                    display: "grid",
-                    placeItems: "center",
-                    fontWeight: 600,
-                    fontSize: 14,
-                  }}
-                >
-                  {selectedConversation?.itemTitle?.charAt(0) || "?"}
-                </div>
-              )}
-            </div>
-
-            {/* MIDDLE: title + time + location + status + buttons */}
+            {/* User Info */}
             <div
               style={{
                 flex: 1,
-                minWidth: 0,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
-                gap: 2,
+                gap: 8,
               }}
             >
-              {/* Title sản phẩm (Size 6 Boots) */}
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: 16,
-                  color: "#1f2937",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {selectedConversation?.itemTitle || "Đang trao đổi"}
+              <div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: 16,
+                    color: "#1f2937",
+                    width: "200px",
+                  }}
+                >
+                  {selectedConversation?.username || "Người dùng"}
+                </div>
+                <div style={{ fontSize: 13, color: "#6b7280", width: "200px" }}>
+                  {selectedConversation?.itemTitle || "Đang trao đổi"}
+                </div>
               </div>
-
-              {/* Dòng thời gian + địa điểm */}
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "#4b5563",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {selectedConversation?.meeting
-                  ? [
-                      selectedConversation.meeting.meetingDate
-                        ? new Date(
-                            selectedConversation.meeting.meetingDate
-                          ).toLocaleString("vi-VN", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        : null,
-                      selectedConversation.meeting.location,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")
-                  : selectedConversation?.username || "Người dùng"}
-              </div>
-
-              {/* Trạng thái + nút Đồng ý / Hủy bỏ nếu WAITING & không phải creator */}
+              {/* Meeting Info */}
               {selectedConversation?.meeting && (
-                <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 16,
+                    flexWrap: "wrap",
+                  }}
+                >
                   <div
                     style={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      marginTop: 2,
-                      color:
-                        selectedConversation.meeting.status === "WAITING"
-                          ? "#ef4444"
-                          : selectedConversation.meeting.status === "SCHEDULED"
-                          ? "#16a34a"
-                          : "#6b7280",
+                      padding: "8px 12px",
+                      color: "black",
+                      fontSize: 16,
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 16,
+                      flexWrap: "wrap",
                     }}
                   >
-                    {selectedConversation.meeting.status === "WAITING" &&
-                      (selectedConversation.meeting.creator
-                        ? "Đang chờ xác nhận"
-                        : "Lịch hẹn chờ bạn xác nhận")}
-                    {selectedConversation.meeting.status === "SCHEDULED" &&
-                      "Đã xác nhận lịch hẹn"}
-                    {selectedConversation.meeting.status === "CANCELLED" &&
-                      "Lịch hẹn đã hủy"}
-                  </div>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                      }}
+                    >
+                      <i className="bi bi-calendar-event"></i>
+                      Lịch hẹn
+                    </div>
 
-                  {/* Nếu WAITING + không phải creator → hiện 2 nút */}
-                  {selectedConversation.meeting.status === "WAITING" &&
-                    !selectedConversation.meeting.creator && (
+                    {selectedConversation.meeting.meetingDate && (
                       <div
                         style={{
-                          marginTop: 6,
                           display: "flex",
-                          gap: 8,
+                          alignItems: "center",
+                          gap: 6,
                         }}
                       >
+                        <i
+                          className="bi bi-calendar"
+                          style={{ fontSize: 11 }}
+                        ></i>
+                        <span>
+                          {new Date(
+                            selectedConversation.meeting.meetingDate
+                          ).toLocaleDateString("vi-VN")}
+                        </span>
+                      </div>
+                    )}
+                    {selectedConversation.meeting.time && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                        }}
+                      >
+                        <i className="bi bi-clock" style={{ fontSize: 11 }}></i>
+                        <span>{selectedConversation.meeting.time}</span>
+                      </div>
+                    )}
+                    {selectedConversation.meeting.location && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                        }}
+                      >
+                        <i
+                          className="bi bi-geo-alt"
+                          style={{ fontSize: 11 }}
+                        ></i>
+                        <span>{selectedConversation.meeting.location}</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Meeting Status - Creator waiting */}
+                  {selectedConversation.meeting.creator &&
+                    selectedConversation.meeting.status === "WAITING" && (
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: "#ef4444",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Đang chờ xác nhận
+                      </div>
+                    )}
+                  {/* Accept/Reject Buttons */}
+                  {!selectedConversation.meeting.creator &&
+                    selectedConversation.meeting.status === "WAITING" && (
+                      <div style={{ display: "flex", gap: 8 }}>
                         <button
                           onClick={handleAcceptMeeting}
                           style={{
-                            padding: "6px 14px",
-                            borderRadius: 999,
+                            padding: "8px 16px",
                             border: "none",
+                            borderRadius: 8,
                             background: green,
                             color: surface,
-                            fontSize: 12,
                             fontWeight: 600,
+                            fontSize: 14,
                             cursor: "pointer",
                             transition: "all 0.2s",
                           }}
@@ -1042,13 +1032,13 @@ const Chat = () => {
                         <button
                           onClick={handleRejectMeeting}
                           style={{
-                            padding: "6px 14px",
-                            borderRadius: 999,
+                            padding: "8px 16px",
                             border: "none",
-                            background: "#ef4444",
+                            borderRadius: 8,
+                            background: "#c33131ff",
                             color: surface,
-                            fontSize: 12,
                             fontWeight: 600,
+                            fontSize: 14,
                             cursor: "pointer",
                             transition: "all 0.2s",
                           }}
@@ -1059,15 +1049,40 @@ const Chat = () => {
                             e.currentTarget.style.background = "#ef4444";
                           }}
                         >
-                          Hủy bỏ
+                          Từ chối
                         </button>
                       </div>
                     )}
-                </>
+                  {/* Cancel Meeting Button */}
+                  {selectedConversation.meeting.status === "SCHEDULED" && (
+                    <button
+                      onClick={handleCancelMeeting}
+                      style={{
+                        padding: "8px 16px",
+                        border: "none",
+                        borderRadius: 8,
+                        background: "#ef4444",
+                        color: surface,
+                        fontWeight: 600,
+                        fontSize: 14,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#dc2626";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "#ef4444";
+                      }}
+                    >
+                      Hủy lịch
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
-            {/* RIGHT: các nút action khác */}
+            {/* Action Buttons */}
             <div
               style={{
                 display: "flex",
@@ -1098,7 +1113,6 @@ const Chat = () => {
               >
                 Xem
               </button>
-
               {selectedConversation?.meeting ? (
                 <>
                   {selectedConversation.meeting.canEdit && (
@@ -1150,7 +1164,6 @@ const Chat = () => {
                   Lên lịch
                 </button>
               )}
-
               <div style={{ position: "relative" }}>
                 <button
                   style={{
