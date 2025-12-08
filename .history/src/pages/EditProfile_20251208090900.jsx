@@ -20,28 +20,13 @@ const EditProfile = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState(null);
-  const [location, setLocation] = useState({
-    lat: null,
-    lng: null,
-  });
 
-  const handleLocationChange = ({ lat, lng }) => {
-    console.log("Nhận từ Map:", lat, lng);
-    setLocation({ lat, lng });
-    setFormData((prev) => ({
-      ...prev,
-      latitude: lat,
-      longitude: lng,
-    }));
-  };
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
     address: "",
     bio: "",
     email: "",
-    latitude: null,
-    longitude: null,
   });
 
   useEffect(() => {
@@ -60,8 +45,6 @@ const EditProfile = () => {
           address: profile.address || "",
           bio: profile.bio || "",
           email: profile.email || "",
-          latitude: profile.latitude || null,
-          longitude: profile.longitude || null,
         });
         // Set current avatar
         if (profile.avatarUrl) {
@@ -552,7 +535,7 @@ const EditProfile = () => {
                   ></i>
                   Địa chỉ
                 </label>
-                <ModelMap onLocationChange={handleLocationChange} />
+                <ModelMap />
                 <input
                   type="text"
                   value={formData.address}

@@ -30,8 +30,8 @@ const EditProfile = () => {
     setLocation({ lat, lng });
     setFormData((prev) => ({
       ...prev,
-      latitude: lat,
-      longitude: lng,
+      latitude: location.lat,
+      longitude: location.lng,
     }));
   };
   const [formData, setFormData] = useState({

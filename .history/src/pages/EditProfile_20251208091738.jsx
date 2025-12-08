@@ -28,11 +28,6 @@ const EditProfile = () => {
   const handleLocationChange = ({ lat, lng }) => {
     console.log("Nhận từ Map:", lat, lng);
     setLocation({ lat, lng });
-    setFormData((prev) => ({
-      ...prev,
-      latitude: lat,
-      longitude: lng,
-    }));
   };
   const [formData, setFormData] = useState({
     fullName: "",
@@ -40,8 +35,8 @@ const EditProfile = () => {
     address: "",
     bio: "",
     email: "",
-    latitude: null,
-    longitude: null,
+    latitude: location.lat || "",
+    longitude: location.lng || "",
   });
 
   useEffect(() => {
@@ -60,8 +55,8 @@ const EditProfile = () => {
           address: profile.address || "",
           bio: profile.bio || "",
           email: profile.email || "",
-          latitude: profile.latitude || null,
-          longitude: profile.longitude || null,
+          latitude: profile.latitude || "",
+          longitude: profile.longitude || "",
         });
         // Set current avatar
         if (profile.avatarUrl) {

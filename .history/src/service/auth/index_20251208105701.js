@@ -7,7 +7,7 @@ export async function login(payload) {
   return data;
 }
 export async function loginGoogle(code) {
-  const { data } = await axios.post(`/api/auth/login-google?code=${code}`);
+  const { data } = await axios.post("/api/auth/login-google", code);
   return data;
 }
 
