@@ -439,7 +439,7 @@
 .profile-tabs-header {
     display: flex;
     gap: 8px;
-    padding: 24px 32px 0 32px;
+    padding: 24px 26px 0 26px;
     border: 2px solid #f1f5f9;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -453,7 +453,7 @@
     border-radius: 10px;
     font-weight: 600;
     font-size: 15px;
-    margin-bottom: 8px;
+    margin-bottom: -2px;
     cursor: pointer;
     transition: all 0.3s;
     position: relative;

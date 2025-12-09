@@ -245,55 +245,63 @@ const PostDetail = () => {
         <div className="row g-5 mb-4">
           {/* Left Column - Image Gallery and Poster Info */}
           <div className="col-lg-6 ms-5 ">
-            {/* Image Gallery */}
-            <div className="postdetail-gallery">
+            {/* Image Gallery with Thumbnails on Left */}
+            <div className="postdetail-gallery-container">
               {post.imageUrls && post.imageUrls.length > 0 ? (
                 <>
-                  <img
-                    src={post.imageUrls[currentImageIndex]}
-                    alt={`${post.title} - ${currentImageIndex + 1}`}
-                    className="postdetail-gallery-image"
-                  />
-                  {/* Navigation Arrows */}
+                  {/* Thumbnails Column - Left Side */}
                   {post.imageUrls.length > 1 && (
-                    <>
-                      <button
-                        className="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-3 rounded-circle shadow-sm postdetail-gallery-nav"
-                        onClick={prevImage}
-                      >
-                        <i className="bi bi-chevron-left"></i>
-                      </button>
-                      <button
-                        className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle shadow-sm postdetail-gallery-nav"
-                        onClick={nextImage}
-                      >
-                        <i className="bi bi-chevron-right"></i>
-                      </button>
-                      {/* Image Indicators */}
-                      <div
-                        className="position-absolute bottom-0 start-50 translate-middle-x mb-3 d-flex gap-2"
-                        style={{ zIndex: 10 }}
-                      >
-                        {post.imageUrls.map((_, index) => (
-                          <button
-                            key={index}
-                            className={`btn rounded-circle p-0 postdetail-gallery-indicator ${
-                              index === currentImageIndex
-                                ? "bg-primary"
-                                : "bg-white opacity-75"
-                            }`}
-                            onClick={() => setCurrentImageIndex(index)}
+                    <div className="postdetail-thumbnails">
+                      {post.imageUrls.map((url, index) => (
+                        <div
+                          key={index}
+                          className={`postdetail-thumbnail ${
+                            index === currentImageIndex ? "active" : ""
+                          }`}
+                          onClick={() => setCurrentImageIndex(index)}
+                        >
+                          <img
+                            src={url}
+                            alt={`Thumbnail ${index + 1}`}
                           />
-                        ))}
-                      </div>
-                    </>
+                        </div>
+                      ))}
+                    </div>
                   )}
+                  
+                  {/* Main Image - Right Side */}
+                  <div className="postdetail-gallery">
+                    <img
+                      src={post.imageUrls[currentImageIndex]}
+                      alt={`${post.title} - ${currentImageIndex + 1}`}
+                      className="postdetail-gallery-image"
+                    />
+                    {/* Navigation Arrows */}
+                    {post.imageUrls.length > 1 && (
+                      <>
+                        <button
+                          className="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-3 rounded-circle shadow-sm postdetail-gallery-nav"
+                          onClick={prevImage}
+                        >
+                          <i className="bi bi-chevron-left"></i>
+                        </button>
+                        <button
+                          className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle shadow-sm postdetail-gallery-nav"
+                          onClick={nextImage}
+                        >
+                          <i className="bi bi-chevron-right"></i>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </>
               ) : (
-                <div className="postdetail-no-image">
-                  <div className="text-center">
-                    <i className="bi bi-image text-muted"></i>
-                    <p className="text-muted mt-2">Không có hình ảnh</p>
+                <div className="postdetail-gallery">
+                  <div className="postdetail-no-image">
+                    <div className="text-center">
+                      <i className="bi bi-image text-muted"></i>
+                      <p className="text-muted mt-2">Không có hình ảnh</p>
+                    </div>
                   </div>
                 </div>
               )}

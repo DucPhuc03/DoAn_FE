@@ -1,0 +1,339 @@
+/* ==========================================
+   EXPLORE PAGE STYLES
+   ========================================== */
+
+/* ==========================================
+   Container
+   ========================================== */
+.explore-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+/* ==========================================
+   Search Section
+   ========================================== */
+.explore-search-wrapper {
+    max-width: 600px;
+    width: 100%;
+}
+
+.explore-search-input {
+    font-size: 1.1rem;
+}
+
+.explore-search-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    margin-right: 12px;
+    padding: 0;
+}
+
+/* ==========================================
+   Filter Controls
+   ========================================== */
+.explore-filter-btn {
+    position: absolute;
+}
+
+.explore-filter-btn-location,
+.explore-filter-btn-distance {
+    padding: 8px 16px;
+    border-radius: 999px;
+}
+
+/* ==========================================
+   Distance Filter Modal
+   ========================================== */
+.explore-distance-modal {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+    min-width: 320px;
+    z-index: 1000;
+    border: 1px solid #e5e7eb;
+    padding: 16px 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.explore-distance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.explore-distance-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+}
+
+.explore-distance-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.explore-distance-slider {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+.explore-distance-btn-reset {
+    font-size: 13px;
+    border-radius: 999px;
+    padding: 6px 14px;
+}
+
+.explore-distance-btn-apply {
+    font-size: 13px;
+    border-radius: 999px;
+    padding: 6px 16px;
+}
+
+/* ==========================================
+   Topics Section
+   ========================================== */
+.explore-topics-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.topic-scroll {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+}
+
+.topic-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.topic-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+}
+
+.topic-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+.explore-topic-item {
+    min-width: 120px;
+    cursor: pointer;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.explore-topic-image-wrapper {
+    height: 80px;
+    width: 120px;
+    background: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.explore-topic-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.explore-topic-image:hover {
+    transform: scale(1.1);
+}
+
+.explore-topic-name {
+    font-weight: 600;
+    color: #111827;
+}
+
+.explore-topic-name.active {
+    color: #2563eb;
+}
+
+.explore-category-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+/* ==========================================
+   Content Grid
+   ========================================== */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.explore-loading,
+.explore-empty {
+    text-align: center;
+    color: #6b7280;
+    width: 100%;
+    padding: 24px 0;
+}
+
+/* ==========================================
+   Post Cards
+   ========================================== */
+.explore-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.explore-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.explore-card-image-wrapper {
+    height: 150px;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    position: relative;
+}
+
+.explore-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.explore-card:hover .explore-card-image {
+    transform: scale(1.08);
+}
+
+.explore-card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+}
+
+.explore-card-content {
+    padding: 8px;
+}
+
+.explore-card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explore-card-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.explore-card-likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.explore-card-likes i {
+    color: #ef4444;
+    font-size: 0.8rem;
+}
+
+.explore-card-distance {
+    font-size: 0.85rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+}
+
+.explore-card-distance i {
+    font-size: 0.75rem;
+    margin-right: 4px;
+}
+
+/* ==========================================
+   Pagination
+   ========================================== */
+.explore-pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.explore-page-btn {
+    border: none;
+    background: transparent;
+    color: #1f2937;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.explore-page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.explore-page-number {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    margin: 0 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.explore-page-number.active {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.explore-page-number:not(.active) {
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.explore-page-number:hover:not(.active) {
+    background: #f3f4f6;
+}

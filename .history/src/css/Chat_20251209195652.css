@@ -13,8 +13,8 @@
 .chat-container {
     display: flex;
     height: calc(100vh - 80px);
-    margin-left: 50px;
-    margin-right: 50px;
+    padding: 16px 40px;
+    gap: 16px;
 }
 
 /* ==========================================
@@ -26,6 +26,7 @@
     border-right: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* Tabs */
@@ -455,7 +456,6 @@
     overflow-y: auto;
     padding: 20px;
     background: #f8f9fa;
-    border-right: 2px solid #e5e7eb
 }
 
 .chat-message {

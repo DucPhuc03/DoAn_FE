@@ -448,12 +448,12 @@
 }
 
 .profile-tab-btn {
-    padding: 12px 24px;
+    
     border: none;
     border-radius: 10px;
     font-weight: 600;
     font-size: 15px;
-    margin-bottom: 8px;
+    margin-bottom: -2px;
     cursor: pointer;
     transition: all 0.3s;
     position: relative;

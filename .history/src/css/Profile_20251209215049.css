@@ -124,8 +124,7 @@
    ========================================== */
 .profile-card {
     background: #ffffff;
-    border-top-left-radius: 20px;
-     border-top-right-radius: 20px;
+    border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     padding: 40px;
     position: relative;
@@ -426,25 +425,22 @@
    Tabs Section
    ========================================== */
 .profile-tabs-container {
-   
+    margin:  0 0;
     
    
     min-height: 340px;
     padding: 0;
     
     overflow: hidden;
-    
 }
 
 .profile-tabs-header {
     display: flex;
     gap: 8px;
     padding: 24px 32px 0 32px;
-    border: 2px solid #f1f5f9;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+   
     align-items: center;
-    background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+    
 }
 
 .profile-tab-btn {
@@ -453,7 +449,7 @@
     border-radius: 10px;
     font-weight: 600;
     font-size: 15px;
-    margin-bottom: 8px;
+    margin-bottom: -2px;
     cursor: pointer;
     transition: all 0.3s;
     position: relative;
