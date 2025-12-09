@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import "../../css/ReportManagement.css";
 
 export default function ReportManagement() {
   // Fake data
@@ -292,57 +293,19 @@ export default function ReportManagement() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#F8F8F8",
-      }}
-    >
+    <div className="report-layout">
       <Sidebar active="report" />
 
-      <main style={{ flex: 1, padding: "24px" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+      <main className="report-main">
+        <div className="report-container">
           {/* Header */}
-          <div style={{ marginBottom: "20px" }}>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: 700,
-                color: "#000",
-              }}
-            >
-              Quản lý báo cáo
-            </h1>
+          <div className="report-header">
+            <h1 className="report-title">Quản lý báo cáo</h1>
           </div>
 
           {/* Top Bar: Filter, Search, Status Filter */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "16px",
-              flexWrap: "wrap",
-            }}
-          >
-            <button
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "8px",
-                border: "1px solid #d1d5db",
-                background: "#ffffff",
-                color: "#6b7280",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-              }}
-              title="Filter"
-            >
+          <div className="report-topbar" style={{ flexWrap: "wrap" }}>
+            <button className="report-filter-btn" title="Filter">
               <svg
                 width="16"
                 height="16"
@@ -359,13 +322,7 @@ export default function ReportManagement() {
               </svg>
             </button>
 
-            <div
-              style={{
-                flex: 1,
-                position: "relative",
-                maxWidth: "400px",
-              }}
-            >
+            <div className="report-search-wrapper">
               <input
                 type="text"
                 value={search}
@@ -374,25 +331,10 @@ export default function ReportManagement() {
                   setPage(1);
                 }}
                 placeholder="Search..."
-                style={{
-                  width: "100%",
-                  padding: "10px 40px 10px 12px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "14px",
-                  outline: "none",
-                  background: "#ffffff",
-                }}
+                className="report-search-input"
               />
               <svg
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "#9ca3af",
-                  pointerEvents: "none",
-                }}
+                className="report-search-icon"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -408,28 +350,17 @@ export default function ReportManagement() {
             </div>
 
             {/* Status Filter */}
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <button
                 onClick={() => {
                   setFilterStatus("all");
                   setPage(1);
                 }}
+                className={`report-btn ${filterStatus === "all" ? "report-btn-view" : ""}`}
                 style={{
                   padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
                   background: filterStatus === "all" ? "#000080" : "#ffffff",
                   color: filterStatus === "all" ? "#ffffff" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
                 }}
               >
                 Tất cả
@@ -439,17 +370,12 @@ export default function ReportManagement() {
                   setFilterStatus("pending");
                   setPage(1);
                 }}
+                className="report-btn"
                 style={{
                   padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  background:
-                    filterStatus === "pending" ? "#fef3c7" : "#ffffff",
+                  background: filterStatus === "pending" ? "#fef3c7" : "#ffffff",
                   color: filterStatus === "pending" ? "#92400e" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
+                  border: "1px solid #d1d5db",
                 }}
               >
                 Chờ xử lý
@@ -459,17 +385,12 @@ export default function ReportManagement() {
                   setFilterStatus("resolved");
                   setPage(1);
                 }}
+                className="report-btn"
                 style={{
                   padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  background:
-                    filterStatus === "resolved" ? "#d1fae5" : "#ffffff",
+                  background: filterStatus === "resolved" ? "#d1fae5" : "#ffffff",
                   color: filterStatus === "resolved" ? "#065f46" : "#6b7280",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
+                  border: "1px solid #d1d5db",
                 }}
               >
                 Đã xử lý
@@ -478,217 +399,46 @@ export default function ReportManagement() {
           </div>
 
           {/* Table */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "12px",
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-              }}
-            >
-              <thead style={{ background: "#f9fafb" }}>
+          <div className="report-table-wrapper">
+            <table className="report-table">
+              <thead>
                 <tr>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "80px",
-                    }}
-                  >
-                    ID
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "150px",
-                    }}
-                  >
-                    Người báo cáo
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "120px",
-                    }}
-                  >
-                    Loại
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "150px",
-                    }}
-                  >
-                    Bị báo cáo
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                    }}
-                  >
-                    Lý do
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "130px",
-                    }}
-                  >
-                    Trạng thái
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "120px",
-                    }}
-                  >
-                    Ngày báo cáo
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#6b7280",
-                      borderBottom: "1px solid #e5e7eb",
-                      width: "220px",
-                    }}
-                  >
-                    Hành động
-                  </th>
+                  <th style={{ width: "80px" }}>ID</th>
+                  <th style={{ width: "150px" }}>Người báo cáo</th>
+                  <th style={{ width: "120px" }}>Loại</th>
+                  <th style={{ width: "150px" }}>Bị báo cáo</th>
+                  <th>Lý do</th>
+                  <th style={{ width: "130px" }}>Trạng thái</th>
+                  <th style={{ width: "120px" }}>Ngày báo cáo</th>
+                  <th style={{ width: "220px" }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {pageData.map((report) => {
                   const statusStyle = getStatusColor(report.status);
                   return (
-                    <tr
-                      key={report.id}
-                      style={{
-                        borderBottom: "1px solid #f3f4f6",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f9fafb";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ffffff";
-                      }}
-                    >
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {report.id}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
+                    <tr key={report.id}>
+                      <td style={{ fontWeight: 600 }}>{report.id}</td>
+                      <td>
                         <div>{report.reporterName}</div>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            color: "#6b7280",
-                            marginTop: "2px",
-                          }}
-                        >
+                        <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
                           {report.reporterEmail}
                         </div>
                       </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
-                        {getReportedTypeText(report.reportedType)}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
+                      <td>{getReportedTypeText(report.reportedType)}</td>
+                      <td>
                         <div>{report.reportedBy}</div>
                         {report.reportedTitle && (
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#6b7280",
-                              marginTop: "2px",
-                            }}
-                          >
+                          <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
                             {report.reportedTitle}
                           </div>
                         )}
                       </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                        }}
-                      >
-                        {report.reason}
-                      </td>
-                      <td style={{ padding: "12px 16px" }}>
+                      <td>{report.reason}</td>
+                      <td>
                         <span
+                          className="report-badge"
                           style={{
-                            display: "inline-block",
-                            padding: "4px 12px",
-                            borderRadius: "12px",
-                            fontSize: "12px",
-                            fontWeight: 600,
                             background: statusStyle.bg,
                             color: statusStyle.color,
                           }}
@@ -696,143 +446,27 @@ export default function ReportManagement() {
                           {statusStyle.text}
                         </span>
                       </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#6b7280",
-                        }}
-                      >
-                        {report.date}
-                      </td>
-                      <td style={{ padding: "12px 16px" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "8px",
-                            flexWrap: "wrap",
-                          }}
-                        >
+                      <td style={{ color: "#6b7280" }}>{report.date}</td>
+                      <td>
+                        <div className="report-actions">
                           <button
                             onClick={() => handleView(report.id)}
-                            style={{
-                              padding: "6px 12px",
-                              borderRadius: "6px",
-                              border: "1px solid #000080",
-                              background: "#ffffff",
-                              color: "#000080",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              cursor: "pointer",
-                              transition: "all 0.2s",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = "#000080";
-                              e.currentTarget.style.color = "#ffffff";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#ffffff";
-                              e.currentTarget.style.color = "#000080";
-                            }}
+                            className="report-btn report-btn-view"
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 3C5 3 2.73 5.11 1.5 8c1.23 2.89 3.5 5 6.5 5s5.27-2.11 6.5-5c-1.23-2.89-3.5-5-6.5-5zM8 11.5c-1.93 0-3.5-1.57-3.5-3.5S6.07 4.5 8 4.5s3.5 1.57 3.5 3.5S9.93 11.5 8 11.5zM8 6c-.83 0-1.5.67-1.5 1.5S7.17 9 8 9s1.5-.67 1.5-1.5S8.83 6 8 6z"
-                                fill="currentColor"
-                              />
-                            </svg>
                             Xem
                           </button>
                           {report.status === "pending" && (
                             <button
                               onClick={() => handleResolve(report.id)}
-                              style={{
-                                padding: "6px 12px",
-                                borderRadius: "6px",
-                                border: "1px solid #22c55e",
-                                background: "#ffffff",
-                                color: "#22c55e",
-                                fontSize: "12px",
-                                fontWeight: 500,
-                                cursor: "pointer",
-                                transition: "all 0.2s",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = "#22c55e";
-                                e.currentTarget.style.color = "#ffffff";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = "#ffffff";
-                                e.currentTarget.style.color = "#22c55e";
-                              }}
+                              className="report-btn report-btn-resolve"
                             >
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M13.5 4.5l-7 7-4-4"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
                               Xử lý
                             </button>
                           )}
                           <button
                             onClick={() => handleDelete(report.id)}
-                            style={{
-                              padding: "6px 12px",
-                              borderRadius: "6px",
-                              border: "1px solid #dc2626",
-                              background: "#ffffff",
-                              color: "#dc2626",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              cursor: "pointer",
-                              transition: "all 0.2s",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = "#dc2626";
-                              e.currentTarget.style.color = "#ffffff";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#ffffff";
-                              e.currentTarget.style.color = "#dc2626";
-                            }}
+                            className="report-btn report-btn-reject"
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M4 4h8M6 4V2h4v2M3 6h10l-1 8H4l-1-8z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
                             Xóa
                           </button>
                         </div>
@@ -843,15 +477,7 @@ export default function ReportManagement() {
 
                 {pageData.length === 0 && (
                   <tr>
-                    <td
-                      colSpan={8}
-                      style={{
-                        padding: "40px",
-                        textAlign: "center",
-                        color: "#9ca3af",
-                        fontSize: "14px",
-                      }}
-                    >
+                    <td colSpan={8} className="report-table-empty">
                       Không có dữ liệu
                     </td>
                   </tr>
@@ -861,56 +487,20 @@ export default function ReportManagement() {
           </div>
 
           {/* Pagination Footer */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "16px",
-              padding: "12px 0",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
+          <div className="report-pagination">
+            <div className="report-pagination-info">
               {startIndex + 1}-{Math.min(endIndex, filteredReports.length)} of{" "}
               {filteredReports.length}
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "24px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  fontSize: "14px",
-                  color: "#6b7280",
-                }}
-              >
+            <div className="report-pagination-controls">
+              <div className="report-rows-select">
                 <label>Rows per page:</label>
                 <select
                   value={rowsPerPage}
                   onChange={(e) => {
                     setRowsPerPage(Number(e.target.value));
                     setPage(1);
-                  }}
-                  style={{
-                    padding: "6px 8px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    fontSize: "14px",
-                    background: "#ffffff",
-                    cursor: "pointer",
-                    outline: "none",
                   }}
                 >
                   <option value={5}>5</option>
@@ -920,42 +510,11 @@ export default function ReportManagement() {
                 </select>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-              >
+              <div className="report-page-nav">
                 <button
                   onClick={() => goto(page - 1)}
                   disabled={page === 1}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    background: page === 1 ? "#f9fafb" : "#ffffff",
-                    color: page === 1 ? "#9ca3af" : "#6b7280",
-                    cursor: page === 1 ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.2s",
-                    opacity: page === 1 ? 0.5 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (page !== 1) {
-                      e.currentTarget.style.background = "#f9fafb";
-                      e.currentTarget.style.borderColor = "#9ca3af";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (page !== 1) {
-                      e.currentTarget.style.background = "#ffffff";
-                      e.currentTarget.style.borderColor = "#d1d5db";
-                    }
-                  }}
+                  className="report-page-btn"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
@@ -967,45 +526,13 @@ export default function ReportManagement() {
                     />
                   </svg>
                 </button>
-                <span
-                  style={{
-                    fontSize: "14px",
-                    color: "#6b7280",
-                    minWidth: "40px",
-                    textAlign: "center",
-                  }}
-                >
+                <span className="report-page-text">
                   {page}/{totalPages}
                 </span>
                 <button
                   onClick={() => goto(page + 1)}
                   disabled={page === totalPages}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    background: page === totalPages ? "#f9fafb" : "#ffffff",
-                    color: page === totalPages ? "#9ca3af" : "#6b7280",
-                    cursor: page === totalPages ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.2s",
-                    opacity: page === totalPages ? 0.5 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (page !== totalPages) {
-                      e.currentTarget.style.background = "#f9fafb";
-                      e.currentTarget.style.borderColor = "#9ca3af";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (page !== totalPages) {
-                      e.currentTarget.style.background = "#ffffff";
-                      e.currentTarget.style.borderColor = "#d1d5db";
-                    }
-                  }}
+                  className="report-page-btn"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
@@ -1025,10 +552,6 @@ export default function ReportManagement() {
     </div>
   );
 }
-
-
-
-
 
 
 

@@ -1,23 +1,10 @@
 import React from "react";
+import "../../css/ProfileReviewsTab.css";
 
-const ProfileReviewsTab = ({
-  reviews,
-  loadingReviews,
-  formatDate,
-  muted,
-  secondary,
-  surface,
-}) => {
+const ProfileReviewsTab = ({ reviews, loadingReviews, formatDate }) => {
   if (loadingReviews) {
     return (
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          textAlign: "center",
-          padding: "60px 20px",
-          color: muted,
-        }}
-      >
+      <div className="profile-reviews-loading">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -27,26 +14,9 @@ const ProfileReviewsTab = ({
 
   if (!reviews || reviews.length === 0) {
     return (
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          textAlign: "center",
-          padding: "60px 20px",
-          color: muted,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 64,
-            marginBottom: 16,
-            opacity: 0.5,
-          }}
-        >
-          ⭐
-        </div>
-        <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-          Chưa có đánh giá nào
-        </div>
+      <div className="profile-reviews-empty">
+        <div className="profile-reviews-empty-icon">⭐</div>
+        <div className="profile-reviews-empty-title">Chưa có đánh giá nào</div>
       </div>
     );
   }
@@ -54,179 +24,69 @@ const ProfileReviewsTab = ({
   return (
     <>
       {reviews.map((review) => (
-        <div
-          key={review.id}
-          style={{
-            gridColumn: "1 / -1",
-            background: surface,
-            borderRadius: 16,
-            padding: 20,
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-            border: "1px solid #e2e8f0",
-            marginBottom: 16,
-          }}
-        >
-          <div style={{ display: "flex", gap: 16 }}>
+        <div key={review.id} className="profile-reviews-card">
+          <div className="profile-reviews-card-inner">
             {/* Reviewer Info */}
-            <div style={{ display: "flex", gap: 12, flex: 1 }}>
+            <div className="profile-reviews-reviewer">
               {/* Avatar */}
               <div
+                className="profile-reviews-avatar"
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: "50%",
                   background: review.reviewerAvatar
                     ? "transparent"
                     : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  overflow: "hidden",
                 }}
               >
                 {review.reviewerAvatar ? (
-                  <img
-                    src={review.reviewerAvatar}
-                    alt={review.reviewerName}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <img src={review.reviewerAvatar} alt={review.reviewerName} />
                 ) : (
-                  <span
-                    style={{
-                      color: surface,
-                      fontSize: 20,
-                      fontWeight: 600,
-                    }}
-                  >
+                  <span className="profile-reviews-avatar-text">
                     {review.reviewerName.charAt(0)}
                   </span>
                 )}
               </div>
 
               {/* Review Content */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 8,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontWeight: 600,
-                      fontSize: 16,
-                      color: secondary,
-                    }}
-                  >
+              <div className="profile-reviews-content">
+                <div className="profile-reviews-header">
+                  <div className="profile-reviews-name">
                     {review.reviewerName}
                   </div>
                   {/* Rating Stars */}
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 2,
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className="profile-reviews-rating">
                     {[...Array(5)].map((_, index) => (
                       <i
                         key={index}
                         className={`bi ${
-                          index < review.rating ? "bi-star-fill" : "bi-star"
+                          index < review.rating ? "bi-star-fill filled" : "bi-star empty"
                         }`}
-                        style={{
-                          color: index < review.rating ? "#fbbf24" : "#d1d5db",
-                          fontSize: "14px",
-                        }}
                       ></i>
                     ))}
                   </div>
-                  <div
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: 12,
-                      color: muted,
-                    }}
-                  >
+                  <div className="profile-reviews-date">
                     {formatDate(review.reviewDate)}
                   </div>
                 </div>
-                <div
-                  style={{
-                    color: "#475569",
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    marginBottom: 12,
-                  }}
-                >
-                  {review.content}
-                </div>
+                <div className="profile-reviews-text">{review.content}</div>
 
                 {/* Item Info */}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "center",
-                    padding: 12,
-                    background: "#f8fafc",
-                    borderRadius: 10,
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
+                <div className="profile-reviews-item">
                   {review.itemImage ? (
                     <img
                       src={review.itemImage}
                       alt={review.itemTitle}
-                      style={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: 8,
-                        objectFit: "cover",
-                      }}
+                      className="profile-reviews-item-image"
                     />
                   ) : (
-                    <div
-                      style={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: 8,
-                        background: "#e5e7eb",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <i
-                        className="bi bi-image text-muted"
-                        style={{ fontSize: "1.5rem" }}
-                      ></i>
+                    <div className="profile-reviews-item-placeholder">
+                      <i className="bi bi-image"></i>
                     </div>
                   )}
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: secondary,
-                        marginBottom: 4,
-                      }}
-                    >
+                  <div className="profile-reviews-item-info">
+                    <div className="profile-reviews-item-title">
                       {review.itemTitle}
                     </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: muted,
-                      }}
-                    >
+                    <div className="profile-reviews-item-label">
                       Sản phẩm đã trao đổi
                     </div>
                   </div>
@@ -241,10 +101,6 @@ const ProfileReviewsTab = ({
 };
 
 export default ProfileReviewsTab;
-
-
-
-
 
 
 

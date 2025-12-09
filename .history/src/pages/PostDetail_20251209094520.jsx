@@ -10,7 +10,6 @@ import {
   deletePost,
 } from "../service/PostService";
 import { createTrade } from "../service/TradeService";
-import "../css/PostDetail.css";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -206,10 +205,10 @@ const PostDetail = () => {
 
   if (loading) {
     return (
-      <div className="postdetail-page">
+      <div className="bg-light min-vh-100">
         <Header />
         <div className="container py-4">
-          <div className="postdetail-loading">
+          <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
@@ -221,10 +220,10 @@ const PostDetail = () => {
 
   if (!post) {
     return (
-      <div className="postdetail-page">
+      <div className="bg-light min-vh-100">
         <Header />
         <div className="container py-4">
-          <div className="postdetail-error">
+          <div className="text-center py-5">
             <p className="text-muted">Không tìm thấy bài đăng</p>
           </div>
         </div>
@@ -233,12 +232,12 @@ const PostDetail = () => {
   }
 
   return (
-    <div className="postdetail-page">
+    <div className="bg-light min-vh-100">
       <Header />
       <div className="container py-4">
         {/* Page Title */}
         <div className="mb-4">
-          <h2 className="postdetail-title">Bài đăng</h2>
+          <h2 className="text-dark fw-bold mb-0">Bài đăng</h2>
         </div>
 
         {/* Main Content - Two Columns */}
@@ -246,26 +245,46 @@ const PostDetail = () => {
           {/* Left Column - Image Gallery and Poster Info */}
           <div className="col-lg-6 ms-5 ">
             {/* Image Gallery */}
-            <div className="postdetail-gallery">
+            <div
+              className="mb-4 position-relative"
+              style={{
+                height: "500px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "12px",
+                overflow: "hidden",
+                border: "1px solid #e9ecef",
+              }}
+            >
               {post.imageUrls && post.imageUrls.length > 0 ? (
                 <>
                   <img
                     src={post.imageUrls[currentImageIndex]}
                     alt={`${post.title} - ${currentImageIndex + 1}`}
-                    className="postdetail-gallery-image"
+                    className="w-100 h-100"
+                    style={{ objectFit: "contain" }}
                   />
                   {/* Navigation Arrows */}
                   {post.imageUrls.length > 1 && (
                     <>
                       <button
-                        className="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-3 rounded-circle shadow-sm postdetail-gallery-nav"
+                        className="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-3 rounded-circle shadow-sm"
                         onClick={prevImage}
+                        style={{
+                          width: "45px",
+                          height: "45px",
+                          zIndex: 10,
+                        }}
                       >
                         <i className="bi bi-chevron-left"></i>
                       </button>
                       <button
-                        className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle shadow-sm postdetail-gallery-nav"
+                        className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle shadow-sm"
                         onClick={nextImage}
+                        style={{
+                          width: "45px",
+                          height: "45px",
+                          zIndex: 10,
+                        }}
                       >
                         <i className="bi bi-chevron-right"></i>
                       </button>
@@ -277,12 +296,16 @@ const PostDetail = () => {
                         {post.imageUrls.map((_, index) => (
                           <button
                             key={index}
-                            className={`btn rounded-circle p-0 postdetail-gallery-indicator ${
+                            className={`btn rounded-circle p-0 ${
                               index === currentImageIndex
                                 ? "bg-primary"
                                 : "bg-white opacity-75"
                             }`}
                             onClick={() => setCurrentImageIndex(index)}
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                            }}
                           />
                         ))}
                       </div>
@@ -290,9 +313,12 @@ const PostDetail = () => {
                   )}
                 </>
               ) : (
-                <div className="postdetail-no-image">
+                <div className="d-flex align-items-center justify-content-center h-100">
                   <div className="text-center">
-                    <i className="bi bi-image text-muted"></i>
+                    <i
+                      className="bi bi-image text-muted"
+                      style={{ fontSize: "4rem" }}
+                    ></i>
                     <p className="text-muted mt-2">Không có hình ảnh</p>
                   </div>
                 </div>
@@ -623,20 +649,31 @@ const PostDetail = () => {
       {/* Status Update Modal */}
       {showStatusModal && (
         <div
-          className="modal fade show postdetail-modal-overlay"
+          className="modal fade show"
+          style={{
+            display: "block",
+            backgroundColor: "rgba(15, 23, 42, 0.45)", // overlay tối hơn chút
+            backdropFilter: "blur(2px)",
+          }}
           onClick={() => setShowStatusModal(false)}
         >
           <div
             className="modal-dialog modal-dialog-centered"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-content shadow-lg postdetail-modal-content">
-              <div className="modal-header postdetail-modal-header">
+            <div
+              className="modal-content shadow-lg"
+              style={{
+                borderRadius: "16px",
+                border: "none",
+              }}
+            >
+              <div className="modal-header border-0 pb-0">
                 <div>
-                  <h5 className="modal-title postdetail-modal-title">
+                  <h5 className="modal-title fw-bold mb-1">
                     Cập nhật trạng thái
                   </h5>
-                  <span className="postdetail-modal-subtitle">
+                  <span className="text-muted small">
                     Chọn trạng thái phù hợp cho bài đăng này
                   </span>
                 </div>
@@ -647,7 +684,7 @@ const PostDetail = () => {
                 ></button>
               </div>
 
-              <div className="modal-body postdetail-modal-body">
+              <div className="modal-body pt-3">
                 <p className="mb-3 text-muted">
                   Trạng thái hiện tại:{" "}
                   <strong className={getStatusColor(post.postStatus)}>
@@ -677,7 +714,7 @@ const PostDetail = () => {
                 </div>
               </div>
 
-              <div className="modal-footer postdetail-modal-footer">
+              <div className="modal-footer border-0 pt-0">
                 <button
                   type="button"
                   className="btn btn-light border"

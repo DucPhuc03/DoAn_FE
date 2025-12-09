@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getCategoryList } from "../service/CategoryService";
 import { getAllPosts } from "../service/PostService";
+import "../css/Explore.css";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Explore = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [maxDistance, setMaxDistance] = useState(100);
-  const [tempDistance, setTempDistance] = useState(100); // Giá trị tạm khi đang kéo
+  const [tempDistance, setTempDistance] = useState(100);
   const [showDistanceFilter, setShowDistanceFilter] = useState(false);
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
@@ -103,12 +104,11 @@ const Explore = () => {
           <div className="col-12">
             {/* Search Bar */}
             <div className="position-relative mb-3 d-flex justify-content-center">
-              <div className="w-100" style={{ maxWidth: "600px" }}>
+              <div className="explore-search-wrapper">
                 <input
                   type="text"
-                  className="form-control form-control-lg bg-white border-0 rounded-pill px-4 py-3 shadow-sm"
+                  className="form-control form-control-lg bg-white border-0 rounded-pill px-4 py-3 shadow-sm explore-search-input"
                   placeholder="Tìm kiếm sản phẩm..."
-                  style={{ fontSize: "1.1rem" }}
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
@@ -116,7 +116,7 @@ const Explore = () => {
                   }}
                 />
                 <button
-                  className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-3 p-0"
+                  className="btn btn-link explore-search-btn"
                   type="button"
                 >
                   <i className="bi bi-search fs-4 text-muted"></i>
@@ -127,12 +127,11 @@ const Explore = () => {
             {/* Filter Controls */}
             <div className="d-flex align-items-center justify-content-center gap-3 position-relative">
               <button
-                className="btn btn-outline-secondary rounded-circle p-2"
+                className="btn btn-outline-secondary rounded-circle p-2 explore-filter-btn"
                 onClick={() => {
                   setShowDistanceFilter(!showDistanceFilter);
-                  setTempDistance(maxDistance); // Đồng bộ giá trị khi mở modal
+                  setTempDistance(maxDistance);
                 }}
-                style={{ position: "relative" }}
               >
                 <i className="bi bi-funnel fs-5"></i>
               </button>
@@ -144,7 +143,7 @@ const Explore = () => {
                   className="btn btn-outline-secondary rounded-pill px-3 py-2"
                   onClick={() => {
                     setShowDistanceFilter(!showDistanceFilter);
-                    setTempDistance(maxDistance); // Đồng bộ giá trị khi mở modal
+                    setTempDistance(maxDistance);
                   }}
                 >
                   {maxDistance === 100 ? "Khoảng cách" : `${maxDistance} km`}
@@ -154,48 +153,18 @@ const Explore = () => {
               {/* Distance Filter Modal */}
               {showDistanceFilter && (
                 <div
-                  className="position-absolute bg-white rounded-4 shadow-lg"
-                  style={{
-                    top: "100%",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    marginTop: "12px",
-                    minWidth: "320px",
-                    zIndex: 1000,
-                    border: "1px solid #e5e7eb",
-                    padding: "16px 18px",
-                  }}
+                  className="explore-distance-modal"
                   onMouseLeave={() => {
                     setShowDistanceFilter(false);
-                    setTempDistance(maxDistance); // Reset về giá trị hiện tại khi đóng
+                    setTempDistance(maxDistance);
                   }}
                 >
                   {/* Header */}
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 600,
-
-                          letterSpacing: "0.04em",
-                          color: "#6b7280",
-                        }}
-                      >
-                        Chọn khoảng cách bạn muốn
-                      </div>
+                  <div className="explore-distance-header">
+                    <div className="explore-distance-label">
+                      Chọn khoảng cách bạn muốn
                     </div>
-                    <span
-                      style={{
-                        padding: "4px 10px",
-                        borderRadius: 999,
-                        backgroundColor: "#eff6ff",
-                        color: "#1d4ed8",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <span className="explore-distance-badge">
                       {tempDistance} km
                     </span>
                   </div>
@@ -204,19 +173,13 @@ const Explore = () => {
                   <div className="mt-3 mb-3">
                     <input
                       type="range"
-                      className="form-range"
+                      className="form-range explore-distance-slider"
                       min="0"
                       max="100"
                       step="1"
                       value={tempDistance}
                       onChange={(e) => {
                         setTempDistance(Number(e.target.value));
-                      }}
-                      style={{
-                        width: "100%",
-                        height: "6px",
-                        cursor: "pointer",
-                        accentColor: "#2563eb", // màu primary cho thanh trượt
                       }}
                     />
                     <div className="d-flex justify-content-between mt-1">
@@ -228,12 +191,7 @@ const Explore = () => {
                   {/* Buttons */}
                   <div className="d-flex justify-content-end gap-2 mt-2">
                     <button
-                      className="btn btn-sm btn-outline-secondary"
-                      style={{
-                        fontSize: 13,
-                        borderRadius: 999,
-                        padding: "6px 14px",
-                      }}
+                      className="btn btn-sm btn-outline-secondary explore-distance-btn-reset"
                       onClick={() => {
                         setMaxDistance(100);
                         setTempDistance(100);
@@ -244,12 +202,7 @@ const Explore = () => {
                       Đặt lại
                     </button>
                     <button
-                      className="btn btn-sm btn-secondary"
-                      style={{
-                        fontSize: 13,
-                        borderRadius: 999,
-                        padding: "6px 16px",
-                      }}
+                      className="btn btn-sm btn-secondary explore-distance-btn-apply"
                       onClick={() => {
                         setMaxDistance(tempDistance);
                         setCurrentPage(1);
@@ -268,58 +221,34 @@ const Explore = () => {
         {/* Topics Section */}
         <div className="row mb-4">
           <div className="col-12">
-            <h3 className="fw-bold mb-3 text-center">Chủ đề</h3>
+            <h3 className="explore-topics-title">Chủ đề</h3>
             <div className="topic-scroll">
               <div className="d-flex gap-3">
                 {loadingCategories ? (
-                  <div className="text-center text-muted w-100 py-3">
-                    Đang tải danh mục...
-                  </div>
+                  <div className="explore-loading">Đang tải danh mục...</div>
                 ) : (
                   categories.map((topic) => (
                     <div
                       key={topic.id}
-                      className="flex-shrink-0 text-center cursor-pointer"
-                      style={{ minWidth: "120px" }}
+                      className="explore-topic-item"
                       onClick={() => handleTopicClick(topic.id)}
                     >
-                      <div
-                        className="bg-white rounded-3 mb-2 d-flex align-items-center justify-content-center shadow-sm hover-shadow transition-all overflow-hidden position-relative"
-                        style={{ height: "80px", width: "120px" }}
-                      >
+                      <div className="explore-topic-image-wrapper">
                         {topic.image && topic.image.startsWith("https://") ? (
                           <img
                             src={topic.image}
                             alt={topic.name}
-                            className="w-100 h-100"
-                            style={{
-                              objectFit: "cover",
-                              transition: "transform 0.3s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = "scale(1.1)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = "scale(1)";
-                            }}
+                            className="explore-topic-image"
                             onError={(e) => {
                               e.target.style.display = "none";
-                              const fallback = e.target.nextElementSibling;
-                              if (fallback) {
-                                fallback.style.display = "flex";
-                              }
                             }}
                           />
                         ) : null}
                       </div>
                       <small
-                        className="fw-bold"
-                        style={{
-                          color:
-                            selectedCategoryId === topic.id
-                              ? "#2563eb"
-                              : "#111827",
-                        }}
+                        className={`explore-topic-name ${
+                          selectedCategoryId === topic.id ? "active" : ""
+                        }`}
                       >
                         {topic.name}
                       </small>
@@ -330,15 +259,7 @@ const Explore = () => {
             </div>
             {selectedCategory && (
               <div className="text-center mt-2">
-                <span
-                  className="badge rounded-pill"
-                  style={{
-                    backgroundColor: "#e0f2fe",
-                    color: "#0369a1",
-                    fontWeight: 600,
-                    padding: "8px 16px",
-                  }}
-                >
+                <span className="badge rounded-pill explore-category-badge">
                   Đang xem danh mục: {selectedCategory.name}
                 </span>
               </div>
@@ -351,50 +272,24 @@ const Explore = () => {
           <div className="col-12">
             <div className="content-grid">
               {loadingPosts ? (
-                <div className="text-center text-muted w-100 py-4">
-                  Đang tải bài đăng...
-                </div>
+                <div className="explore-loading">Đang tải bài đăng...</div>
               ) : posts.length === 0 ? (
-                <div className="text-center text-muted w-100 py-4">
-                  Không có bài đăng nào
-                </div>
+                <div className="explore-empty">Không có bài đăng nào</div>
               ) : (
                 posts.map((card) => (
                   <div
                     key={card.id}
-                    className="card border-0 mb-4 cursor-pointer transition-all shadow-sm hover-shadow bg-white"
+                    className="explore-card"
                     onClick={() => handlePostClick(card.id)}
-                    style={{
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
                   >
                     <div className="card-body p-0">
                       {/* Image */}
-                      <div
-                        className="overflow-hidden position-relative"
-                        style={{
-                          height: "150px",
-                          backgroundColor: "#f8f9fa",
-                        }}
-                      >
+                      <div className="explore-card-image-wrapper">
                         {card.imageUrl ? (
                           <img
                             src={card.imageUrl}
                             alt={card.title}
-                            className="w-100 h-100"
-                            style={{
-                              objectFit: "cover",
-                              transition: "transform 0.3s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = "scale(1.08)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = "scale(1)";
-                            }}
+                            className="explore-card-image"
                             onError={(e) => {
                               e.target.style.display = "none";
                               const fallback = e.target.nextElementSibling;
@@ -404,51 +299,29 @@ const Explore = () => {
                             }}
                           />
                         ) : (
-                          <div
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              background:
-                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                              color: "#ffffff",
-                            }}
-                          >
+                          <div className="explore-card-image-placeholder">
                             <i className="bi bi-image"></i>
                           </div>
                         )}
                       </div>
 
                       {/* Card Content */}
-                      <div className="p-2">
-                        <h6
-                          className="card-title fw-bold mb-1 text-truncate"
-                          style={{ fontSize: "0.9rem" }}
-                        >
-                          {card.title}
-                        </h6>
-                        <p className="card-text text-muted mb-1 small d-flex justify-content-between align-items-center">
+                      <div className="explore-card-content">
+                        <h6 className="explore-card-title">{card.title}</h6>
+                        <p className="explore-card-meta">
                           <span>
                             <i className="bi bi-person me-1"></i>
                             {card.username}
                           </span>
-                          <span className="d-flex align-items-center gap-1">
-                            <i
-                              className="bi bi-heart-fill"
-                              style={{ color: "#ef4444", fontSize: "0.8rem" }}
-                            ></i>
+                          <span className="explore-card-likes">
+                            <i className="bi bi-heart-fill"></i>
                             <span>{card.totalLikes || 0}</span>
                           </span>
                         </p>
                         {card.distance !== undefined &&
                           card.distance !== null && (
-                            <p className="card-text text-muted mb-0 small d-flex align-items-center">
-                              <i
-                                className="bi bi-geo-alt me-1"
-                                style={{ fontSize: "0.75rem" }}
-                              ></i>
+                            <p className="explore-card-distance">
+                              <i className="bi bi-geo-alt"></i>
                               <span>{card.distance} km</span>
                             </p>
                           )}
@@ -468,7 +341,7 @@ const Explore = () => {
               <ul className="pagination justify-content-center">
                 <li className="page-item">
                   <button
-                    className="page-link border-0 bg-transparent text-dark"
+                    className="explore-page-btn"
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(1, prev - 1))
                     }
@@ -481,13 +354,10 @@ const Explore = () => {
                   (page) => (
                     <li className="page-item" key={page}>
                       <button
-                        className={`page-link border-0 rounded-circle mx-1 ${
-                          currentPage === page
-                            ? "bg-primary text-white"
-                            : "bg-white text-dark"
+                        className={`explore-page-number ${
+                          currentPage === page ? "active" : ""
                         }`}
                         onClick={() => setCurrentPage(page)}
-                        style={{ width: "40px", height: "40px" }}
                       >
                         {page}
                       </button>
@@ -496,7 +366,7 @@ const Explore = () => {
                 )}
                 <li className="page-item">
                   <button
-                    className="page-link border-0 bg-transparent text-dark"
+                    className="explore-page-btn"
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                     }
@@ -515,3 +385,4 @@ const Explore = () => {
 };
 
 export default Explore;
+

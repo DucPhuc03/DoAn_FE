@@ -8,6 +8,7 @@ import {
   updateAvatar,
 } from "../service/UserService";
 import Cookies from "js-cookie";
+import "../css/EditProfile.css";
 
 const EditProfile = () => {
   const { id } = useParams();
@@ -189,16 +190,9 @@ const EditProfile = () => {
 
   if (loading) {
     return (
-      <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
+      <div className="editprofile-page">
         <Header />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "calc(100vh - 80px)",
-          }}
-        >
+        <div className="editprofile-loading">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
@@ -211,132 +205,39 @@ const EditProfile = () => {
   const surface = "#ffffff";
 
   return (
-    <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
+    <div className="editprofile-page">
       <Header />
-      <div
-        style={{
-          maxWidth: "1000px",
-          margin: "0 auto",
-          padding: "40px 20px",
-        }}
-      >
+      <div className="editprofile-container">
         {/* Header */}
-        <div
-          style={{
-            marginBottom: 32,
-            textAlign: "center",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: 32,
-              fontWeight: 700,
-              color: "#1f2937",
-              marginBottom: 8,
-              background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Chỉnh sửa hồ sơ
-          </h1>
-          <p style={{ color: "#6b7280", fontSize: 15 }}>
+        <div className="editprofile-header">
+          <h1 className="editprofile-title">Chỉnh sửa hồ sơ</h1>
+          <p className="editprofile-subtitle">
             Cập nhật thông tin cá nhân của bạn
           </p>
         </div>
 
         {/* Main Content - Two Columns */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "300px 1fr",
-            gap: 32,
-            alignItems: "start",
-          }}
-          className="edit-profile-layout"
-        >
+        <div className="editprofile-layout">
           {/* Left Column - Avatar Upload */}
-          <div
-            style={{
-              background: surface,
-              borderRadius: 20,
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-              padding: "32px",
-              border: "1px solid #f1f5f9",
-              position: "sticky",
-              top: 100,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 20,
-              }}
-            >
+          <div className="editprofile-avatar-section">
+            <div className="editprofile-avatar-wrapper">
               {/* Avatar Preview */}
-              <div
-                style={{
-                  position: "relative",
-                  width: 180,
-                  height: 180,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "4px solid #e5e7eb",
-                  background: "#f9fafb",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <div className="editprofile-avatar-preview">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
                     alt="Avatar preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    className="editprofile-avatar-image"
                   />
                 ) : (
-                  <i
-                    className="bi bi-person-fill"
-                    style={{ fontSize: 80, color: "#9ca3af" }}
-                  ></i>
+                  <i className="bi bi-person-fill editprofile-avatar-placeholder"></i>
                 )}
               </div>
 
               {/* Upload Button */}
               <label
                 htmlFor="avatar-upload"
-                style={{
-                  padding: "10px 20px",
-                  border: `2px dashed ${primary}`,
-                  borderRadius: 10,
-                  background: "#f0f7ff",
-                  color: primary,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  textAlign: "center",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#e0f2fe";
-                  e.currentTarget.style.borderColor = "#1d4ed8";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#f0f7ff";
-                  e.currentTarget.style.borderColor = primary;
-                }}
+                className="editprofile-avatar-select"
               >
                 <i className="bi bi-camera"></i>
                 Chọn ảnh
@@ -355,24 +256,7 @@ const EditProfile = () => {
                   type="button"
                   onClick={handleAvatarUpload}
                   disabled={uploadingAvatar}
-                  style={{
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: 10,
-                    background: uploadingAvatar
-                      ? "#9ca3af"
-                      : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                    color: surface,
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: uploadingAvatar ? "not-allowed" : "pointer",
-                    transition: "all 0.2s",
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
+                  className="editprofile-avatar-upload"
                 >
                   {uploadingAvatar ? (
                     <>
@@ -391,37 +275,16 @@ const EditProfile = () => {
                   )}
                 </button>
               )}
-
-              {/* Info Text */}
             </div>
           </div>
 
           {/* Right Column - Form */}
-          <div
-            style={{
-              background: surface,
-              borderRadius: 20,
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-              padding: "40px",
-              border: "1px solid #f1f5f9",
-            }}
-          >
+          <div className="editprofile-form-section">
             <form onSubmit={handleSubmit}>
               {/* Full Name */}
-              <div style={{ marginBottom: 24 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 8,
-                  }}
-                >
-                  <i
-                    className="bi bi-person me-2"
-                    style={{ color: primary }}
-                  ></i>
+              <div className="editprofile-field">
+                <label className="editprofile-label">
+                  <i className="bi bi-person"></i>
                   Họ và tên
                 </label>
                 <input
@@ -429,42 +292,15 @@ const EditProfile = () => {
                   value={formData.fullName}
                   onChange={handleChange("fullName")}
                   placeholder="Nhập họ và tên"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    fontSize: 15,
-                    outline: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#e5e7eb";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="editprofile-input"
                   required
                 />
               </div>
 
               {/* Email */}
-              <div style={{ marginBottom: 24 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 8,
-                  }}
-                >
-                  <i
-                    className="bi bi-envelope me-2"
-                    style={{ color: primary }}
-                  ></i>
+              <div className="editprofile-field">
+                <label className="editprofile-label">
+                  <i className="bi bi-envelope"></i>
                   Email
                 </label>
                 <input
@@ -472,42 +308,15 @@ const EditProfile = () => {
                   value={formData.email}
                   onChange={handleChange("email")}
                   placeholder="Nhập email"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    fontSize: 15,
-                    outline: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#e5e7eb";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="editprofile-input"
                   required
                 />
               </div>
 
               {/* Phone */}
-              <div style={{ marginBottom: 24 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 8,
-                  }}
-                >
-                  <i
-                    className="bi bi-telephone me-2"
-                    style={{ color: primary }}
-                  ></i>
+              <div className="editprofile-field">
+                <label className="editprofile-label">
+                  <i className="bi bi-telephone"></i>
                   Số điện thoại
                 </label>
                 <input
@@ -515,41 +324,14 @@ const EditProfile = () => {
                   value={formData.phoneNumber}
                   onChange={handleChange("phoneNumber")}
                   placeholder="Nhập số điện thoại"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    fontSize: 15,
-                    outline: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#e5e7eb";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="editprofile-input"
                 />
               </div>
 
               {/* Address */}
-              <div style={{ marginBottom: 24 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 8,
-                  }}
-                >
-                  <i
-                    className="bi bi-geo-alt me-2"
-                    style={{ color: primary }}
-                  ></i>
+              <div className="editprofile-field">
+                <label className="editprofile-label">
+                  <i className="bi bi-geo-alt"></i>
                   Địa chỉ
                 </label>
                 <ModelMap onLocationChange={handleLocationChange} />
@@ -558,41 +340,14 @@ const EditProfile = () => {
                   value={formData.address}
                   onChange={handleChange("address")}
                   placeholder="Nhập địa chỉ"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    fontSize: 15,
-                    outline: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#e5e7eb";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="editprofile-input"
                 />
               </div>
 
               {/* Bio */}
-              <div style={{ marginBottom: 32 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#1f2937",
-                    marginBottom: 8,
-                  }}
-                >
-                  <i
-                    className="bi bi-info-circle me-2"
-                    style={{ color: primary }}
-                  ></i>
+              <div className="editprofile-field" style={{ marginBottom: 32 }}>
+                <label className="editprofile-label">
+                  <i className="bi bi-info-circle"></i>
                   Giới thiệu
                 </label>
                 <textarea
@@ -600,41 +355,13 @@ const EditProfile = () => {
                   onChange={handleChange("bio")}
                   placeholder="Viết vài dòng giới thiệu về bản thân..."
                   rows={5}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    fontSize: 15,
-                    outline: "none",
-                    resize: "vertical",
-                    transition: "all 0.2s",
-                    fontFamily: "inherit",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = primary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px rgba(37, 99, 235, 0.1)`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#e5e7eb";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="editprofile-textarea"
                 />
               </div>
 
               {/* Error Message */}
               {error && (
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    background: "#fef2f2",
-                    border: "1px solid #fecaca",
-                    borderRadius: 10,
-                    color: "#dc2626",
-                    marginBottom: 20,
-                    fontSize: 14,
-                  }}
-                >
+                <div className="editprofile-error">
                   <i className="bi bi-exclamation-circle me-2"></i>
                   {error}
                 </div>
@@ -642,89 +369,27 @@ const EditProfile = () => {
 
               {/* Success Message */}
               {success && (
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    background: "#f0fdf4",
-                    border: "1px solid #bbf7d0",
-                    borderRadius: 10,
-                    color: "#16a34a",
-                    marginBottom: 20,
-                    fontSize: 14,
-                  }}
-                >
+                <div className="editprofile-success">
                   <i className="bi bi-check-circle me-2"></i>
                   {success}
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                }}
-              >
-                <div style={{ display: "flex", gap: 12 }}>
+              <div className="editprofile-actions">
+                <div className="editprofile-actions-left">
                   <button
                     type="button"
                     onClick={() => navigate(`/profile/${id}`)}
-                    style={{
-                      padding: "12px 24px",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
-                      background: surface,
-                      color: "#6b7280",
-                      fontWeight: 600,
-                      fontSize: 15,
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "#f9fafb";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = surface;
-                    }}
+                    className="editprofile-cancel-btn"
                     disabled={submitting}
                   >
                     Hủy
                   </button>
                   <button
                     type="submit"
-                    style={{
-                      padding: "12px 24px",
-                      border: "none",
-                      borderRadius: 10,
-                      background: submitting
-                        ? "#9ca3af"
-                        : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                      color: surface,
-                      fontWeight: 600,
-                      fontSize: 15,
-                      cursor: submitting ? "not-allowed" : "pointer",
-                      transition: "all 0.3s",
-                      boxShadow: submitting
-                        ? "none"
-                        : "0 4px 12px rgba(37, 99, 235, 0.3)",
-                    }}
+                    className="editprofile-submit-btn"
                     disabled={submitting}
-                    onMouseEnter={(e) => {
-                      if (!submitting) {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow =
-                          "0 6px 16px rgba(37, 99, 235, 0.4)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!submitting) {
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(37, 99, 235, 0.3)";
-                      }
-                    }}
                   >
                     {submitting ? (
                       <>
@@ -748,28 +413,7 @@ const EditProfile = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  style={{
-                    padding: "12px 24px",
-                    border: "1px solid #fecaca",
-                    borderRadius: 10,
-                    background: "#fef2f2",
-                    color: "#dc2626",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#fee2e2";
-                    e.currentTarget.style.borderColor = "#fca5a5";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "#fef2f2";
-                    e.currentTarget.style.borderColor = "#fecaca";
-                  }}
+                  className="editprofile-logout-btn"
                 >
                   <i className="bi bi-box-arrow-right"></i>
                   Đăng xuất

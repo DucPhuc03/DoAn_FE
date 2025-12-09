@@ -1,0 +1,524 @@
+/* ==========================================
+   CATEGORY MANAGEMENT PAGE STYLES
+   ========================================== */
+
+/* ==========================================
+   Layout
+   ========================================== */
+.category-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #F8F8F8;
+}
+
+.category-main {
+    flex: 1;
+    padding: 24px;
+}
+
+.category-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ==========================================
+   Header
+   ========================================== */
+.category-header {
+    margin-bottom: 20px;
+}
+
+.category-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+}
+
+/* ==========================================
+   Top Bar (Search & Filter)
+   ========================================== */
+.category-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.category-filter-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.category-filter-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.category-search-wrapper {
+    flex: 1;
+    position: relative;
+    max-width: 400px;
+}
+
+.category-search-input {
+    width: 100%;
+    padding: 10px 40px 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+}
+
+.category-search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.category-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.category-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #000080;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.category-add-btn:hover {
+    background: #000066;
+}
+
+/* ==========================================
+   Alert & Loading
+   ========================================== */
+.category-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.category-loading {
+    padding: 40px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 15px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   Table
+   ========================================== */
+.category-table-wrapper {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.category-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.category-table thead {
+    background: #f9fafb;
+}
+
+.category-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.category-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s;
+}
+
+.category-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.category-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #111827;
+}
+
+.category-table-empty {
+    padding: 40px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* ==========================================
+   Category Image
+   ========================================== */
+.category-image {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.category-image-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+}
+
+/* ==========================================
+   Badges
+   ========================================== */
+.category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.category-badge-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.category-badge-deleted {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ==========================================
+   Action Buttons
+   ========================================== */
+.category-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.category-btn {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid #000080;
+    background: #ffffff;
+    color: #000080;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-btn:hover {
+    background: #000080;
+    color: #ffffff;
+}
+
+.category-btn-danger {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.category-btn-danger:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* ==========================================
+   Pagination
+   ========================================== */
+.category-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 12px 0;
+}
+
+.category-pagination-info {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.category-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.category-rows-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.category-rows-select select {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    background: #ffffff;
+    cursor: pointer;
+    outline: none;
+}
+
+.category-page-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.category-page-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.category-page-btn:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.category-page-btn:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.category-page-text {
+    font-size: 14px;
+    color: #6b7280;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* ==========================================
+   Modal
+   ========================================== */
+.category-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.category-modal {
+    width: 100%;
+    max-width: 520px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.category-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.category-modal-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.category-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.category-modal-close:hover {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.category-modal-body {
+    padding: 20px;
+}
+
+.category-modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+/* ==========================================
+   Form Elements
+   ========================================== */
+.category-form-group {
+    margin-bottom: 16px;
+}
+
+.category-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.category-form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.category-form-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.category-form-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* ==========================================
+   Image Upload
+   ========================================== */
+.category-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-upload-area:hover {
+    border-color: #2563eb;
+    background: #f0f9ff;
+}
+
+.category-upload-preview {
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.category-upload-text {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* ==========================================
+   Modal Buttons
+   ========================================== */
+.category-modal-cancel {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-modal-cancel:hover {
+    background: #f9fafb;
+}
+
+.category-modal-submit {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #000080;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-modal-submit:hover {
+    background: #000066;
+}
+
+.category-modal-submit:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}

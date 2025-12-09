@@ -5,6 +5,7 @@ import {
   fetchAnnouncements,
   updateIsRead,
 } from "../service/AnnouncementService";
+import "../css/Header.css";
 
 const Header = () => {
   const userId = JSON.parse(localStorage.getItem("user"))?.id;
@@ -26,7 +27,6 @@ const Header = () => {
         const response = await fetchAnnouncements();
 
         if (response && response.code === 1000 && response.data) {
-          // Map API data to notification format
           const mappedNotifications = response.data.map((announcement) => ({
             id: announcement.id,
             type: announcement.type || "system",
@@ -52,7 +52,6 @@ const Header = () => {
     loadAnnouncements();
   }, []);
 
-  // Format time to relative time (e.g., "5 phút trước")
   const formatTime = (dateString) => {
     if (!dateString) return "";
 
@@ -128,28 +127,22 @@ const Header = () => {
     }
   };
 
-  // Handle marking notification as read
   const handleMarkAsRead = async (notificationId, e) => {
-    // Find the notification
     const notification = notifications.find((n) => n.id === notificationId);
 
-    // If already read, don't do anything
     if (!notification || notification.read) {
       return;
     }
 
-    // Optimistic update - update UI immediately
     setNotifications((prevNotifications) =>
       prevNotifications.map((n) =>
         n.id === notificationId ? { ...n, read: true } : n
       )
     );
 
-    // Call API to update read status
     try {
       const response = await updateIsRead(notificationId);
       if (response && response.code !== 1000) {
-        // Revert on error
         setNotifications((prevNotifications) =>
           prevNotifications.map((n) =>
             n.id === notificationId ? { ...n, read: false } : n
@@ -158,7 +151,6 @@ const Header = () => {
         console.error("Failed to mark notification as read:", response);
       }
     } catch (error) {
-      // Revert on error
       setNotifications((prevNotifications) =>
         prevNotifications.map((n) =>
           n.id === notificationId ? { ...n, read: false } : n
@@ -169,230 +161,183 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-bottom border-1 border-light shadow-sm sticky-top">
+    <header className="header-main">
       <div className="container-fluid px-4">
-        <div className="row align-items-center py-3">
+        <div className="d-flex align-items-center justify-content-between py-3">
           {/* Left side - Logo and Navigation */}
-          <div className="col-auto d-flex align-items-center">
+          <div className="d-flex align-items-center gap-5">
             {/* Logo */}
-            <Link to="/" className="text-decoration-none me-5">
-              <div className="d-flex align-items-center">
-                <img
-                  src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
-                  alt="logo"
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-                  }}
-                />
-              </div>
+            <Link to="/" className="header-logo-container">
+              <img
+                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
+                alt="logo"
+                className="header-logo"
+              />
+              <span className="header-logo-text">TraoĐổiĐồ</span>
             </Link>
 
             {/* Navigation Links */}
-            <nav className="d-flex align-items-center">
-              <Link
-                to="/"
-                className="text-decoration-none text-dark me-4 fw-medium px-3 py-2 rounded-3 hover-bg-light transition-all header-nav-link"
-              >
+            <nav className="d-flex align-items-center gap-2">
+              <Link to="/" className="header-nav-link">
+                <i className="bi bi-house-door me-2"></i>
                 Trang chủ
               </Link>
-              <Link
-                to="/explore"
-                className="text-decoration-none text-dark fw-medium px-3 py-2 rounded-3 hover-bg-light transition-all header-nav-link"
-              >
+              <Link to="/explore" className="header-nav-link">
+                <i className="bi bi-compass me-2"></i>
                 Khám phá
               </Link>
             </nav>
           </div>
 
           {/* Right side - Icons */}
-          <div className="col-auto ms-auto d-flex align-items-center">
-            <div className="d-flex align-items-center gap-4">
-              {/* Plus Icon */}
-              <Link
-                to="/new-post"
-                className="btn btn-outline-primary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
-                style={{
-                  width: "44px",
-                  height: "44px",
-                }}
-                title="Đăng bài mới"
+          <div className="d-flex align-items-center gap-3">
+            {/* Plus Icon - Create Post */}
+            <Link
+              to="/new-post"
+              className="header-icon-btn header-icon-btn-primary"
+              title="Đăng bài mới"
+            >
+              <i className="bi bi-plus-lg" style={{ fontSize: "1.2rem" }}></i>
+            </Link>
+
+            {/* Chat Icon */}
+            <Link
+              to="/chat"
+              className="header-icon-btn header-icon-btn-default"
+              title="Tin nhắn"
+            >
+              <i className="bi bi-chat-dots" style={{ fontSize: "1.1rem" }}></i>
+            </Link>
+
+            {/* Calendar Icon with Meetings Dropdown */}
+            <div className="position-relative" ref={meetingsRef}>
+              <button
+                className="header-icon-btn header-icon-btn-default"
+                title="Lịch hẹn"
+                onClick={() => setShowMeetings(!showMeetings)}
               >
-                <i className="bi bi-plus fs-5"></i>
-              </Link>
+                <i className="bi bi-calendar-event" style={{ fontSize: "1.1rem" }}></i>
+              </button>
 
-              {/* Chat Icon */}
-              <Link
-                to="/chat"
-                className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
-                style={{
-                  width: "44px",
-                  height: "44px",
-                }}
-                title="Tin nhắn"
+              {showMeetings && (
+                <MeetingsModal onClose={() => setShowMeetings(false)} />
+              )}
+            </div>
+
+            {/* Bell Icon with Notifications Dropdown */}
+            <div className="position-relative" ref={notificationRef}>
+              <button
+                className="header-icon-btn header-icon-btn-default"
+                title="Thông báo"
+                onClick={() => setShowNotifications(!showNotifications)}
               >
-                <i className="bi bi-chat-dots fs-5"></i>
-              </Link>
-
-              {/* Calendar Icon with Meetings Dropdown */}
-              <div className="position-relative" ref={meetingsRef}>
-                <button
-                  className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn position-relative"
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                  }}
-                  title="Lịch"
-                  onClick={() => setShowMeetings(!showMeetings)}
-                >
-                  <i className="bi bi-calendar3 fs-5"></i>
-                </button>
-
-                {/* Meetings Dropdown */}
-                {showMeetings && (
-                  <MeetingsModal onClose={() => setShowMeetings(false)} />
+                <i className="bi bi-bell" style={{ fontSize: "1.1rem" }}></i>
+                {unreadCount > 0 && (
+                  <span className="header-badge">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
                 )}
-              </div>
+              </button>
 
-              {/* Bell Icon with Notifications Dropdown */}
-              <div className="position-relative" ref={notificationRef}>
-                <button
-                  className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center position-relative hover-lift icon-btn"
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                  }}
-                  title="Thông báo"
-                  onClick={() => setShowNotifications(!showNotifications)}
-                >
-                  <i className="bi bi-bell fs-5"></i>
-                  {/* Notification Badge */}
-                  {unreadCount > 0 && (
-                    <span
-                      className="position-absolute badge rounded-pill bg-danger notification-badge"
-                      style={{
-                        top: "-2px",
-                        right: "-2px",
-                        fontSize: "0.6rem",
-                        minWidth: "16px",
-                        height: "16px",
-                        lineHeight: "14px",
-                        padding: "0 4px",
-                        zIndex: 10,
-                      }}
-                    >
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* Notifications Dropdown */}
-                {showNotifications && (
-                  <div className="notifications-dropdown">
-                    <div className="notifications-header">
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className="header-notifications-dropdown">
+                  <div className="header-notifications-header">
+                    <div className="d-flex align-items-center gap-2">
+                      <i className="bi bi-bell-fill"></i>
                       <h6 className="mb-0 fw-bold">Thông báo</h6>
-                      {unreadCount > 0 && (
-                        <span className="badge bg-primary ms-2">
-                          {unreadCount} mới
-                        </span>
-                      )}
                     </div>
-                    <div className="notifications-list">
-                      {isLoadingNotifications ? (
-                        <div className="text-center text-muted py-4">
-                          <div
-                            className="spinner-border spinner-border-sm text-primary"
-                            role="status"
-                          >
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                          <p className="mb-0 mt-2">Đang tải thông báo...</p>
+                    {unreadCount > 0 && (
+                      <span className="header-notifications-badge">
+                        {unreadCount} mới
+                      </span>
+                    )}
+                  </div>
+                  <div className="header-notifications-list">
+                    {isLoadingNotifications ? (
+                      <div className="text-center py-5">
+                        <div className="d-flex justify-content-center gap-2 mb-3">
+                          <div className="header-loading-dot"></div>
+                          <div className="header-loading-dot"></div>
+                          <div className="header-loading-dot"></div>
                         </div>
-                      ) : notifications.length > 0 ? (
-                        notifications.map((notification) => (
-                          <Link
-                            key={notification.id}
-                            to={notification.link}
-                            className={`notification-item ${
-                              !notification.read ? "unread" : ""
-                            }`}
-                            onClick={(e) => {
-                              handleMarkAsRead(notification.id, e);
-                              setShowNotifications(false);
+                        <p className="mb-0 text-muted">Đang tải thông báo...</p>
+                      </div>
+                    ) : notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <Link
+                          key={notification.id}
+                          to={notification.link}
+                          className={`header-notification-item ${
+                            !notification.read ? "unread" : ""
+                          }`}
+                          onClick={(e) => {
+                            handleMarkAsRead(notification.id, e);
+                            setShowNotifications(false);
+                          }}
+                        >
+                          <div
+                            className="header-notification-icon"
+                            style={{
+                              backgroundColor: `${getNotificationColor(notification.type)}15`,
+                              color: getNotificationColor(notification.type),
                             }}
                           >
-                            <div
-                              className="notification-icon"
-                              style={{
-                                backgroundColor: `${getNotificationColor(
-                                  notification.type
-                                )}20`,
-                                color: getNotificationColor(notification.type),
-                              }}
-                            >
-                              <i
-                                className={`bi ${getNotificationIcon(
-                                  notification.type
-                                )}`}
-                              ></i>
+                            <i className={`bi ${getNotificationIcon(notification.type)}`}></i>
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div className="d-flex align-items-center gap-2 mb-1">
+                              <strong className="header-notification-title">
+                                {notification.title}
+                              </strong>
+                              {!notification.read && (
+                                <span className="header-unread-dot"></span>
+                              )}
                             </div>
-                            <div className="notification-content">
-                              <div className="d-flex align-items-center gap-2 mb-1">
-                                <strong className="notification-title">
-                                  {notification.title}
-                                </strong>
-                                {!notification.read && (
-                                  <span className="unread-dot"></span>
-                                )}
-                              </div>
-                              <p className="notification-message mb-1">
-                                {notification.message}
-                              </p>
-                              <small className="notification-time text-muted">
-                                {notification.time}
-                              </small>
-                            </div>
-                          </Link>
-                        ))
-                      ) : (
-                        <div className="text-center text-muted py-4">
-                          <i className="bi bi-bell-slash fs-3 d-block mb-2"></i>
-                          <p className="mb-0">Chưa có thông báo nào</p>
-                        </div>
-                      )}
-                    </div>
-                    {notifications.length > 0 && (
-                      <div className="notifications-footer">
-                        <Link
-                          className="text-decoration-none text-primary fw-semibold"
-                          onClick={() => setShowNotifications(false)}
-                        >
-                          Đóng
+                            <p className="header-notification-message">
+                              {notification.message}
+                            </p>
+                            <small className="header-notification-time">
+                              {notification.time}
+                            </small>
+                          </div>
                         </Link>
+                      ))
+                    ) : (
+                      <div className="text-center py-5">
+                        <div className="header-empty-icon">
+                          <i className="bi bi-bell-slash"></i>
+                        </div>
+                        <p className="mb-0 text-muted">Chưa có thông báo nào</p>
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-
-              {/* Profile Icon */}
-              {userId && (
-                <Link
-                  to={`/profile/${userId}`}
-                  className="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center hover-lift icon-btn"
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                  }}
-                  title="Hồ sơ"
-                >
-                  <i className="bi bi-person-circle fs-5"></i>
-                </Link>
+                  {notifications.length > 0 && (
+                    <div className="header-notifications-footer">
+                      <button
+                        className="btn btn-link text-decoration-none p-0 header-close-btn"
+                        onClick={() => setShowNotifications(false)}
+                      >
+                        Đóng thông báo
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
+
+            {/* Profile Icon */}
+            {userId && (
+              <Link
+                to={`/profile/${userId}`}
+                className="header-icon-btn profile-avatar-btn"
+                title="Hồ sơ của bạn"
+              >
+                <div className="profile-avatar-inner">
+                  <i className="bi bi-person-fill" style={{ fontSize: "1.1rem" }}></i>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -401,3 +346,4 @@ const Header = () => {
 };
 
 export default Header;
+

@@ -1,0 +1,125 @@
+/* ==========================================
+   PROFILE POSTS TAB STYLES
+   ========================================== */
+
+/* ==========================================
+   Empty State
+   ========================================== */
+.profile-posts-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+/* ==========================================
+   Post Card
+   ========================================== */
+.profile-posts-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.profile-posts-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color, #000080);
+}
+
+/* ==========================================
+   Image Container
+   ========================================== */
+.profile-posts-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-posts-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.profile-posts-card:hover .profile-posts-image {
+    transform: scale(1.1);
+}
+
+.profile-posts-placeholder {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    font-size: 36px;
+}
+
+/* ==========================================
+   Content Section
+   ========================================== */
+.profile-posts-content {
+    padding: 14px;
+    position: relative;
+    flex: 1;
+}
+
+.profile-posts-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--secondary-color, #1e293b);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.profile-posts-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    gap: 8px;
+}
+
+.profile-posts-category {
+    font-size: 14px;
+    color: var(--primary-color, #000080);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   Status Badge
+   ========================================== */
+.profile-posts-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.profile-posts-status.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.profile-posts-status.waiting {
+    background-color: #e0f2fe;
+    color: #1d4ed8;
+}

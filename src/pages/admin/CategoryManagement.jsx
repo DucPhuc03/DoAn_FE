@@ -6,6 +6,7 @@ import {
   getCategoryListAdmin,
   updateCategory,
 } from "../../service/CategoryService";
+import "../../css/CategoryManagement.css";
 
 const emptyForm = {
   id: null,
@@ -164,56 +165,19 @@ export default function CategoryManagement() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#F8F8F8",
-      }}
-    >
+    <div className="category-layout">
       <Sidebar active="cats" />
 
-      <main style={{ flex: 1, padding: "24px" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+      <main className="category-main">
+        <div className="category-container">
           {/* Header */}
-          <div style={{ marginBottom: "20px" }}>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: 700,
-                color: "#000",
-              }}
-            >
-              Quản lý danh mục
-            </h1>
+          <div className="category-header">
+            <h1 className="category-title">Quản lý danh mục</h1>
           </div>
 
           {/* Top Bar: Filter, Search, Add Button */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "16px",
-            }}
-          >
-            <button
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "8px",
-                border: "1px solid #d1d5db",
-                background: "#ffffff",
-                color: "#6b7280",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-              }}
-              title="Filter"
-            >
+          <div className="category-topbar">
+            <button className="category-filter-btn" title="Filter">
               <svg
                 width="16"
                 height="16"
@@ -230,37 +194,16 @@ export default function CategoryManagement() {
               </svg>
             </button>
 
-            <div
-              style={{
-                flex: 1,
-                position: "relative",
-                maxWidth: "400px",
-              }}
-            >
+            <div className="category-search-wrapper">
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                style={{
-                  width: "100%",
-                  padding: "10px 40px 10px 12px",
-                  borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "14px",
-                  outline: "none",
-                  background: "#ffffff",
-                }}
+                className="category-search-input"
               />
               <svg
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "#9ca3af",
-                  pointerEvents: "none",
-                }}
+                className="category-search-icon"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -275,24 +218,7 @@ export default function CategoryManagement() {
               </svg>
             </div>
 
-            <button
-              onClick={openCreateForm}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                border: "none",
-                background: "#000080",
-                color: "#ffffff",
-                fontSize: "14px",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                marginLeft: "500px",
-              }}
-            >
+            <button onClick={openCreateForm} className="category-add-btn">
               <svg
                 width="16"
                 height="16"
@@ -311,260 +237,65 @@ export default function CategoryManagement() {
             </button>
           </div>
 
-          {fetchError && (
-            <div
-              style={{
-                background: "#fee2e2",
-                color: "#b91c1c",
-                padding: "10px 12px",
-                borderRadius: "8px",
-                fontSize: "14px",
-                marginBottom: "16px",
-              }}
-            >
-              {fetchError}
-            </div>
-          )}
+          {fetchError && <div className="category-error">{fetchError}</div>}
 
           {/* Table */}
           {loading ? (
-            <div
-              style={{
-                padding: "40px",
-                textAlign: "center",
-                color: "#6b7280",
-                fontSize: "15px",
-                background: "#ffffff",
-                borderRadius: "12px",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              Đang tải danh mục...
-            </div>
+            <div className="category-loading">Đang tải danh mục...</div>
           ) : (
-            <div
-              style={{
-                background: "#ffffff",
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                }}
-              >
-                <thead style={{ background: "#f9fafb" }}>
+            <div className="category-table-wrapper">
+              <table className="category-table">
+                <thead>
                   <tr>
-                    <th
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#6b7280",
-                        borderBottom: "1px solid #e5e7eb",
-                        width: "100px",
-                      }}
-                    >
-                      ID
-                    </th>
-                    <th
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#6b7280",
-                        borderBottom: "1px solid #e5e7eb",
-                        width: "150px",
-                      }}
-                    >
-                      Ảnh
-                    </th>
-                    <th
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#6b7280",
-                        borderBottom: "1px solid #e5e7eb",
-                      }}
-                    >
-                      Tên danh mục
-                    </th>
-                    <th
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#6b7280",
-                        borderBottom: "1px solid #e5e7eb",
-                        width: "500px",
-                      }}
-                    >
-                      Trạng thái
-                    </th>
-                    <th
-                      style={{
-                        padding: "12px 16px",
-                        textAlign: "left",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#6b7280",
-                        borderBottom: "1px solid #e5e7eb",
-                        width: "200px",
-                      }}
-                    >
-                      Hành động
-                    </th>
+                    <th style={{ width: "100px" }}>ID</th>
+                    <th style={{ width: "150px" }}>Ảnh</th>
+                    <th>Tên danh mục</th>
+                    <th style={{ width: "500px" }}>Trạng thái</th>
+                    <th style={{ width: "200px" }}>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {pageData.map((cat, idx) => (
-                    <tr
-                      key={cat.id}
-                      style={{
-                        borderBottom: "1px solid #f3f4f6",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f9fafb";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ffffff";
-                      }}
-                    >
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {cat.id}
-                      </td>
-                      <td style={{ padding: "12px 16px" }}>
+                  {pageData.map((cat) => (
+                    <tr key={cat.id}>
+                      <td style={{ fontWeight: 600 }}>{cat.id}</td>
+                      <td>
                         {cat.image || cat.imageUrl ? (
                           <img
                             src={cat.image || cat.imageUrl}
                             alt={cat.name}
-                            style={{
-                              width: "56px",
-                              height: "56px",
-                              objectFit: "cover",
-                              borderRadius: "8px",
-                              border: "1px solid #e5e7eb",
-                            }}
+                            className="category-image"
                           />
                         ) : (
-                          <div
-                            style={{
-                              width: "56px",
-                              height: "56px",
-                              borderRadius: "8px",
-                              background: "#f3f4f6",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: "11px",
-                              color: "#9ca3af",
-                              border: "1px solid #e5e7eb",
-                            }}
-                          >
+                          <div className="category-image-placeholder">
                             Không có
                           </div>
                         )}
                       </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#111827",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {cat.name}
-                      </td>
-                      <td style={{ padding: "12px 16px" }}>
+                      <td style={{ fontWeight: 500 }}>{cat.name}</td>
+                      <td>
                         <span
-                          style={{
-                            display: "inline-block",
-                            padding: "4px 12px",
-                            borderRadius: "12px",
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            background:
-                              (cat.status || "") === "ACTIVE"
-                                ? "#d1fae5"
-                                : "#fee2e2",
-                            color:
-                              (cat.status || "") === "ACTIVE"
-                                ? "#065f46"
-                                : "#991b1b",
-                          }}
+                          className={`category-badge ${
+                            (cat.status || "") === "ACTIVE"
+                              ? "category-badge-active"
+                              : "category-badge-deleted"
+                          }`}
                         >
                           {(cat.status || "ACTIVE") === "ACTIVE"
                             ? "Đang hoạt động"
                             : "Đã xóa"}
                         </span>
                       </td>
-                      <td style={{ padding: "12px 16px" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "8px",
-                          }}
-                        >
+                      <td>
+                        <div className="category-actions">
                           <button
                             onClick={() => openEditForm(cat)}
-                            style={{
-                              padding: "6px 16px",
-                              borderRadius: "6px",
-                              border: "1px solid #000080",
-                              background: "#ffffff",
-                              color: "#000080",
-                              fontSize: "13px",
-                              fontWeight: 500,
-                              cursor: "pointer",
-                              transition: "all 0.2s",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = "#000080";
-                              e.currentTarget.style.color = "#ffffff";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#ffffff";
-                              e.currentTarget.style.color = "#000080";
-                            }}
+                            className="category-btn"
                           >
                             Sửa
                           </button>
                           <button
                             onClick={() => handleDelete(cat.id)}
-                            style={{
-                              padding: "6px 16px",
-                              borderRadius: "6px",
-                              border: "1px solid #dc2626",
-                              background: "#ffffff",
-                              color: "#dc2626",
-                              fontSize: "13px",
-                              fontWeight: 500,
-                              cursor: "pointer",
-                              transition: "all 0.2s",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = "#dc2626";
-                              e.currentTarget.style.color = "#ffffff";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#ffffff";
-                              e.currentTarget.style.color = "#dc2626";
-                            }}
+                            className="category-btn category-btn-danger"
                           >
                             Xóa
                           </button>
@@ -575,15 +306,7 @@ export default function CategoryManagement() {
 
                   {pageData.length === 0 && (
                     <tr>
-                      <td
-                        colSpan={5}
-                        style={{
-                          padding: "40px",
-                          textAlign: "center",
-                          color: "#9ca3af",
-                          fontSize: "14px",
-                        }}
-                      >
+                      <td colSpan={5} className="category-table-empty">
                         Không có dữ liệu
                       </td>
                     </tr>
@@ -595,55 +318,19 @@ export default function CategoryManagement() {
         </div>
 
         {/* Pagination Footer */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "16px",
-            padding: "12px 0",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "14px",
-              color: "#6b7280",
-            }}
-          >
+        <div className="category-pagination">
+          <div className="category-pagination-info">
             {startIndex + 1}-{Math.min(endIndex, filteredCategories.length)} of{" "}
             {filteredCategories.length}
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "24px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
+          <div className="category-pagination-controls">
+            <div className="category-rows-select">
               <select
                 value={rowsPerPage}
                 onChange={(e) => {
                   setRowsPerPage(Number(e.target.value));
                   setPage(1);
-                }}
-                style={{
-                  padding: "6px 8px",
-                  borderRadius: "6px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "14px",
-                  background: "#ffffff",
-                  cursor: "pointer",
-                  outline: "none",
                 }}
               >
                 <option value={5}>5</option>
@@ -653,42 +340,11 @@ export default function CategoryManagement() {
               </select>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-              }}
-            >
+            <div className="category-page-nav">
               <button
                 onClick={() => goto(page - 1)}
                 disabled={page === 1}
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "6px",
-                  border: "1px solid #d1d5db",
-                  background: page === 1 ? "#f9fafb" : "#ffffff",
-                  color: page === 1 ? "#9ca3af" : "#6b7280",
-                  cursor: page === 1 ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                  opacity: page === 1 ? 0.5 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (page !== 1) {
-                    e.currentTarget.style.background = "#f9fafb";
-                    e.currentTarget.style.borderColor = "#9ca3af";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (page !== 1) {
-                    e.currentTarget.style.background = "#ffffff";
-                    e.currentTarget.style.borderColor = "#d1d5db";
-                  }
-                }}
+                className="category-page-btn"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
@@ -700,45 +356,13 @@ export default function CategoryManagement() {
                   />
                 </svg>
               </button>
-              <span
-                style={{
-                  fontSize: "14px",
-                  color: "#6b7280",
-                  minWidth: "40px",
-                  textAlign: "center",
-                }}
-              >
+              <span className="category-page-text">
                 {page}/{totalPages}
               </span>
               <button
                 onClick={() => goto(page + 1)}
                 disabled={page === totalPages}
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "6px",
-                  border: "1px solid #d1d5db",
-                  background: page === totalPages ? "#f9fafb" : "#ffffff",
-                  color: page === totalPages ? "#9ca3af" : "#6b7280",
-                  cursor: page === totalPages ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                  opacity: page === totalPages ? 0.5 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (page !== totalPages) {
-                    e.currentTarget.style.background = "#f9fafb";
-                    e.currentTarget.style.borderColor = "#9ca3af";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (page !== totalPages) {
-                    e.currentTarget.style.background = "#ffffff";
-                    e.currentTarget.style.borderColor = "#d1d5db";
-                  }
-                }}
+                className="category-page-btn"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
@@ -755,138 +379,45 @@ export default function CategoryManagement() {
 
           {/* Modal Form */}
           {showForm && (
-            <div
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1050,
-              }}
-              onClick={closeForm}
-            >
+            <div className="category-modal-overlay" onClick={closeForm}>
               <div
-                style={{
-                  width: "100%",
-                  maxWidth: "520px",
-                  background: "#ffffff",
-                  borderRadius: "12px",
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-                  overflow: "hidden",
-                }}
+                className="category-modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "16px 20px",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  <h2
-                    style={{
-                      margin: 0,
-                      fontSize: "18px",
-                      fontWeight: 700,
-                      color: "#111827",
-                    }}
-                  >
+                <div className="category-modal-header">
+                  <h2 className="category-modal-title">
                     {isEdit ? "Sửa danh mục" : "Thêm danh mục mới"}
                   </h2>
                   <button
                     type="button"
                     onClick={closeForm}
                     aria-label="Close"
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      border: "none",
-                      background: "transparent",
-                      fontSize: "24px",
-                      color: "#6b7280",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "6px",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "#f3f4f6";
-                      e.currentTarget.style.color = "#111827";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "#6b7280";
-                    }}
+                    className="category-modal-close"
                   >
                     ×
                   </button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                  <div style={{ padding: "20px" }}>
+                  <div className="category-modal-body">
                     {formError && (
-                      <div
-                        style={{
-                          background: "#fee2e2",
-                          color: "#b91c1c",
-                          padding: "10px 12px",
-                          borderRadius: "8px",
-                          fontSize: "14px",
-                          marginBottom: "16px",
-                        }}
-                      >
-                        {formError}
-                      </div>
+                      <div className="category-form-error">{formError}</div>
                     )}
 
                     {isEdit && form.id != null && (
-                      <div style={{ marginBottom: "16px" }}>
-                        <label
-                          style={{
-                            display: "block",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            color: "#374151",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          ID
-                        </label>
+                      <div className="category-form-group">
+                        <label className="category-form-label">ID</label>
                         <input
                           value={form.id}
                           disabled
-                          style={{
-                            width: "100%",
-                            padding: "8px 12px",
-                            borderRadius: "8px",
-                            border: "1px solid #d1d5db",
-                            fontSize: "14px",
-                            outline: "none",
-                            boxSizing: "border-box",
-                            background: "#f9fafb",
-                            color: "#6b7280",
-                            cursor: "not-allowed",
-                          }}
+                          className="category-form-input"
+                          style={{ background: "#f9fafb", color: "#6b7280", cursor: "not-allowed" }}
                         />
                       </div>
                     )}
 
-                    <div style={{ marginBottom: "16px" }}>
-                      <label
-                        style={{
-                          display: "block",
-                          fontSize: "13px",
-                          fontWeight: 600,
-                          color: "#374151",
-                          marginBottom: "6px",
-                        }}
-                      >
+                    <div className="category-form-group">
+                      <label className="category-form-label">
                         Tên danh mục <span style={{ color: "#dc2626" }}>*</span>
                       </label>
                       <input
@@ -894,145 +425,45 @@ export default function CategoryManagement() {
                         value={form.name}
                         onChange={handleChange}
                         placeholder="Nhập tên danh mục"
-                        style={{
-                          width: "100%",
-                          padding: "8px 12px",
-                          borderRadius: "8px",
-                          border: "1px solid #d1d5db",
-                          fontSize: "14px",
-                          outline: "none",
-                          boxSizing: "border-box",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "#000080";
-                          e.currentTarget.style.boxShadow =
-                            "0 0 0 3px rgba(0, 0, 128, 0.1)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "#d1d5db";
-                          e.currentTarget.style.boxShadow = "none";
-                        }}
+                        className="category-form-input"
                       />
                     </div>
 
-                    <div style={{ marginBottom: "16px" }}>
-                      <label
-                        style={{
-                          display: "block",
-                          fontSize: "13px",
-                          fontWeight: 600,
-                          color: "#374151",
-                          marginBottom: "6px",
-                        }}
-                      >
-                        Chọn ảnh
-                      </label>
+                    <div className="category-form-group">
+                      <label className="category-form-label">Chọn ảnh</label>
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageFileChange}
                         style={{ width: "100%", fontSize: "13px" }}
                       />
-                      <div
-                        style={{
-                          marginTop: "4px",
-                          fontSize: "12px",
-                          color: "#9ca3af",
-                        }}
-                      ></div>
                     </div>
 
                     {(previewSrc || form.imageUrl) && (
-                      <div style={{ marginBottom: "16px" }}>
-                        <label
-                          style={{
-                            display: "block",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            color: "#374151",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          {" "}
-                        </label>
-                        <div
-                          style={{
-                            border: "1px dashed #d1d5db",
-                            borderRadius: "8px",
-                            padding: "8px",
-                            background: "#f9fafb",
-                            textAlign: "center",
-                          }}
-                        >
+                      <div className="category-form-group">
+                        <div className="category-upload-area">
                           <img
                             src={previewSrc || form.imageUrl}
                             alt="Xem trước"
-                            style={{
-                              maxHeight: "180px",
-                              width: "100%",
-                              objectFit: "cover",
-                              borderRadius: "6px",
-                            }}
+                            className="category-upload-preview"
                           />
                         </div>
                       </div>
                     )}
                   </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      gap: "8px",
-                      padding: "16px 20px",
-                      borderTop: "1px solid #e5e7eb",
-                      background: "#f9fafb",
-                    }}
-                  >
+                  <div className="category-modal-footer">
                     <button
                       type="button"
                       onClick={closeForm}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        background: "#ffffff",
-                        color: "#374151",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f9fafb";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#ffffff";
-                      }}
+                      className="category-modal-cancel"
                     >
                       Hủy
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      style={{
-                        padding: "8px 16px",
-                        borderRadius: "8px",
-                        border: "1px solid #000080",
-                        background: "#000080",
-                        color: "#ffffff",
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        opacity: submitting ? 0.7 : 1,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#0000a0";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#000080";
-                      }}
+                      className="category-modal-submit"
                     >
                       {submitting
                         ? "Đang xử lý..."

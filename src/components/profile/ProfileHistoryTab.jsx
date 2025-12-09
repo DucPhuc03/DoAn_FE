@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import { FaExchangeAlt } from "react-icons/fa";
+import { FaExchangeAlt, FaStar, FaRegStar } from "react-icons/fa";
 import { updateTradeStatus } from "../../service/TradeService";
 import { createReview } from "../../service/ReviewService";
+import "../../css/ProfileHistoryTab.css";
 
 const ProfileHistoryTab = ({
   trades,
   loadingTrades,
   onRefreshTrades,
-  primary,
-  secondary,
-  surface,
-  muted,
 }) => {
   const [submittingTradeId, setSubmittingTradeId] = useState(null);
   const [reviewingTradeId, setReviewingTradeId] = useState(null);
@@ -19,6 +16,8 @@ const ProfileHistoryTab = ({
     comment: "",
   });
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [hoveredStar, setHoveredStar] = useState(0);
+
 
   const handleCompleteTrade = async (tradeId) => {
     try {
@@ -26,7 +25,6 @@ const ProfileHistoryTab = ({
       const response = await updateTradeStatus(tradeId);
       if (response?.code === 1000) {
         alert("Đã cập nhật trạng thái trao đổi thành công");
-        // Refresh danh sách trades để cập nhật trạng thái
         if (onRefreshTrades) {
           await onRefreshTrades();
         }
@@ -70,7 +68,6 @@ const ProfileHistoryTab = ({
         alert("Đã gửi đánh giá thành công");
         setReviewingTradeId(null);
         setReviewForm({ rating: 5, comment: "" });
-        // Refresh danh sách trades để cập nhật trạng thái
         if (onRefreshTrades) {
           await onRefreshTrades();
         }
@@ -84,45 +81,40 @@ const ProfileHistoryTab = ({
       setSubmittingReview(false);
     }
   };
+
+  const renderStars = () => {
+    return [1, 2, 3, 4, 5].map((star) => (
+      <span
+        key={star}
+        className={`history-star ${star <= (hoveredStar || reviewForm.rating) ? "filled" : "empty"}`}
+        onClick={() => setReviewForm((prev) => ({ ...prev, rating: star }))}
+        onMouseEnter={() => setHoveredStar(star)}
+        onMouseLeave={() => setHoveredStar(0)}
+      >
+        {star <= (hoveredStar || reviewForm.rating) ? <FaStar /> : <FaRegStar />}
+      </span>
+    ));
+  };
+
   if (loadingTrades) {
     return (
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          textAlign: "center",
-          padding: "60px 20px",
-          color: muted,
-        }}
-      >
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <div className="history-loading">
+        <div className="history-loading-dots">
+          <div className="history-loading-dot"></div>
+          <div className="history-loading-dot"></div>
+          <div className="history-loading-dot"></div>
         </div>
+        <p className="history-loading-text">Đang tải lịch sử giao dịch...</p>
       </div>
     );
   }
 
   if (!trades || trades.length === 0) {
     return (
-      <div
-        style={{
-          gridColumn: "1 / -1",
-          textAlign: "center",
-          padding: "60px 20px",
-          color: muted,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 64,
-            marginBottom: 16,
-            opacity: 0.5,
-          }}
-        >
-          📋
-        </div>
-        <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-          Chưa có lịch sử
-        </div>
+      <div className="history-empty">
+        <div className="history-empty-icon">📋</div>
+        <h3 className="history-empty-title">Chưa có lịch sử giao dịch</h3>
+        <p className="history-empty-subtitle">Các giao dịch của bạn sẽ xuất hiện ở đây</p>
       </div>
     );
   }
@@ -130,353 +122,118 @@ const ProfileHistoryTab = ({
   return (
     <>
       {trades.map((trade) => (
-        <div
-          key={trade.tradeId}
-          style={{
-            gridColumn: "1 / -1",
-            background: surface,
-            borderRadius: 14,
-            padding: 18,
-            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.08)",
-            border: "1px solid #e2e8f0",
-            marginBottom: 12,
-          }}
-        >
+        <div key={trade.tradeId} className="history-card">
+          {/* Accent Line */}
+          <div className="history-card-accent"></div>
+
           {/* Header with user info */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 20,
-              paddingBottom: 16,
-              borderBottom: "2px solid #f1f5f9",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-              }}
-            >
+          <div className="history-header">
+            <div className="history-user-section">
               {/* User Avatar */}
-              <div
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: "50%",
-                  background: trade.userAvatar
-                    ? "transparent"
-                    : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  overflow: "hidden",
-                }}
-              >
+              <div className="history-avatar">
                 {trade.userAvatar ? (
-                  <img
-                    src={trade.userAvatar}
-                    alt={trade.userName}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <img src={trade.userAvatar} alt={trade.userName} />
                 ) : (
-                  <span
-                    style={{
-                      color: surface,
-                      fontSize: 20,
-                      fontWeight: 600,
-                    }}
-                  >
+                  <span className="history-avatar-text">
                     {trade.userName?.charAt(0) || "U"}
                   </span>
                 )}
               </div>
               <div>
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 16,
-                    color: secondary,
-                    marginBottom: 4,
-                  }}
-                >
+                <div className="history-user-name">
                   {trade.userName || "Người dùng"}
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: muted,
-                  }}
-                >
-                  Mã trao đổi: #{trade.tradeId}
+                <div className="history-trade-id">
+                  Mã giao dịch:
+                  <span className="history-trade-id-badge">#{trade.tradeId}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Trade Items */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.1fr auto 1.1fr",
-              gap: 16,
-              alignItems: "center",
-              marginBottom: 20,
-            }}
-          >
+          <div className="history-trade-items">
             {/* Requester Post */}
-            <div
-              style={{
-                background: "#f8fafc",
-                borderRadius: 10,
-                padding: 12,
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 12,
-                  color: muted,
-                  fontWeight: 600,
-
-                  marginLeft: "100px",
-                  marginBottom: 8,
-                  textTransform: "uppercase",
-                }}
-              >
-                Sản phẩm yêu cầu
-              </div>
+            <div className="history-product-card">
+              <div className="history-product-label">🎁 Sản phẩm yêu cầu</div>
               {trade.requesterPostImage ? (
                 <img
                   src={trade.requesterPostImage}
                   alt={trade.requesterPostTitle}
-                  style={{
-                    width: "70%",
-                    height: 150,
-                    marginLeft: "50px",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                    marginBottom: 8,
-                  }}
+                  className="history-product-image"
                 />
-              ) : null}
-              <div
-                style={{
-                  width: "70%",
-                  height: 150,
-                  background: "#e5e7eb",
-                  marginLeft: "50px",
-                  borderRadius: 8,
-                  marginBottom: 8,
-                  display: trade.requesterPostImage ? "none" : "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <i
-                  className="bi bi-image text-muted"
-                  style={{ fontSize: "2rem" }}
-                ></i>
-              </div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  width: "70%",
-                  fontSize: 14,
-                  color: secondary,
-
-                  marginLeft: "50px",
-                  lineHeight: 1.4,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  minHeight: 40,
-                }}
-              >
-                {trade.requesterPostTitle}
-              </div>
+              ) : (
+                <div className="history-product-placeholder">
+                  <i className="bi bi-image"></i>
+                </div>
+              )}
+              <div className="history-product-title">{trade.requesterPostTitle}</div>
             </div>
 
             {/* Exchange Icon */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: "50%",
-                  background: "#f59e0b",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: surface,
-                  fontSize: 20,
-                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
-                }}
-              >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div className="history-exchange-icon">
                 <FaExchangeAlt />
               </div>
             </div>
 
             {/* Owner Post */}
-            <div
-              style={{
-                background: "#f8fafc",
-                borderRadius: 10,
-                padding: 12,
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 12,
-                  color: muted,
-                  fontWeight: 600,
-                  marginBottom: 8,
-                  marginLeft: "100px",
-                  textTransform: "uppercase",
-                }}
-              >
-                Sản phẩm của bạn
-              </div>
+            <div className="history-product-card">
+              <div className="history-product-label">🏠 Sản phẩm của bạn</div>
               {trade.ownerPostImage ? (
                 <img
                   src={trade.ownerPostImage}
                   alt={trade.ownerPostTitle}
-                  style={{
-                    width: "70%",
-                    marginLeft: "50px",
-                    height: 150,
-                    objectFit: "cover",
-                    borderRadius: 8,
-                    marginBottom: 8,
-                  }}
+                  className="history-product-image"
                 />
-              ) : null}
-              <div
-                style={{
-                  width: "70%",
-                  height: 150,
-                  background: "#e5e7eb",
-                  borderRadius: 8,
-                  marginLeft: "50px",
-                  marginBottom: 8,
-                  marginTop: 8,
-                  display: trade.ownerPostImage ? "none" : "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <i
-                  className="bi bi-image text-muted"
-                  style={{ fontSize: "2rem" }}
-                ></i>
-              </div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: 14,
-                  marginLeft: "50px",
-                  color: secondary,
-                  lineHeight: 1.4,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  minHeight: 40,
-                }}
-              >
-                {trade.ownerPostTitle}
-              </div>
+              ) : (
+                <div className="history-product-placeholder">
+                  <i className="bi bi-image"></i>
+                </div>
+              )}
+              <div className="history-product-title">{trade.ownerPostTitle}</div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
+          <div className="history-actions">
             {trade.reviewed === true && trade.canRate === false ? (
-              <div
-                style={{
-                  padding: "10px 20px",
-                  borderRadius: 8,
-                  background: "#d1fae5",
-                  color: "#065f46",
-                  fontWeight: 600,
-                  fontSize: 14,
-                }}
-              >
+              <div className="history-status-badge reviewed">
+                <i className="bi bi-check-circle-fill"></i>
                 Đã đánh giá
               </div>
             ) : trade.canComplete === false && trade.canRate === false ? (
-              <div
-                style={{
-                  padding: "10px 20px",
-                  borderRadius: 8,
-                  background: "#fef3c7",
-                  color: "#d97706",
-                  fontWeight: 600,
-                  fontSize: 14,
-                }}
-              >
+              <div className="history-status-badge pending">
+                <i className="bi bi-hourglass-split"></i>
                 Đang chờ xác nhận
               </div>
             ) : (
               <>
                 {trade.canComplete && (
                   <button
+                    className="history-complete-btn"
                     onClick={() => handleCompleteTrade(trade.tradeId)}
-                    style={{
-                      padding: "10px 20px",
-                      borderRadius: 8,
-                      background: "#f59e0b",
-                      color: surface,
-                      border: "none",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      transition: "all 0.3s",
-                      boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
-                    }}
+                    disabled={submittingTradeId === trade.tradeId}
                   >
-                    {submittingTradeId === trade.tradeId
-                      ? "Đang xử lý..."
-                      : "Hoàn thành"}
+                    {submittingTradeId === trade.tradeId ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm"></span>
+                        Đang xử lý...
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-check2-circle"></i>
+                        Hoàn thành
+                      </>
+                    )}
                   </button>
                 )}
                 {trade.canRate && (
                   <button
+                    className="history-review-btn"
                     onClick={() => handleOpenReview(trade)}
-                    style={{
-                      padding: "10px 20px",
-                      borderRadius: 8,
-                      background: "transparent",
-                      color: primary,
-                      border: `2px solid ${primary}`,
-                      fontWeight: 600,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      transition: "all 0.3s",
-                    }}
                   >
+                    <i className="bi bi-star"></i>
                     Đánh giá
                   </button>
                 )}
@@ -486,59 +243,20 @@ const ProfileHistoryTab = ({
 
           {/* Review Form */}
           {trade.canRate && reviewingTradeId === trade.tradeId && (
-            <div
-              style={{
-                marginTop: 16,
-                padding: 14,
-                borderRadius: 10,
-                background: "#f9fafb",
-                border: "1px dashed #e5e7eb",
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: 14,
-                  marginBottom: 8,
-                  color: secondary,
-                }}
-              >
+            <div className="history-review-form">
+              <div className="history-review-title">
+                <span style={{ fontSize: "24px" }}>⭐</span>
                 Gửi đánh giá cho {trade.userName}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginBottom: 10,
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <span style={{ fontSize: 14, color: muted }}>Số sao:</span>
-                <select
-                  value={reviewForm.rating}
-                  onChange={(e) =>
-                    setReviewForm((prev) => ({
-                      ...prev,
-                      rating: Number(e.target.value),
-                    }))
-                  }
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: "1px solid #d1d5db",
-                    fontSize: 14,
-                  }}
-                >
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <option key={star} value={star}>
-                      {star}
-                    </option>
-                  ))}
-                </select>
+
+              <div style={{ marginBottom: "16px" }}>
+                <span className="history-star-label">Chọn số sao:</span>
+                <div className="history-star-rating">{renderStars()}</div>
               </div>
+
               <textarea
-                rows={3}
+                className="history-textarea"
+                rows={4}
                 value={reviewForm.comment}
                 onChange={(e) =>
                   setReviewForm((prev) => ({
@@ -546,60 +264,39 @@ const ProfileHistoryTab = ({
                     comment: e.target.value,
                   }))
                 }
-                placeholder="Nhập nội dung đánh giá..."
-                style={{
-                  width: "100%",
-                  borderRadius: 8,
-                  border: "1px solid #d1d5db",
-                  padding: 10,
-                  fontSize: 14,
-                  resize: "vertical",
-                  marginBottom: 10,
-                }}
+                placeholder="Chia sẻ trải nghiệm của bạn về giao dịch này..."
               />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: 8,
-                }}
-              >
+
+              <div className="history-form-actions">
                 <button
                   type="button"
+                  className="history-cancel-btn"
                   onClick={() => {
                     setReviewingTradeId(null);
                     setReviewForm({ rating: 5, comment: "" });
-                  }}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 8,
-                    border: "1px solid #d1d5db",
-                    background: "white",
-                    color: "#4b5563",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: "pointer",
+                    setHoveredStar(0);
                   }}
                 >
+                  <i className="bi bi-x-lg me-2"></i>
                   Hủy
                 </button>
                 <button
                   type="button"
+                  className="history-submit-btn"
                   onClick={() => handleSubmitReview(trade)}
                   disabled={submittingReview}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: 8,
-                    border: "none",
-                    background: primary,
-                    color: surface,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    opacity: submittingReview ? 0.7 : 1,
-                  }}
                 >
-                  {submittingReview ? "Đang gửi..." : "Gửi đánh giá"}
+                  {submittingReview ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Đang gửi...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-send-fill me-2"></i>
+                      Gửi đánh giá
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -611,3 +308,4 @@ const ProfileHistoryTab = ({
 };
 
 export default ProfileHistoryTab;
+

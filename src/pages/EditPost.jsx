@@ -6,6 +6,8 @@ import { LuMapPin, LuTag } from "react-icons/lu";
 import { getCategoryList } from "../service/CategoryService.js";
 import { getPostDetail, updatePost } from "../service/PostService.js";
 import ModelMap from "../components/ModelMap.jsx";
+import "../css/EditPost.css";
+
 const palette = {
   primary: "#6d5dfc",
   primarySoft: "#f3f1ff",
@@ -210,10 +212,10 @@ const EditPost = () => {
 
   if (loading) {
     return (
-      <div className="min-vh-100" style={{ backgroundColor: "#fdfcff" }}>
+      <div className="editpost-page">
         <Header />
         <div className="container py-4 py-md-5">
-          <div className="text-center py-5">
+          <div className="editpost-loading">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
@@ -224,35 +226,26 @@ const EditPost = () => {
   }
 
   return (
-    <div className="min-vh-100" style={{ backgroundColor: "#fdfcff" }}>
+    <div className="editpost-page">
       <Header />
       <div className="container py-4 py-md-5">
         <div className="text-center mb-4">
-          <h1 className="fw-bold" style={{ color: palette.text }}>
-            Chỉnh sửa bài đăng
-          </h1>
+          <h1 className="editpost-title">Chỉnh sửa bài đăng</h1>
         </div>
 
-        <form
-          className="card border-0 shadow-sm p-4 p-lg-5"
-          onSubmit={handleSubmit}
-        >
+        <form className="editpost-form" onSubmit={handleSubmit}>
           <div className="row g-4 align-items-start">
             <div className="col-lg-5">
-              <div
-                className="h-100 d-flex flex-column justify-content-center text-center rounded-5 p-4"
-                style={{
-                  border: `2px dashed ${palette.border}`,
-                  background: palette.primarySoft,
-                  color: palette.text,
-                }}
-              >
-                <PiImageSquareDuotone size={70} className="mx-auto mb-3" />
-                <h5 className="fw-bold mb-2">Thêm ảnh sản phẩm</h5>
-                <p className="text-muted small mb-4">
+              <div className="editpost-upload-area">
+                <PiImageSquareDuotone
+                  size={70}
+                  className="editpost-upload-icon"
+                />
+                <h5 className="editpost-upload-title">Thêm ảnh sản phẩm</h5>
+                <p className="editpost-upload-subtitle">
                   Thêm ảnh mới hoặc giữ lại ảnh hiện có.
                 </p>
-                <label className="btn btn-primary rounded-pill px-4 py-2 mb-3">
+                <label className="btn btn-primary editpost-upload-btn">
                   + Thêm ảnh
                   <input
                     type="file"
@@ -265,18 +258,21 @@ const EditPost = () => {
               </div>
 
               {previews.length > 0 && (
-                <div className="row g-2 mt-3">
+                <div className="row g-2 editpost-previews">
                   {previews.map((img, idx) => (
                     <div
-                      className="col-4 position-relative"
+                      className="col-4 editpost-preview-item"
                       key={`${img.name}-${idx}`}
                     >
-                      <div className="rounded-4 overflow-hidden border position-relative">
-                        <img src={img.src} alt={img.name} className="w-100" />
+                      <div className="editpost-preview-wrapper">
+                        <img
+                          src={img.src}
+                          alt={img.name}
+                          className="editpost-preview-image"
+                        />
                         <button
                           type="button"
-                          className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
-                          style={{ width: "28px", height: "28px", padding: 0 }}
+                          className="btn btn-danger btn-sm editpost-preview-remove"
                           onClick={() => handleRemoveImage(idx, img.isExisting)}
                         >
                           <i className="bi bi-x"></i>
@@ -290,10 +286,10 @@ const EditPost = () => {
 
             <div className="col-lg-7">
               <div className="mb-3">
-                <label className="form-label fw-semibold">Tiêu đề</label>
+                <label className="form-label editpost-label">Tiêu đề</label>
                 <input
                   type="text"
-                  className="form-control form-control-lg rounded-4"
+                  className="form-control editpost-input-lg"
                   placeholder="Nhập tiêu đề"
                   value={formData.title}
                   onChange={handleChange("title")}
@@ -302,10 +298,10 @@ const EditPost = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Mô tả</label>
+                <label className="form-label editpost-label">Mô tả</label>
                 <textarea
                   rows={4}
-                  className="form-control rounded-4"
+                  className="form-control editpost-input"
                   placeholder="Mô tả món đồ ..."
                   value={formData.description}
                   onChange={handleChange("description")}
@@ -315,12 +311,12 @@ const EditPost = () => {
 
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">
+                  <label className="form-label editpost-label">
                     Yêu cầu muốn đổi <LuTag className="ms-1" />
                   </label>
                   <input
                     type="text"
-                    className="form-control rounded-4"
+                    className="form-control editpost-input"
                     placeholder="Nhập yêu cầu"
                     value={formData.tags}
                     onChange={handleChange("tags")}
@@ -328,18 +324,14 @@ const EditPost = () => {
                 </div>
               </div>
 
-              <div
-                className="mt-4 p-3 rounded-4"
-                style={{ background: "#fff9f0" }}
-              >
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <span className="fw-semibold">
+              <div className="editpost-meeting-section">
+                <div className="editpost-meeting-header">
+                  <span className="editpost-meeting-label">
                     Điểm gặp mặt <LuMapPin className="ms-1" />
                   </span>
                   <button
                     type="button"
-                    className="btn btn-link text-decoration-none fw-semibold"
-                    style={{ color: palette.primary }}
+                    className="btn btn-link editpost-meeting-btn"
                   >
                     Chọn địa điểm
                   </button>
@@ -347,7 +339,7 @@ const EditPost = () => {
                 <ModelMap onLocationChange={handleLocationChange} />
                 <input
                   type="text"
-                  className="form-control rounded-4 mt-2"
+                  className="form-control editpost-input mt-2"
                   placeholder="Nhập địa điểm trao đổi"
                   value={formData.meetingSpot}
                   onChange={handleChange("meetingSpot")}
@@ -381,11 +373,10 @@ const EditPost = () => {
             </div>
           </div>
 
-          <div className="d-flex flex-column flex-md-row gap-3 mt-5">
+          <div className="editpost-actions">
             <button
               type="button"
-              className="btn rounded-pill py-3 flex-grow-1"
-              style={{ background: palette.primarySoft, color: palette.text }}
+              className="btn editpost-cancel-btn"
               onClick={() => navigate(`/post/${id}`)}
               disabled={submitting}
             >
@@ -393,11 +384,7 @@ const EditPost = () => {
             </button>
             <button
               type="submit"
-              className="btn rounded-pill py-3 flex-grow-1 text-dark"
-              style={{
-                background: submitting ? "#fef3c7" : palette.warning,
-                opacity: submitting ? 0.7 : 1,
-              }}
+              className="btn editpost-submit-btn"
               disabled={submitting}
             >
               {submitting ? "Đang cập nhật..." : "Cập nhật bài đăng"}
@@ -405,13 +392,11 @@ const EditPost = () => {
           </div>
 
           {message && (
-            <div className="alert alert-success rounded-pill mt-4 mb-0 text-center">
-              {message}
-            </div>
+            <div className="alert alert-success editpost-alert">{message}</div>
           )}
 
           {errorMessage && (
-            <div className="alert alert-danger rounded-pill mt-4 mb-0 text-center">
+            <div className="alert alert-danger editpost-alert">
               {errorMessage}
             </div>
           )}
