@@ -18,43 +18,6 @@ const Explore = () => {
   const [maxDistance, setMaxDistance] = useState(100);
   const [tempDistance, setTempDistance] = useState(100);
   const [showDistanceFilter, setShowDistanceFilter] = useState(false);
-  const [showSuggested, setShowSuggested] = useState(false);
-
-  // Fake data cho bài đăng gợi ý
-  const suggestedPosts = [
-    {
-      id: 101,
-      title: "iPhone 14 Pro Max 256GB",
-      username: "NguyenVanA",
-      imageUrl: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400",
-      totalLikes: 45,
-      distance: 2.5,
-    },
-    {
-      id: 102,
-      title: "MacBook Air M2 2023",
-      username: "TranThiB",
-      imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
-      totalLikes: 32,
-      distance: 5.1,
-    },
-    {
-      id: 103,
-      title: "Xe đạp thể thao Giant",
-      username: "LeVanC",
-      imageUrl: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400",
-      totalLikes: 28,
-      distance: 3.2,
-    },
-    {
-      id: 104,
-      title: "Bàn làm việc gỗ tự nhiên",
-      username: "PhamThiD",
-      imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400",
-      totalLikes: 19,
-      distance: 1.8,
-    },
-  ];
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
 
@@ -258,7 +221,7 @@ const Explore = () => {
         {/* Topics Section */}
         <div className="row mb-4">
           <div className="col-12">
-            <h3 className="explore-topics-title">Danh mục</h3>
+            <h3 className="explore-topics-title">Chủ đề</h3>
             <div className="topic-scroll">
               <div className="d-flex gap-3">
                 {loadingCategories ? (
@@ -304,87 +267,9 @@ const Explore = () => {
           </div>
         </div>
 
-        {/* Suggested Posts Section */}
+        {/* Content Grid Section */}
         <div className="row mb-4">
           <div className="col-12">
-            <div className="explore-suggested-header">
-              <h4 className="explore-suggested-title">
-                <i className="bi bi-lightbulb me-2"></i>
-                Gợi ý cho bạn
-              </h4>
-              <button
-                className="explore-suggested-toggle"
-                onClick={() => setShowSuggested(!showSuggested)}
-              >
-                {showSuggested ? (
-                  <>
-                    <span>Ẩn bớt</span>
-                    <i className="bi bi-chevron-up ms-1"></i>
-                  </>
-                ) : (
-                  <>
-                    <span>Xem thêm</span>
-                    <i className="bi bi-chevron-down ms-1"></i>
-                  </>
-                )}
-              </button>
-            </div>
-            {showSuggested && (
-              <div className="explore-suggested-grid">
-                {suggestedPosts.map((card) => (
-                  <div
-                    key={card.id}
-                    className="explore-card"
-                    onClick={() => handlePostClick(card.id)}
-                  >
-                    <div className="card-body p-0">
-                      <div className="explore-card-image-wrapper">
-                        {card.imageUrl ? (
-                          <img
-                            src={card.imageUrl}
-                            alt={card.title}
-                            className="explore-card-image"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                            }}
-                          />
-                        ) : (
-                          <div className="explore-card-image-placeholder">
-                            <i className="bi bi-image"></i>
-                          </div>
-                        )}
-                      </div>
-                      <div className="explore-card-content">
-                        <h6 className="explore-card-title">{card.title}</h6>
-                        <p className="explore-card-meta">
-                          <span>
-                            <i className="bi bi-person me-1"></i>
-                            {card.username}
-                          </span>
-                          <span className="explore-card-likes">
-                            <i className="bi bi-heart-fill"></i>
-                            <span>{card.totalLikes || 0}</span>
-                          </span>
-                        </p>
-                        {card.distance !== undefined && card.distance !== null && (
-                          <p className="explore-card-distance">
-                            <i className="bi bi-geo-alt"></i>
-                            <span>{card.distance} km</span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* All Posts Section */}
-        <div className="row mb-4">
-          <div className="col-12">
-            <h4 className="explore-section-title">Tất cả bài đăng</h4>
             <div className="content-grid">
               {loadingPosts ? (
                 <div className="explore-loading">Đang tải bài đăng...</div>

@@ -679,23 +679,34 @@ const Chat = () => {
 
               {selectedConversation?.meeting && (
                 <>
-                  <div
-                    className={`chat-header-status ${
-                      selectedConversation.meeting.status === "WAITING"
-                        ? "waiting"
-                        : selectedConversation.meeting.status === "SCHEDULED"
-                        ? "scheduled"
-                        : "cancelled"
-                    }`}
-                  >
-                    {selectedConversation.meeting.status === "WAITING" &&
-                      (selectedConversation.meeting.creator
-                        ? "Đang chờ xác nhận"
-                        : "Lịch hẹn chờ bạn xác nhận")}
-                    {selectedConversation.meeting.status === "SCHEDULED" &&
-                      "Đã xác nhận lịch hẹn"}
-                    {selectedConversation.meeting.status === "CANCELLED" &&
-                      "Lịch hẹn đã hủy"}
+                  <div className="d-flex align-items-center gap-2">
+                    <div
+                      className={`chat-header-status ${
+                        selectedConversation.meeting.status === "WAITING"
+                          ? "waiting"
+                          : selectedConversation.meeting.status === "SCHEDULED"
+                          ? "scheduled"
+                          : "cancelled"
+                      }`}
+                    >
+                      {selectedConversation.meeting.status === "WAITING" &&
+                        (selectedConversation.meeting.creator
+                          ? "Đang chờ xác nhận"
+                          : "Lịch hẹn chờ bạn xác nhận")}
+                      {selectedConversation.meeting.status === "SCHEDULED" &&
+                        "Đã xác nhận lịch hẹn"}
+                      {selectedConversation.meeting.status === "CANCELLED" &&
+                        "Lịch hẹn đã hủy"}
+                    </div>
+                    {selectedConversation.meeting.status === "SCHEDULED" && (
+                      <button
+                        onClick={handleCancelMeeting}
+                        className="chat-btn-cancel-small"
+                        title="Hủy lịch hẹn"
+                      >
+                        <i className="bi bi-x-lg"></i>
+                      </button>
+                    )}
                   </div>
 
                   {selectedConversation.meeting.status === "WAITING" &&

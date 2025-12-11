@@ -392,6 +392,26 @@
     font-size: 12px;
 }
 
+.chat-btn-cancel-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.chat-btn-cancel-small:hover {
+    background: #fecaca;
+    color: #b91c1c;
+}
+
 .chat-btn-menu {
     width: 36px;
     height: 36px;

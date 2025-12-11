@@ -15,21 +15,37 @@
    Search Section
    ========================================== */
 .explore-search-wrapper {
-    max-width: 600px;
+    position: relative;
+    max-width: 500px;
     width: 100%;
 }
 
 .explore-search-input {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    padding-right: 48px !important;
+    border: 1px solid #e5e7eb !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.explore-search-input:focus {
+    border-color: #9ca3af !important;
+    box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.15) !important;
 }
 
 .explore-search-btn {
     position: absolute;
     top: 50%;
-    right: 0;
+    right: 12px;
     transform: translateY(-50%);
-    margin-right: 12px;
-    padding: 0;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explore-search-btn i {
+    font-size: 1.1rem;
+    color: #6b7280;
 }
 
 /* ==========================================
@@ -183,6 +199,69 @@
 }
 
 /* ==========================================
+   Suggested Posts Section
+   ========================================== */
+.explore-suggested-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.explore-suggested-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.explore-suggested-title i {
+    color: #f59e0b;
+}
+
+.explore-suggested-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.explore-suggested-toggle:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.explore-suggested-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 576px) {
+    .explore-suggested-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.explore-section-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+/* ==========================================
    Content Grid
    ========================================== */
 .content-grid {
@@ -293,47 +372,70 @@
 /* ==========================================
    Pagination
    ========================================== */
-.explore-pagination {
+.pagination {
     display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 4px;
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 24px 0;
+}
+
+.page-item {
+    list-style: none;
 }
 
 .explore-page-btn {
-    border: none;
-    background: transparent;
-    color: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
+    font-size: 14px;
+}
+
+.explore-page-btn:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #d1d5db;
 }
 
 .explore-page-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
+    background: #f9fafb;
 }
 
 .explore-page-number {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    margin: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #6b7280;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
-}
-
-.explore-page-number.active {
-    background: #2563eb;
-    color: #ffffff;
-}
-
-.explore-page-number:not(.active) {
-    background: #ffffff;
-    color: #1f2937;
+    transition: all 0.15s ease;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .explore-page-number:hover:not(.active) {
     background: #f3f4f6;
+    color: #374151;
+}
+
+.explore-page-number.active {
+    background: #374151;
+    color: #fff;
+    border-color: #374151;
 }
