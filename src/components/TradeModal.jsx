@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDetailTrade } from "../service/TradeService";
 import ListPostModal from "./ListPostModal";
 
@@ -7,10 +8,38 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
   const surface = "#ffffff";
   const primary = "#2563eb";
 
+  const navigate = useNavigate();
+
   const [tradeData, setTradeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showListPostModal, setShowListPostModal] = useState(false);
+
+  const requesterPostId =
+    tradeData?.requesterPostId ||
+    tradeData?.requesterPostID ||
+    tradeData?.itemRequesterId ||
+    tradeData?.itemRequesterID ||
+    null;
+
+  const ownerPostId =
+    tradeData?.ownerPostId ||
+    tradeData?.ownerPostID ||
+    tradeData?.itemOwnerId ||
+    tradeData?.itemOwnerID ||
+    null;
+
+  const handleOpenRequesterPost = () => {
+    if (requesterPostId) {
+      navigate(`/post/${requesterPostId}`);
+    }
+  };
+
+  const handleOpenOwnerPost = () => {
+    if (ownerPostId) {
+      navigate(`/post/${ownerPostId}`);
+    }
+  };
 
   useEffect(() => {
     const fetchTradeDetail = async () => {
@@ -250,6 +279,7 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
                     padding: "12px",
                     border: "2px solid #e5e7eb",
                     transition: "all 0.2s",
+                    cursor: requesterPostId ? "pointer" : "default",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = "#2563eb";
@@ -260,6 +290,8 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
                     e.currentTarget.style.borderColor = "#e5e7eb";
                     e.currentTarget.style.boxShadow = "none";
                   }}
+                  onClick={handleOpenRequesterPost}
+                  title={requesterPostId ? "Xem bài đăng" : undefined}
                 >
                   {/* Item Image */}
                   <div
@@ -477,6 +509,7 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
                     padding: "12px",
                     border: "2px solid #e5e7eb",
                     transition: "all 0.2s",
+                    cursor: ownerPostId ? "pointer" : "default",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = "#2563eb";
@@ -487,6 +520,8 @@ const TradeModal = ({ onClose, conversation, tradeId }) => {
                     e.currentTarget.style.borderColor = "#e5e7eb";
                     e.currentTarget.style.boxShadow = "none";
                   }}
+                  onClick={handleOpenOwnerPost}
+                  title={ownerPostId ? "Xem bài đăng" : undefined}
                 >
                   {/* Item Image */}
                   <div

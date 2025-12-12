@@ -64,3 +64,5 @@ export async function createViewHistory(postId) {
   const { data } = await axios.post(`/api/view/${postId}`);
   return data;
 }
+
+

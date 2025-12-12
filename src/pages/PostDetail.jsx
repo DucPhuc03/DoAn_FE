@@ -623,6 +623,17 @@ const PostDetail = () => {
                   <div
                     className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                     style={{ width: "40px", height: "40px" }}
+                    onClick={() => {
+                      const commentUserId =
+                        comment.userId ||
+                        comment.userID ||
+                        comment.user?.id ||
+                        comment.user_id;
+                      if (commentUserId) {
+                        navigate(`/profile/${commentUserId}`);
+                      }
+                    }}
+                    role="button"
                   >
                     {comment.avatarUrl ? (
                       <img
@@ -641,7 +652,20 @@ const PostDetail = () => {
                   </div>
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center gap-2 mb-1">
-                      <strong className="text-dark small">
+                      <strong
+                        className="text-dark small"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          const commentUserId =
+                            comment.userId ||
+                            comment.userID ||
+                            comment.user?.id ||
+                            comment.user_id;
+                          if (commentUserId) {
+                            navigate(`/profile/${commentUserId}`);
+                          }
+                        }}
+                      >
                         {comment.fullName || "Người dùng"}
                       </strong>
                       <small className="text-muted">

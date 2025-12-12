@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import TradeModal from "../components/TradeModal";
 import PlanModal from "../components/PlanModal";
@@ -16,6 +17,7 @@ if (typeof window !== "undefined" && typeof window.global === "undefined") {
 }
 
 const Chat = () => {
+  const navigate = useNavigate();
   const [leftTab, setLeftTab] = useState("chats"); // chats | meetings
 
   const [conversations, setConversations] = useState([]); // flat list từ API
@@ -148,6 +150,36 @@ const Chat = () => {
     fetchConversations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const partnerId = useMemo(() => {
+    const partner = selectedConversation?.partner || {};
+    return (
+      partner.id ||
+      partner.userId ||
+      selectedConversation?.partnerId ||
+      selectedConversation?.partner?.user_id ||
+      null
+    );
+  }, [selectedConversation]);
+
+  const handleOpenPartnerProfile = () => {
+    if (partnerId) {
+      navigate(`/profile/${partnerId}`);
+    }
+  };
+
+  const handleOpenPostDetail = () => {
+    const postId =
+      selectedConversation?.postId ||
+      selectedConversation?.postID ||
+      selectedConversation?.itemId ||
+      selectedConversation?.itemID ||
+      selectedConversation?.ownerPostId ||
+      selectedConversation?.requesterPostId;
+    if (postId) {
+      navigate(`/post/${postId}`);
+    }
+  };
 
   useEffect(() => {
     if (!selectedConversationId) {
@@ -631,9 +663,15 @@ const Chat = () => {
                   src={selectedConversation.userAvatar}
                   alt={selectedConversation.username || "Người dùng"}
                   className="chat-header-avatar"
+                  onClick={handleOpenPartnerProfile}
+                  style={{ cursor: partnerId ? "pointer" : "default" }}
                 />
               ) : (
-                <div className="chat-header-avatar-placeholder">
+                <div
+                  className="chat-header-avatar-placeholder"
+                  onClick={handleOpenPartnerProfile}
+                  style={{ cursor: partnerId ? "pointer" : "default" }}
+                >
                   {selectedConversation?.username?.charAt(0) || "U"}
                 </div>
               )}
@@ -643,9 +681,15 @@ const Chat = () => {
                   src={selectedConversation.itemImage}
                   alt={selectedConversation.itemTitle || "Sản phẩm"}
                   className="chat-header-item-image"
+                  onClick={handleOpenPostDetail}
+                  style={{ cursor: "pointer" }}
                 />
               ) : (
-                <div className="chat-header-item-placeholder">
+                <div
+                  className="chat-header-item-placeholder"
+                  onClick={handleOpenPostDetail}
+                  style={{ cursor: "pointer" }}
+                >
                   {selectedConversation?.itemTitle?.charAt(0) || "?"}
                 </div>
               )}
@@ -783,6 +827,12 @@ const Chat = () => {
                       }}
                     >
                       Báo cáo
+                    </button>
+                    <button
+                      className="chat-dropdown-btn"
+                      onClick={() => setShowHeaderActions(false)}
+                    >
+                      Hủy
                     </button>
                   </div>
                 )}

@@ -90,7 +90,15 @@ const NewPost = () => {
       preview: URL.createObjectURL(file),
       size: file.size,
     }));
-    setFormData((prev) => ({ ...prev, images: files }));
+    if (!files.length) return;
+    setFormData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -187,8 +195,29 @@ const NewPost = () => {
                 <div className="row g-2 mt-3">
                   {previews.map((img, idx) => (
                     <div className="col-4" key={`${img.name}-${idx}`}>
-                      <div className="rounded-4 overflow-hidden border">
-                        <img src={img.src} alt={img.name} className="w-100" />
+                      <div
+                        className="rounded-4 overflow-hidden border position-relative"
+                        style={{ aspectRatio: "1" }}
+                      >
+                        <img
+                          src={img.src}
+                          alt={img.name}
+                          className="w-100 h-100"
+                          style={{ objectFit: "cover" }}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-light position-absolute top-0 end-0 m-1"
+                          style={{
+                            borderRadius: "999px",
+                            padding: "4px 8px",
+                            lineHeight: 1,
+                          }}
+                          onClick={() => handleRemoveImage(idx)}
+                          aria-label="Xóa ảnh"
+                        >
+                          ×
+                        </button>
                       </div>
                     </div>
                   ))}
