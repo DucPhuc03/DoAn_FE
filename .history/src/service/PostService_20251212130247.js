@@ -25,7 +25,7 @@ export async function createPost(post) {
   return data;
 }
 export async function updatePost(id, post) {
-  const { data } = await axios.patch(`/api/post/${id}`, post);
+  const { data } = await axios.put(`/api/post/${id}`, post);
   return data;
 }
 export async function updatePostStatus(id, status) {

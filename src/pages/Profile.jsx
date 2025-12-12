@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { getProfile, followUser, reportUser } from "../service/UserService";
+import { getProfile, followUser } from "../service/UserService";
+import { createReportUser } from "../service/ReportService";
 import { getReview } from "../service/ReviewService";
 import { getTradeUser } from "../service/TradeService";
 import ProfilePostsTab from "../components/profile/ProfilePostsTab";
@@ -266,17 +267,24 @@ const Profile = () => {
 
     setReporting(true);
     try {
-      const response = await reportUser(id, reportReason.trim());
-      if (response?.code === 200) {
+      const response = await createReportUser(
+        parseInt(id),
+        reportReason.trim(),
+        "user"
+      );
+      if (response?.code === 200 || response?.code === 1000) {
         setShowReportModal(false);
         setReportReason("");
         alert("Báo cáo đã được gửi thành công!");
       } else {
-        alert("Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại.");
+        alert(response?.message || "Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại.");
       }
     } catch (error) {
       console.error("Report error:", error);
-      alert("Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại.");
+      alert(
+        error?.response?.data?.message ||
+          "Có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại."
+      );
     } finally {
       setReporting(false);
     }

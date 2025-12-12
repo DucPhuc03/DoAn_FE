@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import {
@@ -8,6 +8,7 @@ import {
   updatePostStatus,
   likePost,
   deletePost,
+  createViewHistory,
 } from "../service/PostService";
 import { createTrade } from "../service/TradeService";
 import "../css/PostDetail.css";
@@ -22,12 +23,50 @@ const PostDetail = () => {
   const [user, setUser] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const viewHistoryTimeoutRef = useRef(null);
+  const hasCreatedViewHistoryRef = useRef(false);
+  const currentPostIdRef = useRef(null);
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
     setUser(currentUser);
     fetchPostDetail();
   }, [id]);
+
+  // Track view history after 10 seconds
+  useEffect(() => {
+    // Reset when post ID changes
+    if (currentPostIdRef.current !== id) {
+      hasCreatedViewHistoryRef.current = false;
+      currentPostIdRef.current = id;
+    }
+    
+    // Clear any existing timeout
+    if (viewHistoryTimeoutRef.current) {
+      clearTimeout(viewHistoryTimeoutRef.current);
+      viewHistoryTimeoutRef.current = null;
+    }
+
+    // Only create view history if post is loaded, not loading, and user is not the owner
+    if (!loading && post && !post.owner && !hasCreatedViewHistoryRef.current && id) {
+      viewHistoryTimeoutRef.current = setTimeout(async () => {
+        try {
+          await createViewHistory(id);
+          hasCreatedViewHistoryRef.current = true;
+        } catch (error) {
+          console.error("Error creating view history:", error);
+        }
+      }, 10000); // 10 seconds
+    }
+
+    // Cleanup on unmount or when id/loading/post changes
+    return () => {
+      if (viewHistoryTimeoutRef.current) {
+        clearTimeout(viewHistoryTimeoutRef.current);
+        viewHistoryTimeoutRef.current = null;
+      }
+    };
+  }, [id, loading, post]);
 
   const fetchPostDetail = async () => {
     try {

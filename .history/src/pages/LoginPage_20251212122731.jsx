@@ -74,9 +74,9 @@ const LoginPage = () => {
         res?.data?.accessToken ||
         res?.data?.token;
       const user = res?.user || res?.data?.user;
-      if (token) {
-        Cookies.set("access_token", token, { expires: 70 });
-      }
+      // if (token) {
+      //   Cookies.set("access_token", token, { expires: 7 });
+      // }
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
       }
