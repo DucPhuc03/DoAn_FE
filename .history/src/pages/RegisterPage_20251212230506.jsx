@@ -1,0 +1,588 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register as registerApi } from "../service/auth";
+import {
+  FaExchangeAlt,
+  FaMapMarkerAlt,
+  FaShieldAlt,
+  FaHeart,
+} from "react-icons/fa";
+
+const RegisterPage = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    displayName: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const redirectUri = "http://localhost:5173/auth/google/callback";
+  const scope = "openid profile email";
+  const responseType = "code";
+  const handleLoginGoogle = () => {
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=${responseType}&scope=${encodeURIComponent(scope)}`;
+
+    window.location.href = authUrl;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.username.trim()) {
+      newErrors.username = "Tên đăng nhập là bắt buộc";
+    }
+
+    if (!formData.displayName.trim()) {
+      newErrors.displayName = "Tên hiển thị là bắt buộc";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email là bắt buộc";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Mật khẩu là bắt buộc";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setSubmitting(true);
+    setErrors((prev) => ({ ...prev, general: "" }));
+    try {
+      await registerApi({
+        username: formData.username,
+        fullName: formData.displayName,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigate("/login");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại.";
+      setErrors((prev) => ({ ...prev, general: message }));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-vh-100" style={{ backgroundColor: "#f8fafc" }}>
+      <div className="container-fluid p-0">
+        <div className="row g-0 min-vh-100">
+          {/* Left Side - Slogan & Decoration */}
+          <div
+            className="col-lg-6 d-none d-lg-flex align-items-center justify-content-center"
+            style={{
+              background:
+                "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+              position: "relative",
+              overflow: "hidden",
+              padding: "60px",
+            }}
+          >
+            {/* Decorative Elements */}
+            <div
+              style={{
+                position: "absolute",
+                top: "-20%",
+                right: "-10%",
+                width: "400px",
+                height: "400px",
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.1)",
+                filter: "blur(60px)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-20%",
+                left: "-10%",
+                width: "350px",
+                height: "350px",
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.1)",
+                filter: "blur(60px)",
+              }}
+            />
+
+            {/* Content */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                color: "white",
+                textAlign: "center",
+                maxWidth: "500px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "4rem",
+                  marginBottom: "30px",
+                }}
+              >
+                <FaExchangeAlt />
+              </div>
+              <h1
+                style={{
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  fontWeight: 700,
+                  marginBottom: "20px",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                }}
+              >
+                Tham gia cộng đồng
+                <br />
+                TraoDoiDo ngay hôm nay
+              </h1>
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  marginBottom: "40px",
+                  opacity: 0.95,
+                  lineHeight: 1.6,
+                }}
+              >
+                Tạo tài khoản để bắt đầu trao đổi đồ cũ, tìm kiếm món đồ bạn cần
+                và kết nối với cộng đồng người dùng tích cực
+              </p>
+
+              {/* Features */}
+              <div className="row g-4 mt-4">
+                <div className="col-6">
+                  <div
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(10px)",
+                      padding: "20px",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                    }}
+                  >
+                    <FaExchangeAlt size={28} style={{ marginBottom: "10px" }} />
+                    <div style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                      Trao đổi dễ dàng
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(10px)",
+                      padding: "20px",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                    }}
+                  >
+                    <FaMapMarkerAlt
+                      size={28}
+                      style={{ marginBottom: "10px" }}
+                    />
+                    <div style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                      Tìm kiếm gần bạn
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(10px)",
+                      padding: "20px",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                    }}
+                  >
+                    <FaShieldAlt size={28} style={{ marginBottom: "10px" }} />
+                    <div style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                      An toàn & Uy tín
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(10px)",
+                      padding: "20px",
+                      borderRadius: "16px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                    }}
+                  >
+                    <FaHeart size={28} style={{ marginBottom: "10px" }} />
+                    <div style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                      Cộng đồng thân thiện
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Register Form */}
+          <div
+            className="col-lg-6 d-flex align-items-center justify-content-center"
+            style={{ padding: "60px 40px", backgroundColor: "#ffffff" }}
+          >
+            <div style={{ width: "100%", maxWidth: "480px" }}>
+              <div className="card border-0 shadow-lg rounded-4">
+                <div className="card-body p-5">
+                  {/* Header */}
+                  <div className="text-center mb-5">
+                    <div className="mb-3">
+                      <i
+                        className="bi bi-person-plus-circle text-primary"
+                        style={{ fontSize: "3.5rem" }}
+                      ></i>
+                    </div>
+                    <h2
+                      className="fw-bold text-dark mb-2"
+                      style={{ fontSize: "1.75rem" }}
+                    >
+                      Đăng Ký
+                    </h2>
+                    <p
+                      className="text-muted mb-0"
+                      style={{ fontSize: "0.95rem" }}
+                    >
+                      Tạo tài khoản mới của bạn
+                    </p>
+                  </div>
+
+                  {/* Register Form */}
+                  <form onSubmit={handleSubmit}>
+                    {/* Username */}
+                    <div className="mb-4">
+                      <label
+                        htmlFor="username"
+                        className="form-label fw-semibold mb-2"
+                        style={{ fontSize: "0.9rem", color: "#374151" }}
+                      >
+                        Tên đăng nhập
+                      </label>
+                      <div className="input-group" style={{ height: "48px" }}>
+                        <span
+                          className="input-group-text bg-light border-end-0"
+                          style={{
+                            width: "48px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i className="bi bi-person text-muted"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className={`form-control border-start-0 ${
+                            errors.username ? "is-invalid" : ""
+                          }`}
+                          id="username"
+                          name="username"
+                          value={formData.username}
+                          onChange={handleChange}
+                          placeholder="Nhập tên đăng nhập"
+                          style={{ height: "48px", fontSize: "0.95rem" }}
+                        />
+                      </div>
+                      {errors.username && (
+                        <div
+                          className="invalid-feedback d-block mt-1"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {errors.username}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Display Name */}
+                    <div className="mb-4">
+                      <label
+                        htmlFor="displayName"
+                        className="form-label fw-semibold mb-2"
+                        style={{ fontSize: "0.9rem", color: "#374151" }}
+                      >
+                        Tên hiển thị
+                      </label>
+                      <div className="input-group" style={{ height: "48px" }}>
+                        <span
+                          className="input-group-text bg-light border-end-0"
+                          style={{
+                            width: "48px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i className="bi bi-person-badge text-muted"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className={`form-control border-start-0 ${
+                            errors.displayName ? "is-invalid" : ""
+                          }`}
+                          id="displayName"
+                          name="displayName"
+                          value={formData.displayName}
+                          onChange={handleChange}
+                          placeholder="Nhập tên hiển thị"
+                          style={{ height: "48px", fontSize: "0.95rem" }}
+                        />
+                      </div>
+                      {errors.displayName && (
+                        <div
+                          className="invalid-feedback d-block mt-1"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {errors.displayName}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Email Field */}
+                    <div className="mb-4">
+                      <label
+                        htmlFor="email"
+                        className="form-label fw-semibold mb-2"
+                        style={{ fontSize: "0.9rem", color: "#374151" }}
+                      >
+                        Email
+                      </label>
+                      <div className="input-group" style={{ height: "48px" }}>
+                        <span
+                          className="input-group-text bg-light border-end-0"
+                          style={{
+                            width: "48px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i className="bi bi-envelope text-muted"></i>
+                        </span>
+                        <input
+                          type="email"
+                          className={`form-control border-start-0 ${
+                            errors.email ? "is-invalid" : ""
+                          }`}
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="Nhập email của bạn"
+                          style={{ height: "48px", fontSize: "0.95rem" }}
+                        />
+                      </div>
+                      {errors.email && (
+                        <div
+                          className="invalid-feedback d-block mt-1"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {errors.email}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Password Field */}
+                    <div className="mb-4">
+                      <label
+                        htmlFor="password"
+                        className="form-label fw-semibold mb-2"
+                        style={{ fontSize: "0.9rem", color: "#374151" }}
+                      >
+                        Mật khẩu
+                      </label>
+                      <div className="input-group" style={{ height: "48px" }}>
+                        <span
+                          className="input-group-text bg-light border-end-0"
+                          style={{
+                            width: "48px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i className="bi bi-lock text-muted"></i>
+                        </span>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className={`form-control border-start-0 ${
+                            errors.password ? "is-invalid" : ""
+                          }`}
+                          id="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="Nhập mật khẩu"
+                          style={{ height: "48px", fontSize: "0.95rem" }}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary border-start-0"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            width: "48px",
+                            height: "48px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i
+                            className={`bi ${
+                              showPassword ? "bi-eye-slash" : "bi-eye"
+                            }`}
+                          ></i>
+                        </button>
+                      </div>
+                      {errors.password && (
+                        <div
+                          className="invalid-feedback d-block mt-1"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          {errors.password}
+                        </div>
+                      )}
+                    </div>
+
+                    {errors.general && (
+                      <div className="alert alert-danger py-2" role="alert">
+                        {errors.general}
+                      </div>
+                    )}
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100 fw-semibold rounded-3 mb-3"
+                      style={{
+                        fontSize: "1rem",
+                        height: "48px",
+                        backgroundColor: "#6366F1",
+                        border: "none",
+                      }}
+                      disabled={submitting}
+                    >
+                      {submitting ? "Đang tạo tài khoản..." : "Tạo Tài Khoản"}
+                    </button>
+
+                    {/* Divider */}
+                    <div className="text-center my-4">
+                      <span
+                        className="text-muted"
+                        style={{ fontSize: "0.9rem" }}
+                      >
+                        hoặc
+                      </span>
+                    </div>
+
+                    {/* Google Login Button */}
+                    <button
+                      type="button"
+                      className="btn w-100 rounded-3 mb-4 fw-semibold"
+                      onClick={handleLoginGoogle}
+                      style={{
+                        background: "white",
+                        color: "#4285F4",
+                        border: "1px solid #dadce0",
+                        fontSize: "1rem",
+                        height: "48px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "10px",
+                        transition: "all 0.3s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 8px rgba(0,0,0,0.15)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = "none";
+                        e.currentTarget.style.transform = "translateY(0)";
+                      }}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g fill="#000" fillRule="evenodd">
+                          <path
+                            d="M9 3.48c1.69 0 2.83.73 3.48 1.34l2.54-2.48C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.96l2.91 2.26C4.6 5.05 6.62 3.48 9 3.48z"
+                            fill="#EA4335"
+                          />
+                          <path
+                            d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.21 1.18-.84 2.18-1.79 2.91l2.78 2.15c1.9-1.75 2.99-4.3 2.99-7.56z"
+                            fill="#4285F4"
+                          />
+                          <path
+                            d="M3.88 10.78A5.54 5.54 0 0 1 3.58 9c0-.62.11-1.22.29-1.78L.96 4.96A9.01 9.01 0 0 0 0 9c0 1.45.35 2.82.96 4.04l2.92-2.26z"
+                            fill="#FBBC05"
+                          />
+                          <path
+                            d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.15c-.76.53-1.78.9-3.18.9-2.38 0-4.4-1.57-5.12-3.74L.96 13.04C2.45 15.98 5.48 18 9 18z"
+                            fill="#34A853"
+                          />
+                        </g>
+                      </svg>
+                      Đăng ký với Google
+                    </button>
+
+                    {/* Login Link */}
+                    <div className="text-center">
+                      <span className="text-muted">Đã có tài khoản? </span>
+                      <Link
+                        to="/login"
+                        className="text-decoration-none fw-semibold text-primary"
+                      >
+                        Đăng nhập ngay
+                      </Link>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;

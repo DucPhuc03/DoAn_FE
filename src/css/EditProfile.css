@@ -59,18 +59,31 @@
 }
 
 /* ==========================================
-   Main Layout
+   Main Layout - Single Card Wrapper
    ========================================== */
+.editprofile-card-wrapper {
+    background: var(--editprofile-surface);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    border: 1px solid #f1f5f9;
+}
+
 .editprofile-layout {
     display: grid;
     grid-template-columns: 300px 1fr;
-    gap: 32px;
+    gap: 40px;
     align-items: start;
 }
 
 @media (max-width: 768px) {
+    .editprofile-card-wrapper {
+        padding: 24px;
+    }
+    
     .editprofile-layout {
         grid-template-columns: 1fr;
+        gap: 32px;
     }
 }
 
@@ -78,13 +91,7 @@
    Avatar Section (Left Column)
    ========================================== */
 .editprofile-avatar-section {
-    background: var(--editprofile-surface);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 32px;
-    border: 1px solid #f1f5f9;
-    position: sticky;
-    top: 100px;
+    padding: 0;
 }
 
 .editprofile-avatar-wrapper {
@@ -167,11 +174,7 @@
    Form Section (Right Column)
    ========================================== */
 .editprofile-form-section {
-    background: var(--editprofile-surface);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 40px;
-    border: 1px solid #f1f5f9;
+    padding: 0;
 }
 
 .editprofile-field {
