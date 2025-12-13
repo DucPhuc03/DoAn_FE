@@ -363,20 +363,21 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
               </div>
               {showMap && (
                 <div
-                  className="plan-modal-map-container"
                   style={{
                     marginBottom: 12,
                     borderRadius: 8,
                     overflow: "hidden",
                     border: "1px solid #e5e7eb",
-                    position: "relative",
                     height: "350px",
+                    position: "relative",
                   }}
                 >
-                  <ModelMap onLocationChange={handleLocationChange} />
+                  <div style={{ height: "100%", width: "100%" }}>
+                    <ModelMap onLocationChange={handleLocationChange} />
+                  </div>
                   <style>
                     {`
-                      .plan-modal-map-container > div {
+                      .plan-modal-map-wrapper > div {
                         height: 350px !important;
                       }
                     `}
@@ -387,7 +388,7 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
                 type="text"
                 value={formData.location}
                 onChange={handleChange("location")}
-                placeholder="Nhập địa điểm trao đổi hoặc chọn trên bản đồ..."
+                placeholder="Nhập địa điểm trao đổi..."
                 style={{
                   width: "100%",
                   padding: "10px 12px",

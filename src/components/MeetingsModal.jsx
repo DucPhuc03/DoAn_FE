@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMeetingUser } from "../service/MeetingService";
 
 const MeetingsModal = ({ onClose }) => {
+  const navigate = useNavigate();
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,6 +46,14 @@ const MeetingsModal = ({ onClose }) => {
     });
   };
 
+  const handleMeetingClick = (meeting) => {
+    // Navigate to chat page
+    // If meeting has conversationId, we can pass it as query param
+    // Otherwise, just navigate to chat and let the chat page handle it
+    onClose(); // Close the modal first
+    navigate("/chat");
+  };
+
   return (
     <div className="notifications-dropdown" style={{ width: "420px" }}>
       <div className="notifications-header">
@@ -73,10 +83,19 @@ const MeetingsModal = ({ onClose }) => {
             <div
               key={meeting.id}
               className="notification-item"
+              onClick={() => handleMeetingClick(meeting)}
               style={{
                 flexDirection: "column",
                 alignItems: "flex-start",
                 padding: "16px",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f8f9fa";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
               }}
             >
               <div className="d-flex align-items-start w-100 gap-3">
