@@ -55,11 +55,6 @@ const Profile = () => {
     return allTabs;
   }, [profileData]);
 
-  // Scroll to top when component mounts or id changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id]);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {

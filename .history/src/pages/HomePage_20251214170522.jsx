@@ -18,26 +18,6 @@ const HomePage = () => {
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is logged in
-  const isLoggedIn = () => {
-    const user = localStorage.getItem("user");
-    return !!user;
-  };
-
-  // Handle navigation with login check
-  const handleNavigate = (path) => {
-    if (!isLoggedIn()) {
-      navigate("/login");
-    } else {
-      navigate(path);
-    }
-  };
-
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
   useEffect(() => {
     const fetchFeaturedPosts = async () => {
       try {
@@ -154,7 +134,7 @@ const HomePage = () => {
             }}
           >
             <button
-              onClick={() => handleNavigate("/explore")}
+              onClick={() => navigate("/explore")}
               style={{
                 background: "white",
                 color: "#667eea",
@@ -182,7 +162,7 @@ const HomePage = () => {
               Khám phá ngay <FaArrowRight />
             </button>
             <button
-              onClick={() => handleNavigate("/new-post")}
+              onClick={() => navigate("/new-post")}
               style={{
                 background: "transparent",
                 color: "white",
@@ -367,7 +347,7 @@ const HomePage = () => {
               </p>
             </div>
             <button
-              onClick={() => handleNavigate("/explore")}
+              onClick={() => navigate("/explore")}
               style={{
                 background: "#6366F1",
                 color: "white",
@@ -434,7 +414,7 @@ const HomePage = () => {
                         background: "#f3f4f6",
                       }}
                     >
-                      {post.imageUrls && post.imageUrls.length > 0 ? (
+                      {post.imageUrl && post.imageUrl.length > 0 ? (
                         <img
                           src={post.imageUrl[0]}
                           alt={post.title}
@@ -553,7 +533,7 @@ const HomePage = () => {
             }}
           >
             <button
-              onClick={() => handleNavigate("/explore")}
+              onClick={() => navigate("/explore")}
               style={{
                 background: "white",
                 color: "#6366F1",
@@ -581,7 +561,7 @@ const HomePage = () => {
               <FaSearch /> Tìm kiếm ngay
             </button>
             <button
-              onClick={() => handleNavigate("/new-post")}
+              onClick={() => navigate("/new-post")}
               style={{
                 background: "transparent",
                 color: "white",

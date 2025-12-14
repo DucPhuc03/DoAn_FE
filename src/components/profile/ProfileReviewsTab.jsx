@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../../css/ProfileReviewsTab.css";
 
 const ProfileReviewsTab = ({ reviews, loadingReviews, formatDate }) => {
+  const navigate = useNavigate();
   if (loadingReviews) {
     return (
       <div className="profile-reviews-loading">
@@ -35,6 +37,12 @@ const ProfileReviewsTab = ({ reviews, loadingReviews, formatDate }) => {
                   background: review.reviewerAvatar
                     ? "transparent"
                     : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  cursor: review.reviewerId ? "pointer" : "default",
+                }}
+                onClick={() => {
+                  if (review.reviewerId) {
+                    navigate(`/profile/${review.reviewerId}`);
+                  }
                 }}
               >
                 {review.reviewerAvatar ? (

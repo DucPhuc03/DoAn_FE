@@ -42,9 +42,6 @@ const Profile = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [reporting, setReporting] = useState(false);
-  const [showUsersModal, setShowUsersModal] = useState(false);
-  const [usersList, setUsersList] = useState([]);
-  const [usersModalTitle, setUsersModalTitle] = useState("");
 
   // Compute tabs based on displayHistory
   const userTabs = React.useMemo(() => {
@@ -54,11 +51,6 @@ const Profile = () => {
     }
     return allTabs;
   }, [profileData]);
-
-  // Scroll to top when component mounts or id changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -480,17 +472,9 @@ const Profile = () => {
                 </div>
 
                 {/* --------- CARD 2 --------- */}
-                <div
-                  className="profile-stat-card"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setUsersList(profileData.followers || []);
-                    setUsersModalTitle("Người theo dõi");
-                    setShowUsersModal(true);
-                  }}
-                >
+                <div className="profile-stat-card">
                   <div className="profile-stat-value">
-                    {profileData.followers?.length || 0}
+                    {profileData.followers.length || 0}
                   </div>
                   <div className="profile-stat-label">
                     <FaUserFriends /> Người theo dõi
@@ -498,17 +482,9 @@ const Profile = () => {
                 </div>
 
                 {/* --------- CARD 3 --------- */}
-                <div
-                  className="profile-stat-card"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setUsersList(profileData.following || []);
-                    setUsersModalTitle("Đang theo dõi");
-                    setShowUsersModal(true);
-                  }}
-                >
+                <div className="profile-stat-card">
                   <div className="profile-stat-value">
-                    {profileData.following?.length || 0}
+                    {profileData.following.length || 0}
                   </div>
                   <div className="profile-stat-label">
                     <FaUserPlus /> Đang theo dõi
@@ -644,145 +620,6 @@ const Profile = () => {
                 className="profile-report-submit-btn"
               >
                 {reporting ? "Đang gửi..." : "Gửi báo cáo"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Users List Modal */}
-      {showUsersModal && (
-        <div
-          className="profile-report-modal-overlay"
-          onClick={() => setShowUsersModal(false)}
-        >
-          <div
-            className="profile-report-modal"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: "500px", maxHeight: "80vh" }}
-          >
-            <div className="profile-report-modal-title">{usersModalTitle}</div>
-            <div
-              style={{
-                maxHeight: "60vh",
-                overflowY: "auto",
-                padding: "10px 0",
-              }}
-            >
-              {usersList.length === 0 ? (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "40px 20px",
-                    color: muted,
-                  }}
-                >
-                  <div>Chưa có người dùng nào</div>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
-                  {usersList.map((user) => (
-                    <div
-                      key={user.id || user.userId}
-                      onClick={() => {
-                        const userId = user.id || user.userId;
-                        if (userId) {
-                          navigate(`/profile/${userId}`);
-                          setShowUsersModal(false);
-                        }
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "12px",
-                        padding: "12px",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        transition: "background 0.2s",
-                        background: "#f9fafb",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f3f4f6";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#f9fafb";
-                      }}
-                    >
-                      {user.avatarUrl ? (
-                        <img
-                          src={user.avatarUrl}
-                          alt={user.fullName || user.username}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "50%",
-                            background: primary,
-                            color: surface,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "20px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {(user.fullName || user.username || "U")
-                            .charAt(0)
-                            .toUpperCase()}
-                        </div>
-                      )}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: "15px",
-                            color: secondary,
-                            marginBottom: "4px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {user.fullName || user.username || "Người dùng"}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "13px",
-                            color: muted,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          @{user.username || "user"}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="profile-report-modal-actions">
-              <button
-                onClick={() => setShowUsersModal(false)}
-                className="profile-report-cancel-btn"
-                style={{ width: "100%" }}
-              >
-                Đóng
               </button>
             </div>
           </div>
