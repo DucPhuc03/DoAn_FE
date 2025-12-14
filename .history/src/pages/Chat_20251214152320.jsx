@@ -525,6 +525,7 @@ const Chat = () => {
     }
 
     try {
+      setHeaderActionLoading(true);
       const response = await deleteConversation(
         selectedConversation.conversationId
       );
@@ -537,6 +538,8 @@ const Chat = () => {
     } catch (error) {
       console.error("Error deleting conversation:", error);
       alert("Không thể xóa cuộc trò chuyện. Vui lòng thử lại.");
+    } finally {
+      setHeaderActionLoading(false);
     }
   };
 
@@ -854,8 +857,9 @@ const Chat = () => {
                       <button
                         className="chat-dropdown-btn"
                         onClick={handleDeleteConversation}
+                        disabled={headerActionLoading}
                       >
-                        Hủy
+                        {headerActionLoading ? "Đang xử lý..." : "Hủy"}
                       </button>
                     )}
                   </div>

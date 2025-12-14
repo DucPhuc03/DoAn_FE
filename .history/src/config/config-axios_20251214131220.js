@@ -1,17 +1,19 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-// Lấy token từ localStorage hoặc cookie
-const accessToken = Cookies.get("access_token");
+
+// Dev: dùng proxy "/api" để tránh CORS; Prod: dùng VITE_BASE_URL
+const baseURL = import.meta?.env?.DEV
+  ? "/api"
+  : import.meta?.env?.VITE_BASE_URL || "http://localhost:8080";
 
 // Tạo một instance của axios
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
-});
+const axiosInstance = axios.create({ baseURL });
 
 // Thêm Interceptor để thêm token vào header
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Nếu token tồn tại, thêm nó vào header
+    // Lấy token mới nhất từ cookie cho mỗi request
+    const accessToken = Cookies.get("access_token");
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }

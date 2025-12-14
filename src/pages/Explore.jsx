@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { getCategoryList } from "../service/CategoryService";
-import { getAllPosts } from "../service/PostService";
+import { getAllPosts, getPostRecommend } from "../service/PostService";
 import "../css/Explore.css";
 
 const Explore = () => {
@@ -19,42 +19,8 @@ const Explore = () => {
   const [tempDistance, setTempDistance] = useState(100);
   const [showDistanceFilter, setShowDistanceFilter] = useState(false);
   const [showSuggested, setShowSuggested] = useState(false);
-
-  // Fake data cho bài đăng gợi ý
-  const suggestedPosts = [
-    {
-      id: 101,
-      title: "iPhone 14 Pro Max 256GB",
-      username: "NguyenVanA",
-      imageUrl: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400",
-      totalLikes: 45,
-      distance: 2.5,
-    },
-    {
-      id: 102,
-      title: "MacBook Air M2 2023",
-      username: "TranThiB",
-      imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
-      totalLikes: 32,
-      distance: 5.1,
-    },
-    {
-      id: 103,
-      title: "Xe đạp thể thao Giant",
-      username: "LeVanC",
-      imageUrl: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400",
-      totalLikes: 28,
-      distance: 3.2,
-    },
-    {
-      id: 104,
-      title: "Bàn làm việc gỗ tự nhiên",
-      username: "PhamThiD",
-      imageUrl: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400",
-      totalLikes: 19,
-      distance: 1.8,
-    },
-  ];
+  const [suggestedPosts, setSuggestedPosts] = useState([]);
+  const [loadingRecommended, setLoadingRecommended] = useState(false);
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
 
@@ -130,6 +96,40 @@ const Explore = () => {
       categoryId === selectedCategoryId ? null : categoryId
     );
     setCurrentPage(1);
+  };
+
+  const handleLoadRecommended = async () => {
+    // Nếu đã có data và đang hiển thị, chỉ toggle ẩn
+    if (suggestedPosts.length > 0 && showSuggested) {
+      setShowSuggested(false);
+      return;
+    }
+
+    // Hiển thị grid ngay (có thể đang loading hoặc đã có data)
+    setShowSuggested(true);
+
+    // Nếu chưa có data, gọi API
+    if (suggestedPosts.length === 0) {
+      try {
+        setLoadingRecommended(true);
+        const response = await getPostRecommend();
+        
+        let postsData = [];
+        if (response?.data) {
+          postsData = Array.isArray(response.data) ? response.data : [];
+        } else if (Array.isArray(response)) {
+          postsData = response;
+        }
+
+        setSuggestedPosts(postsData);
+      } catch (error) {
+        console.error("Error fetching recommended posts:", error);
+        setSuggestedPosts([]);
+        alert("Không thể tải bài đăng gợi ý. Vui lòng thử lại.");
+      } finally {
+        setLoadingRecommended(false);
+      }
+    }
   };
 
   return (
@@ -314,9 +314,24 @@ const Explore = () => {
               </h4>
               <button
                 className="explore-suggested-toggle"
-                onClick={() => setShowSuggested(!showSuggested)}
+                onClick={handleLoadRecommended}
+                disabled={loadingRecommended}
               >
-                {showSuggested ? (
+                {loadingRecommended ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                      style={{
+                        width: "14px",
+                        height: "14px",
+                        borderWidth: "2px",
+                      }}
+                    ></span>
+                    <span>Đang tải...</span>
+                  </>
+                ) : showSuggested ? (
                   <>
                     <span>Ẩn bớt</span>
                     <i className="bi bi-chevron-up ms-1"></i>
@@ -331,51 +346,62 @@ const Explore = () => {
             </div>
             {showSuggested && (
               <div className="explore-suggested-grid">
-                {suggestedPosts.map((card) => (
-                  <div
-                    key={card.id}
-                    className="explore-card"
-                    onClick={() => handlePostClick(card.id)}
-                  >
-                    <div className="card-body p-0">
-                      <div className="explore-card-image-wrapper">
-                        {card.imageUrl ? (
-                          <img
-                            src={card.imageUrl}
-                            alt={card.title}
-                            className="explore-card-image"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                            }}
-                          />
-                        ) : (
-                          <div className="explore-card-image-placeholder">
-                            <i className="bi bi-image"></i>
-                          </div>
-                        )}
-                      </div>
-                      <div className="explore-card-content">
-                        <h6 className="explore-card-title">{card.title}</h6>
-                        <p className="explore-card-meta">
-                          <span>
-                            <i className="bi bi-person me-1"></i>
-                            {card.username}
-                          </span>
-                          <span className="explore-card-likes">
-                            <i className="bi bi-heart-fill"></i>
-                            <span>{card.totalLikes || 0}</span>
-                          </span>
-                        </p>
-                        {card.distance !== undefined && card.distance !== null && (
-                          <p className="explore-card-distance">
-                            <i className="bi bi-geo-alt"></i>
-                            <span>{card.distance} km</span>
+                {loadingRecommended ? (
+                  <div className="explore-loading" style={{ width: "100%", gridColumn: "1 / -1" }}>
+                    <div className="spinner-border text-primary" role="status" style={{ width: "3rem", height: "3rem" }}>
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <div className="mt-3">Đang tải bài đăng gợi ý...</div>
+                  </div>
+                ) : suggestedPosts.length === 0 ? (
+                  <div className="explore-empty" style={{ gridColumn: "1 / -1" }}>Không có bài đăng gợi ý nào</div>
+                ) : (
+                  suggestedPosts.map((card) => (
+                    <div
+                      key={card.id}
+                      className="explore-card"
+                      onClick={() => handlePostClick(card.id)}
+                    >
+                      <div className="card-body p-0">
+                        <div className="explore-card-image-wrapper">
+                          {card.imageUrl ? (
+                            <img
+                              src={card.imageUrl}
+                              alt={card.title}
+                              className="explore-card-image"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div className="explore-card-image-placeholder">
+                              <i className="bi bi-image"></i>
+                            </div>
+                          )}
+                        </div>
+                        <div className="explore-card-content">
+                          <h6 className="explore-card-title">{card.title}</h6>
+                          <p className="explore-card-meta">
+                            <span>
+                              <i className="bi bi-person me-1"></i>
+                              {card.username}
+                            </span>
+                            <span className="explore-card-likes">
+                              <i className="bi bi-heart-fill"></i>
+                              <span>{card.totalLikes || 0}</span>
+                            </span>
                           </p>
-                        )}
+                          {card.distance !== undefined && card.distance !== null && (
+                            <p className="explore-card-distance">
+                              <i className="bi bi-geo-alt"></i>
+                              <span>{card.distance} km</span>
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             )}
           </div>
