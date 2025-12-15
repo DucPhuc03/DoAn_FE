@@ -185,8 +185,8 @@
 
 .header-notifications-header {
   padding: 20px 24px;
-  
-  color: #1e293b;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -226,7 +226,7 @@
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;
-  
+  margin-bottom: 8px;
   background: white;
   border: 1px solid transparent;
 }
@@ -303,13 +303,15 @@
    Profile Avatar Button
    ========================================== */
 .profile-avatar-btn {
-  padding: 0 !important;
+ 
+  padding: 3px !important;
 }
 
 .profile-avatar-inner {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -381,8 +381,8 @@
     margin-top: 24px;
     padding: 24px;
     border-radius: 16px;
-    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-    border: 2px solid #e9d5ff;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
 }
 
 .history-review-title {
@@ -423,7 +423,7 @@
 .history-textarea {
     width: 100%;
     border-radius: 12px;
-    border: 2px solid #e9d5ff;
+    border: 1px solid #d1d5db;
     padding: 16px;
     font-size: 14px;
     resize: vertical;
@@ -436,8 +436,8 @@
 
 .history-textarea:focus {
     outline: none;
-    border-color: #a855f7;
-    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    border-color: #6b7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
 }
 
 .history-form-actions {
@@ -467,18 +467,16 @@
     padding: 12px 28px;
     border-radius: 50px;
     border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #1e293b;
     color: #ffffff;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .history-submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+    background: #334155;
 }
 
 .history-submit-btn:disabled {

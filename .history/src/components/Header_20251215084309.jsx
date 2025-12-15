@@ -437,7 +437,8 @@ const Header = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-
+                            background:
+                              "linear-gradient(135deg, #334155 0%, #1e293b 100%)",
                             borderRadius: "50%",
                             color: "#fff",
                             fontSize: "0.9rem",
