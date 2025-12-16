@@ -17,6 +17,8 @@ import CategoryManagement from "./pages/admin/CategoryManagement";
 import EditPost from "./pages/EditPost";
 import EditProfile from "./pages/EditProfile";
 import GoogleCallBack from "./pages/GoogleCallBack";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/edit-profile/:id" element={<EditProfile />} />
         <Route path="/post/:id" element={<PostDetail />} />

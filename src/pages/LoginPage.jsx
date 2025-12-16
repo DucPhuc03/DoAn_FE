@@ -246,15 +246,18 @@ const LoginPage = () => {
                     Đăng nhập với Google
                   </button>
 
-                  {/* Register Link */}
-                  <div className="text-center">
-                    <span className="text-muted">Chưa có tài khoản? </span>
-                    <Link
-                      to="/register"
-                      className="text-decoration-none fw-semibold text-primary"
-                    >
-                      Đăng ký ngay
-                    </Link>
+                  {/* Register & Forgot Password Links */}
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <div>
+                      <span className="text-muted">Chưa có tài khoản? </span>
+                      <Link
+                        to="/register"
+                        className="text-decoration-none fw-semibold text-primary"
+                      >
+                        Đăng ký ngay
+                      </Link>
+                    </div>
+                   
                   </div>
                 </form>
               </div>

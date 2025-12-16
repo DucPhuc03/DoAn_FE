@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  register as registerApi,
-  sendRegisterOtp,
-  verifyRegisterOtp,
-} from "../service/auth";
+import { register as registerApi } from "../service/auth";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +18,6 @@ const RegisterPage = () => {
   const [otpCode, setOtpCode] = useState("");
   const [otpError, setOtpError] = useState("");
   const [otpSubmitting, setOtpSubmitting] = useState(false);
-  const [otpTimeLeft, setOtpTimeLeft] = useState(0); // giây, 300 = 5 phút
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -67,27 +62,7 @@ const RegisterPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Đếm ngược thời gian OTP
-  useEffect(() => {
-    let timer;
-    if (showOtpModal && otpTimeLeft > 0) {
-      timer = setInterval(() => {
-        setOtpTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-      }, 1000);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [showOtpModal, otpTimeLeft]);
-
-  const handleCloseOtpModal = () => {
-    setShowOtpModal(false);
-    setOtpCode("");
-    setOtpError("");
-    setOtpTimeLeft(0);
-  };
-
-  // Bước 1: gọi API gửi OTP qua email, sau đó mở popup nhập mã
+  // Bước 1 (fake): "gửi" OTP qua email, sau đó mở popup nhập mã
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -95,32 +70,26 @@ const RegisterPage = () => {
     setSubmitting(true);
     setErrors((prev) => ({ ...prev, general: "" }));
     setOtpError("");
-    setOtpTimeLeft(0);
-    setShowOtpModal(true);
-    try {
-      // Gọi API gửi OTP email
-      await sendRegisterOtp(formData.email);
 
-      setOtpTimeLeft(300); // 5 phút
+    try {
+      // Fake gửi OTP email: không gọi API, chỉ mở modal.
+      // Có thể hiển thị thông báo hoặc log ra console mã OTP demo.
+      console.log("Fake OTP for demo:", "123456");
+      setShowOtpModal(true);
     } catch (err) {
       const message =
         err?.response?.data?.message ||
-        "Không thể gửi mã xác thực. Vui lòng thử lại.";
+        "Không thể xử lý yêu cầu. Vui lòng thử lại.";
       setErrors((prev) => ({ ...prev, general: message }));
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Bước 2: xác thực OTP qua API, nếu đúng mã thì mới gọi API tạo user
+  // Bước 2 (fake): xác thực OTP trên FE, nếu đúng mã thì mới gọi API tạo user
   const handleVerifyOtpAndRegister = async () => {
     if (!otpCode.trim()) {
       setOtpError("Vui lòng nhập mã OTP");
-      return;
-    }
-
-    if (otpTimeLeft <= 0) {
-      setOtpError("Mã OTP đã hết hạn, vui lòng gửi lại mã mới.");
       return;
     }
 
@@ -128,8 +97,10 @@ const RegisterPage = () => {
     setOtpError("");
 
     try {
-      // Xác thực OTP qua API
-      await verifyRegisterOtp(formData.email, otpCode.trim());
+      // Fake verify: chấp nhận mã "123456"
+      if (otpCode.trim() !== "123456") {
+        throw new Error("INVALID_OTP");
+      }
 
       // OTP hợp lệ -> gọi API đăng ký thật
       await registerApi({
@@ -361,7 +332,11 @@ const RegisterPage = () => {
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-secondary"
-                          onClick={handleCloseOtpModal}
+                          onClick={() => {
+                            setShowOtpModal(false);
+                            setOtpCode("");
+                            setOtpError("");
+                          }}
                           disabled={otpSubmitting}
                         >
                           <i className="bi bi-x-lg" />
@@ -377,27 +352,6 @@ const RegisterPage = () => {
                         Vui lòng kiểm tra hộp thư và nhập mã bên dưới để hoàn
                         tất đăng ký.
                       </p>
-
-                      {otpTimeLeft > 0 ? (
-                        <p
-                          className="text-danger fw-semibold mb-3"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Mã sẽ hết hạn sau{" "}
-                          {String(Math.floor(otpTimeLeft / 60)).padStart(
-                            2,
-                            "0"
-                          )}
-                          :{String(otpTimeLeft % 60).padStart(2, "0")}
-                        </p>
-                      ) : (
-                        <p
-                          className="text-danger fw-semibold mb-3"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Mã OTP đã hết hạn, vui lòng gửi lại mã mới.
-                        </p>
-                      )}
 
                       <div className="mb-3">
                         <label className="form-label fw-semibold">Mã OTP</label>
@@ -420,48 +374,27 @@ const RegisterPage = () => {
                         )}
                       </div>
 
-                      <div className="d-flex justify-content-between align-items-center mt-3">
+                      <div className="d-flex justify-content-end gap-2 mt-3">
                         <button
                           type="button"
-                          className="btn btn-link p-0"
-                          disabled={otpSubmitting}
-                          onClick={async () => {
-                            try {
-                              setOtpError("");
-                              setOtpSubmitting(true);
-                              await sendRegisterOtp(formData.email);
-                              setOtpTimeLeft(300);
-                            } catch (err) {
-                              setOtpError(
-                                err?.response?.data?.message ||
-                                  "Không thể gửi lại mã. Vui lòng thử lại."
-                              );
-                            } finally {
-                              setOtpSubmitting(false);
-                            }
+                          className="btn btn-outline-secondary"
+                          onClick={() => {
+                            setShowOtpModal(false);
+                            setOtpCode("");
+                            setOtpError("");
                           }}
+                          disabled={otpSubmitting}
                         >
-                          Gửi lại mã
+                          Hủy
                         </button>
-
-                        <div className="d-flex gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary"
-                            onClick={handleCloseOtpModal}
-                            disabled={otpSubmitting}
-                          >
-                            Hủy
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={handleVerifyOtpAndRegister}
-                            disabled={otpSubmitting || otpTimeLeft <= 0}
-                          >
-                            {otpSubmitting ? "Đang xác thực..." : "Xác nhận"}
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={handleVerifyOtpAndRegister}
+                          disabled={otpSubmitting}
+                        >
+                          {otpSubmitting ? "Đang xác thực..." : "Xác nhận"}
+                        </button>
                       </div>
                     </div>
                   </div>

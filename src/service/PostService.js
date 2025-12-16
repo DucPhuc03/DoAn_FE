@@ -68,3 +68,7 @@ export async function createViewHistory(postId) {
   return data;
 }
 
+
+
+
+
