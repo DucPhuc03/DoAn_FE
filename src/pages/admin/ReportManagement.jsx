@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import "../../css/ReportManagement.css";
-import { getReport } from "../../service/ReportService";
+import {
+  getReport,
+  updateReport,
+  deleteReport,
+} from "../../service/ReportService";
 
 export default function ReportManagement() {
   const navigate = useNavigate();
@@ -15,40 +19,41 @@ export default function ReportManagement() {
   const [filterStatus, setFilterStatus] = useState("all"); // all, pending, resolved
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [updatingId, setUpdatingId] = useState(null);
+
+  async function loadReports() {
+    try {
+      setLoading(true);
+      setError("");
+      const res = await getReport();
+      const list = res?.data || res?.data?.data || res?.data || [];
+      const normalized = (list || []).map((r) => ({
+        id: r.id,
+        reportedId: r.reportedId,
+        postId: r.postId,
+        reporterName: r.reporter?.username || "Không rõ",
+        reporterEmail: "",
+        reportedType: r.type, // "user" | "post"
+        reportedTitle: null, // hiện tại API chưa trả title bài đăng
+        reportedBy: r.reportedUser?.username || "Không rõ",
+        reason: r.reason,
+        status: (r.status || "PENDING").toLowerCase(), // "pending" | "resolved"
+        date: r.reportDate,
+      }));
+      setReports(normalized);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+      setError(
+        err?.response?.data?.message ||
+          "Không thể tải danh sách báo cáo. Vui lòng thử lại sau."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchReports() {
-      try {
-        setLoading(true);
-        setError("");
-        const res = await getReport();
-        const list = res?.data || res?.data?.data || res?.data || [];
-        const normalized = (list || []).map((r) => ({
-          id: r.id,
-          reportedId: r.reportedId,
-          postId: r.postId,
-          reporterName: r.reporter?.username || "Không rõ",
-          reporterEmail: "",
-          reportedType: r.type, // "user" | "post"
-          reportedTitle: null, // hiện tại API chưa trả title bài đăng
-          reportedBy: r.reportedUser?.username || "Không rõ",
-          reason: r.reason,
-          status: (r.status || "PENDING").toLowerCase(), // "pending" | "resolved"
-          date: r.reportDate,
-        }));
-        setReports(normalized);
-      } catch (err) {
-        console.error("Error fetching reports:", err);
-        setError(
-          err?.response?.data?.message ||
-            "Không thể tải danh sách báo cáo. Vui lòng thử lại sau."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchReports();
+    loadReports();
   }, []);
 
   // Filter by tab (user or post)
@@ -151,20 +156,51 @@ export default function ReportManagement() {
     }
   }
 
-  function handleResolve(id) {
+  async function handleResolve(id) {
     if (!window.confirm("Bạn có chắc muốn đánh dấu báo cáo này là đã xử lý?"))
       return;
-    setReports((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "resolved" } : r))
-    );
-    alert(`Đã đánh dấu báo cáo #${id} là đã xử lý`);
+    try {
+      setUpdatingId(id);
+      const res = await updateReport(id);
+      if (res?.code === 1000) {
+        await loadReports();
+        alert(`Đã đánh dấu báo cáo #${id} là đã xử lý`);
+      } else {
+        alert(res?.message || "Không thể cập nhật trạng thái báo cáo.");
+      }
+    } catch (e) {
+      console.error("update report error", e);
+      alert(
+        e?.response?.data?.message ||
+          "Không thể cập nhật trạng thái báo cáo. Vui lòng thử lại."
+      );
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
-  function handleDelete(id) {
+  async function handleDelete(id) {
     if (!window.confirm("Bạn có chắc muốn xóa báo cáo này?")) return;
-    setReports((prev) => prev.filter((r) => r.id !== id));
-    if (page > 1 && pageData.length === 1) {
-      setPage(page - 1);
+    try {
+      setUpdatingId(id);
+      const res = await deleteReport(id);
+      if (res?.code === 1000) {
+        await loadReports();
+        if (page > 1 && pageData.length === 1) {
+          setPage(page - 1);
+        }
+        alert(`Đã xóa báo cáo #${id}`);
+      } else {
+        alert(res?.message || "Không thể xóa báo cáo.");
+      }
+    } catch (e) {
+      console.error("delete report error", e);
+      alert(
+        e?.response?.data?.message ||
+          "Không thể xóa báo cáo. Vui lòng thử lại."
+      );
+    } finally {
+      setUpdatingId(null);
     }
   }
 
@@ -416,16 +452,18 @@ export default function ReportManagement() {
                           {report.status === "pending" && (
                             <button
                               onClick={() => handleResolve(report.id)}
+                              disabled={updatingId === report.id}
                               className="report-btn report-btn-resolve"
                             >
-                              Xử lý
+                              {updatingId === report.id ? "Đang xử lý..." : "Xử lý"}
                             </button>
                           )}
                           <button
                             onClick={() => handleDelete(report.id)}
+                            disabled={updatingId === report.id}
                             className="report-btn report-btn-reject"
                           >
-                            Xóa
+                            {updatingId === report.id ? "Đang xóa..." : "Xóa"}
                           </button>
                         </div>
                       </td>

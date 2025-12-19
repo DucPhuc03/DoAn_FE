@@ -566,7 +566,7 @@ const Chat = () => {
               onClick={() => setLeftTab("chats")}
               className={`chat-tab-btn ${leftTab === "chats" ? "active" : ""}`}
             >
-              Trò chuyện
+              Chats
             </button>
             <button
               onClick={() => setLeftTab("meetings")}
@@ -574,7 +574,7 @@ const Chat = () => {
                 leftTab === "meetings" ? "active" : ""
               }`}
             >
-              Cuộc họp
+              Meetings
             </button>
           </div>
 
@@ -623,7 +623,7 @@ const Chat = () => {
                       <div className="chat-group-info">
                         <div className="chat-group-name">{group.username}</div>
                         <div className="chat-group-count">
-                          {totalConvs} trao đổi
+                          {totalConvs} cuộc trao đổi
                         </div>
                       </div>
                     </div>
@@ -893,7 +893,7 @@ const Chat = () => {
               <div className="chat-no-messages">
                 <div>
                   <div className="chat-no-messages-icon">💬</div>
-                  <div>Chưa có trò chuyện</div>
+                  <div>No messages yet</div>
                 </div>
               </div>
             )}
@@ -910,7 +910,7 @@ const Chat = () => {
                 placeholder="Write a message"
                 className="chat-input"
               />
-              <span className="chat-trade-btn">Trao đổi</span>
+              <button className="chat-trade-btn">Trade</button>
               <button
                 onClick={handleSend}
                 disabled={!wsConnected || !inputValue.trim()}

@@ -63,8 +63,6 @@ const Header = () => {
 
     const date = new Date(dateString);
     const now = new Date();
-    console.log(date);
-    console.log(now);
     const diffInSeconds = Math.floor((now - date) / 1000);
     console.log(diffInSeconds);
     if (diffInSeconds < 60) {

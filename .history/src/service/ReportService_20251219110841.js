@@ -24,16 +24,6 @@ export async function getReport() {
   return data;
 }
 export async function getPostReport(id) {
-  const { data } = await axios.get(`/api/post/admin/${id}`);
-  return data;
-}
-
-export async function updateReport(id) {
-  const { data } = await axios.patch(`/api/report/admin/${id}`);
-  return data;
-}
-
-export async function deleteReport(id) {
-  const { data } = await axios.delete(`/api/report/admin/${id}`);
+  const { data } = await axios.get(`/api/report/admin/${id}`);
   return data;
 }

@@ -910,7 +910,7 @@ const Chat = () => {
                 placeholder="Write a message"
                 className="chat-input"
               />
-              <span className="chat-trade-btn">Trao đổi</span>
+              <button className="chat-trade-btn">Trade</button>
               <button
                 onClick={handleSend}
                 disabled={!wsConnected || !inputValue.trim()}
