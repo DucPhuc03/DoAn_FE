@@ -114,9 +114,9 @@ const Chat = () => {
         const transformedConversations = conversationsData.map((conv) => {
           const partner = conv.partner || {};
           return {
-            conversationId: conv.conversationId || conv.id,
-            itemTitle: conv.itemTitle || conv.postTitle,
-            itemImage: conv.itemImage || conv.postImage,
+          conversationId: conv.conversationId || conv.id,
+          itemTitle: conv.itemTitle || conv.postTitle,
+          itemImage: conv.itemImage || conv.postImage,
             username:
               partner.username ||
               conv.username ||
@@ -128,8 +128,8 @@ const Chat = () => {
               conv.partnerAvatar ||
               null,
             messages: Array.isArray(conv.messages) ? conv.messages : [],
-            meeting: conv.meeting || null,
-            tradeId: conv.tradeId || null,
+          meeting: conv.meeting || null,
+          tradeId: conv.tradeId || null,
             partner,
           };
         });
@@ -413,9 +413,9 @@ const Chat = () => {
       const transformedConversations = conversationsData.map((conv) => {
         const partner = conv.partner || {};
         return {
-          conversationId: conv.conversationId || conv.id,
-          itemTitle: conv.itemTitle || conv.postTitle,
-          itemImage: conv.itemImage || conv.postImage,
+        conversationId: conv.conversationId || conv.id,
+        itemTitle: conv.itemTitle || conv.postTitle,
+        itemImage: conv.itemImage || conv.postImage,
           username:
             partner.username ||
             conv.username ||
@@ -424,8 +424,8 @@ const Chat = () => {
           userAvatar:
             partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
           messages: Array.isArray(conv.messages) ? conv.messages : [],
-          meeting: conv.meeting || null,
-          tradeId: conv.tradeId || null,
+        meeting: conv.meeting || null,
+        tradeId: conv.tradeId || null,
           partner,
         };
       });
@@ -587,7 +587,7 @@ const Chat = () => {
                 </div>
                 <div className="chat-loading-text">
                   Đang tải cuộc trò chuyện...
-                </div>
+              </div>
               </div>
             ) : tabGroups.length === 0 ? (
               <div className="chat-empty">
@@ -625,55 +625,55 @@ const Chat = () => {
                         <div className="chat-group-count">
                           {totalConvs} cuộc trao đổi
                         </div>
-                      </div>
+              </div>
                     </div>
 
                     {/* Conversation Items */}
                     {isOpen &&
                       group.conversations.map((conversation) => {
-                        const lastMessage =
+                const lastMessage =
                           conversation.messages[
                             conversation.messages.length - 1
                           ];
-                        const itemTitle = conversation.itemTitle || "Sản phẩm";
+                const itemTitle = conversation.itemTitle || "Sản phẩm";
                         const preview =
                           lastMessage?.content || "Chưa có tin nhắn";
                         const timestamp = formatTimestamp(
                           lastMessage?.timestamp
                         );
-                        const isActive =
+                const isActive =
                           selectedConversationId ===
                           conversation.conversationId;
 
-                        return (
-                          <div
-                            key={conversation.conversationId}
-                            onClick={() =>
+                return (
+                  <div
+                    key={conversation.conversationId}
+                    onClick={() =>
                               setSelectedConversationId(
                                 conversation.conversationId
                               )
-                            }
+                    }
                             className={`chat-item ${isActive ? "active" : ""}`}
-                          >
-                            {conversation.itemImage ? (
-                              <img
-                                src={conversation.itemImage}
+                      >
+                    {conversation.itemImage ? (
+                      <img
+                        src={conversation.itemImage}
                                 alt={itemTitle}
                                 className="chat-item-image"
-                              />
-                            ) : (
+                      />
+                    ) : (
                               <div className="chat-item-image-placeholder">
                                 {itemTitle?.charAt(0) || "?"}
-                              </div>
-                            )}
+                      </div>
+                    )}
 
                             <div className="chat-item-info">
                               <div className="chat-item-title">{itemTitle}</div>
                               <div className="chat-item-preview">{preview}</div>
-                            </div>
+                    </div>
 
                             <div className="chat-item-time">{timestamp}</div>
-                          </div>
+                    </div>
                         );
                       })}
                   </div>
@@ -689,23 +689,23 @@ const Chat = () => {
           <div className="chat-header">
             {/* LEFT: avatar + thumbnail */}
             <div className="chat-header-left">
-              {selectedConversation?.userAvatar ? (
-                <img
-                  src={selectedConversation.userAvatar}
-                  alt={selectedConversation.username || "Người dùng"}
+            {selectedConversation?.userAvatar ? (
+              <img
+                src={selectedConversation.userAvatar}
+                alt={selectedConversation.username || "Người dùng"}
                   className="chat-header-avatar"
                   onClick={handleOpenPartnerProfile}
                   style={{ cursor: partnerId ? "pointer" : "default" }}
-                />
-              ) : (
-                <div
+              />
+            ) : (
+              <div
                   className="chat-header-avatar-placeholder"
                   onClick={handleOpenPartnerProfile}
                   style={{ cursor: partnerId ? "pointer" : "default" }}
-                >
-                  {selectedConversation?.username?.charAt(0) || "U"}
-                </div>
-              )}
+              >
+                {selectedConversation?.username?.charAt(0) || "U"}
+              </div>
+            )}
 
               {selectedConversation?.itemImage ? (
                 <img
@@ -729,13 +729,13 @@ const Chat = () => {
             {/* MIDDLE: title + info */}
             <div className="chat-header-middle">
               <div className="chat-header-title">
-                {selectedConversation?.itemTitle || "Đang trao đổi"}
-              </div>
+                  {selectedConversation?.itemTitle || "Đang trao đổi"}
+                    </div>
 
               <div className="chat-header-subtitle">
                 {selectedConversation?.meeting
                   ? [
-                      selectedConversation.meeting.meetingDate
+                            selectedConversation.meeting.meetingDate
                         ? new Date(
                             selectedConversation.meeting.meetingDate
                           ).toLocaleString("vi-VN", {
@@ -750,7 +750,7 @@ const Chat = () => {
                       .filter(Boolean)
                       .join(" · ")
                   : selectedConversation?.username || "Người dùng"}
-              </div>
+                      </div>
 
               {selectedConversation?.meeting && (
                 <>
@@ -772,7 +772,7 @@ const Chat = () => {
                         "Đã xác nhận lịch hẹn"}
                       {selectedConversation.meeting.status === "CANCELLED" &&
                         "Lịch hẹn đã hủy"}
-                    </div>
+                      </div>
                     {selectedConversation.meeting.status === "SCHEDULED" && (
                       <button
                         onClick={handleCancelMeeting}
@@ -851,12 +851,12 @@ const Chat = () => {
                       {headerActionLoading ? "Đang xử lý..." : "Hoàn thành"}
                     </button>
                     {selectedConversation?.meeting?.status !== "SCHEDULED" && (
-                      <button
+                    <button
                         className="chat-dropdown-btn"
                         onClick={handleDeleteConversation}
-                      >
+                    >
                         Hủy
-                      </button>
+                    </button>
                     )}
                   </div>
                 )}

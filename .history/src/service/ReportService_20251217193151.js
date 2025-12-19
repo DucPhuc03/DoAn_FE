@@ -23,4 +23,3 @@ export async function getReport() {
   const { data } = await axios.get("/api/report");
   return data;
 }
-

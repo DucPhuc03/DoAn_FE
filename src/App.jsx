@@ -12,6 +12,7 @@ import NewPost from "./pages/NewPost";
 // import PostManagement from "./pages/admin/PostManagement";
 import AccountManagement from "./pages/admin/AccountManagement";
 import ReportManagement from "./pages/admin/ReportManagement";
+import PostReportDetail from "./pages/admin/PostReportDetail";
 import PendingManagement from "./pages/admin/PendingManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import EditPost from "./pages/EditPost";
@@ -44,6 +45,10 @@ function App() {
           element={<AccountManagement />}
         />
         <Route path="/admin/report_management" element={<ReportManagement />} />
+        <Route
+          path="/admin/post_report/:postId"
+          element={<PostReportDetail />}
+        />
         <Route
           path="/admin/pending_management"
           element={<PendingManagement />}

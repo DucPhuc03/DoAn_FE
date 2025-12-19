@@ -219,67 +219,67 @@ const EditProfile = () => {
         {/* Main Content - Single Card */}
         <div className="editprofile-card-wrapper">
           <div className="editprofile-layout">
-            {/* Left Column - Avatar Upload */}
+          {/* Left Column - Avatar Upload */}
             <div className="editprofile-avatar-section">
               <div className="editprofile-avatar-wrapper">
-                {/* Avatar Preview */}
+              {/* Avatar Preview */}
                 <div className="editprofile-avatar-preview">
-                  {avatarPreview ? (
-                    <img
-                      src={avatarPreview}
-                      alt="Avatar preview"
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Avatar preview"
                       className="editprofile-avatar-image"
-                    />
-                  ) : (
+                  />
+                ) : (
                     <i className="bi bi-person-fill editprofile-avatar-placeholder"></i>
-                  )}
-                </div>
-
-                {/* Upload Button */}
-                <label
-                  htmlFor="avatar-upload"
-                  className="editprofile-avatar-select"
-                >
-                  <i className="bi bi-camera"></i>
-                  Chọn ảnh
-                </label>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  style={{ display: "none" }}
-                />
-
-                {/* Upload Button */}
-                {avatarFile && (
-                  <button
-                    type="button"
-                    onClick={handleAvatarUpload}
-                    disabled={uploadingAvatar}
-                    className="editprofile-avatar-upload"
-                  >
-                    {uploadingAvatar ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Đang tải...
-                      </>
-                    ) : (
-                      <>
-                        <i className="bi bi-upload"></i>
-                        Tải lên
-                      </>
-                    )}
-                  </button>
                 )}
               </div>
-            </div>
 
-            {/* Right Column - Form */}
+              {/* Upload Button */}
+              <label
+                htmlFor="avatar-upload"
+                  className="editprofile-avatar-select"
+              >
+                <i className="bi bi-camera"></i>
+                Chọn ảnh
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                style={{ display: "none" }}
+              />
+
+              {/* Upload Button */}
+              {avatarFile && (
+                <button
+                  type="button"
+                  onClick={handleAvatarUpload}
+                  disabled={uploadingAvatar}
+                    className="editprofile-avatar-upload"
+                >
+                  {uploadingAvatar ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Đang tải...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-upload"></i>
+                      Tải lên
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Form */}
             <div className="editprofile-form-section">
             <form onSubmit={handleSubmit}>
               {/* Full Name */}
@@ -422,7 +422,7 @@ const EditProfile = () => {
               </div>
             </form>
           </div>
-        </div>
+          </div>
         </div>
       </div>
     </div>
