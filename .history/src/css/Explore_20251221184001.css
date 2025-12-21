@@ -246,7 +246,7 @@
 /* Scrollbar styles */
 .topic-scroll::-webkit-scrollbar {
     display: block;
-    height: 8px;
+    height: 6px;
     -webkit-appearance: none;
     appearance: none;
 }

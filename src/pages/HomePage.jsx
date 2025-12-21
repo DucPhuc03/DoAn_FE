@@ -434,30 +434,36 @@ const HomePage = () => {
                         background: "#f3f4f6",
                       }}
                     >
-                      {post.imageUrls && post.imageUrls.length > 0 ? (
+                      {post.imageUrl || (post.imageUrls && post.imageUrls.length > 0) ? (
                         <img
-                          src={post.imageUrl[0]}
+                          src={post.imageUrl || post.imageUrls[0]}
                           alt={post.title}
                           style={{
                             width: "100%",
                             height: "100%",
                             objectFit: "cover",
                           }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "#9ca3af",
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            const fallback = e.target.nextElementSibling;
+                            if (fallback) {
+                              fallback.style.display = "flex";
+                            }
                           }}
-                        >
-                          <FaExchangeAlt size={40} />
-                        </div>
-                      )}
+                        />
+                      ) : null}
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: post.imageUrl || (post.imageUrls && post.imageUrls.length > 0) ? "none" : "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#9ca3af",
+                        }}
+                      >
+                        <FaExchangeAlt size={40} />
+                      </div>
                     </div>
                     <div style={{ padding: "12px" }}>
                       <h4

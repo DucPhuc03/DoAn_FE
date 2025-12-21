@@ -428,8 +428,13 @@ const Explore = () => {
         <div className="row mb-4">
           <div className="col-12">
             <h3 className="explore-topics-title">Danh mục</h3>
-            <div className="topic-scroll">
-              <div className="topic-scroll-content">
+            <div
+              className={`topic-scroll ${
+                categories.length > 7 ? "topic-scroll-enabled" : ""
+              }`}
+              style={categories.length > 7 ? { overflowX: "auto" } : {}}
+            >
+              <div className="d-flex gap-3 topic-scroll-content">
                 {loadingCategories ? (
                   <div className="explore-loading">Đang tải danh mục...</div>
                 ) : (
@@ -463,6 +468,13 @@ const Explore = () => {
                 )}
               </div>
             </div>
+            {selectedCategory && (
+              <div className="text-center mt-2">
+                <span className="badge rounded-pill explore-category-badge">
+                  Đang xem danh mục: {selectedCategory.name}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

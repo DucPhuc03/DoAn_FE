@@ -239,7 +239,7 @@
     padding-right: 0;
     display: flex !important;
     flex-wrap: nowrap !important; /* Không cho wrap */
-    gap: 16px;
+    gap: 12px;
     width: max-content;
 }
 
@@ -265,19 +265,21 @@
 }
 
 .topic-scroll::-webkit-scrollbar-thumb:hover {
-    background: #9fa0a4;
+    background: #6b7280;
 }
 
 .explore-topic-item {
-    min-width: auto;
+    width: 250px;
+    min-width: 200px;
+    max-width: 200px;
     cursor: pointer;
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 14px 24px;
+    gap: 16px;
+    padding: 12px 20px;
     background: #ffffff;
-    border-radius: 18px;
+    border-radius: 16px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     box-sizing: border-box;
@@ -289,10 +291,10 @@
 }
 
 .explore-topic-image-wrapper {
-    height: 80px;
-    width: 80px;
+    height: 70px;
+    width: 70px;
     background: #ffffff;
-    border-radius: 14px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -317,11 +319,15 @@
     font-weight: 600;
     color: #111827;
     white-space: nowrap;
-    font-size: 17px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
 }
 
 .explore-topic-name.active {
-    color: #4c6cb1;
+    color: #2563eb;
 }
 
 .explore-category-badge {

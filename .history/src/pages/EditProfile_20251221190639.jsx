@@ -64,7 +64,7 @@ const EditProfile = () => {
           latitude: profile.latitude || null,
           longitude: profile.longitude || null,
         });
-
+        setLocation({ lat: post.latitude, lng: post.longitude });
         // Set current avatar
         if (profile.avatarUrl) {
           setCurrentAvatar(profile.avatarUrl);
