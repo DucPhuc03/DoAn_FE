@@ -219,7 +219,7 @@ const Explore = () => {
             <div className="explore-search-filter-wrapper">
               {/* Search Bar */}
               <div className="d-flex justify-content-center">
-                <div className="explore-search-wrapper">
+                <div className="">
                   <input
                     type="text"
                     className="form-control explore-search-input"

@@ -210,7 +210,7 @@
 }
 
 .topic-scroll::-webkit-scrollbar {
-  height: 6px;
+  height: 2px;
 }
 
 .topic-scroll::-webkit-scrollbar-track {

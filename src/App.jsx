@@ -20,6 +20,7 @@ import EditProfile from "./pages/EditProfile";
 import GoogleCallBack from "./pages/GoogleCallBack";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import SelectInterests from "./pages/SelectInterests";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/select-interests" element={<SelectInterests />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/edit-profile/:id" element={<EditProfile />} />
         <Route path="/post/:id" element={<PostDetail />} />

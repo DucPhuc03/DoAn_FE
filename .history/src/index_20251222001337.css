@@ -220,7 +220,7 @@
 
 .topic-scroll::-webkit-scrollbar-thumb {
   background: #c1c1c1;
-  border-radius: 3px;
+  border-radius: 1px;
 }
 
 .topic-scroll::-webkit-scrollbar-thumb:hover {
