@@ -9,6 +9,7 @@ import "../../css/PendingManagement.css";
 
 export default function PendingManagement() {
   const [posts, setPosts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -19,6 +20,16 @@ export default function PendingManagement() {
   useEffect(() => {
     loadPosts();
   }, []);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   async function loadPosts() {
     try {
@@ -132,11 +143,8 @@ export default function PendingManagement() {
             <div className="pending-search-wrapper">
               <input
                 type="text"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search..."
                 className="pending-search-input"
               />

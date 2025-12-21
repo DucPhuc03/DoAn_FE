@@ -25,6 +25,13 @@ const GoogleCallBack = () => {
 
         const user = res?.user || res?.data?.user;
 
+        // Kiểm tra trạng thái tài khoản
+        if (user && user.status !== "ACTIVE") {
+          alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+          navigate("/login");
+          return;
+        }
+
         if (token) {
           Cookies.set("access_token", token, { expires: 7 });
         }

@@ -15,11 +15,22 @@ export default function ReportManagement() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all"); // all, pending, resolved
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [updatingId, setUpdatingId] = useState(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   async function loadReports() {
     try {
@@ -294,11 +305,8 @@ export default function ReportManagement() {
             <div className="report-search-wrapper">
               <input
                 type="text"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search..."
                 className="report-search-input"
               />

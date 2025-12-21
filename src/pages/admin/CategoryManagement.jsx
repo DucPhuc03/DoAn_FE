@@ -23,6 +23,7 @@ export default function CategoryManagement() {
   const [form, setForm] = useState(emptyForm);
   const [isEdit, setIsEdit] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [previewSrc, setPreviewSrc] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -33,6 +34,16 @@ export default function CategoryManagement() {
   useEffect(() => {
     loadCategories();
   }, []);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   async function loadCategories() {
     try {
@@ -197,8 +208,8 @@ export default function CategoryManagement() {
             <div className="category-search-wrapper">
               <input
                 type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search..."
                 className="category-search-input"
               />

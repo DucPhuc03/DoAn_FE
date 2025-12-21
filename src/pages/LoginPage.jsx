@@ -74,6 +74,16 @@ const LoginPage = () => {
         res?.data?.accessToken ||
         res?.data?.token;
       const user = res?.user || res?.data?.user;
+      
+      // Kiểm tra trạng thái tài khoản
+      if (user && user.status !== "ACTIVE") {
+        setErrors((prev) => ({
+          ...prev,
+          general: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
+        }));
+        return;
+      }
+
       if (token) {
         Cookies.set("access_token", token, { expires: 70 });
       }

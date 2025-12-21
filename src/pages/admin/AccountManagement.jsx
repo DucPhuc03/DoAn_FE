@@ -5,6 +5,7 @@ import "../../css/AccountManagement.css";
 
 export default function AccountManagement() {
   const [accounts, setAccounts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -15,6 +16,16 @@ export default function AccountManagement() {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   async function loadUsers() {
     try {
@@ -131,11 +142,8 @@ export default function AccountManagement() {
             <div className="account-search-wrapper">
               <input
                 type="text"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search..."
                 className="account-search-input"
               />
