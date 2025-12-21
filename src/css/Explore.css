@@ -132,22 +132,80 @@
 }
 
 .topic-scroll {
-    overflow-x: auto;
+    overflow-x: hidden;
     padding-bottom: 10px;
-    scrollbar-width: thin;
+    scrollbar-width: none; /* Ẩn scrollbar khi không cần */
+    -ms-overflow-style: none; /* IE và Edge */
+    width: 100%;
+    position: relative;
+    max-width: 100%;
 }
 
+.topic-scroll.topic-scroll-enabled {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-padding-left: 0;
+    padding-left: 0;
+    padding-bottom: 18px; /* Tăng padding để có chỗ cho scrollbar */
+    /* Đảm bảo phần tử đầu luôn hiển thị đầy đủ */
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin; /* Hiển thị scrollbar khi có hơn 7 phần tử */
+    -ms-overflow-style: auto; /* IE và Edge */
+    /* Đảm bảo scrollbar luôn hiển thị */
+    scrollbar-color: #9ca3af #f1f1f1;
+    /* Giới hạn chiều rộng để đảm bảo scrollbar xuất hiện khi có hơn 7 phần tử */
+    /* Mỗi phần tử: 120px + gap 12px, với 7 phần tử = 7*120 + 6*12 = 912px */
+    /* Với 8 phần tử = 8*120 + 7*12 = 1044px, nên cần scroll */
+}
+
+.topic-scroll-content {
+    padding-left: 0;
+    /* Đảm bảo phần tử đầu không bị cắt */
+    padding-right: 0;
+    display: flex !important;
+    width: max-content !important; /* Cho phép nội dung tràn ra ngoài */
+    flex-wrap: nowrap !important; /* Không cho wrap */
+}
+
+.topic-scroll-enabled .topic-scroll-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Đảm bảo phần tử đầu luôn hiển thị đầy đủ khi scroll */
+.topic-scroll-enabled .explore-topic-item:first-child {
+    scroll-snap-align: start;
+}
+
+/* Ẩn scrollbar khi không có class enabled */
 .topic-scroll::-webkit-scrollbar {
-    height: 6px;
+    display: none;
+    height: 0;
 }
 
-.topic-scroll::-webkit-scrollbar-thumb {
-    background: #d1d5db;
+/* Hiển thị scrollbar khi có class enabled */
+.topic-scroll-enabled::-webkit-scrollbar {
+    display: block !important;
+    height: 10px !important;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.topic-scroll-enabled::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
     border-radius: 10px;
+    margin: 0;
 }
 
-.topic-scroll::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
+.topic-scroll-enabled::-webkit-scrollbar-thumb {
+    background: #9ca3af !important;
+    border-radius: 10px;
+    border: none;
+    min-width: 50px;
+}
+
+.topic-scroll-enabled::-webkit-scrollbar-thumb:hover {
+    background: #6b7280 !important;
 }
 
 .explore-topic-item {

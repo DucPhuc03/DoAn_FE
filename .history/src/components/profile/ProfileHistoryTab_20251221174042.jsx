@@ -166,15 +166,15 @@ const ProfileHistoryTab = ({ trades, loadingTrades, onRefreshTrades }) => {
                     #{trade.tradeId}
                   </span>
                 </div>
+                {/* Hiển thị ngày hoàn thành nếu trạng thái là COMPLETED */}
+                {trade.status === "COMPLETED" && trade.dateComplete && (
+                  <div className="history-completion-date">
+                    <i className="bi bi-check-circle-fill me-2"></i>
+                    Hoàn thành: {formatCompletionDate(trade.dateComplete)}
+                  </div>
+                )}
               </div>
             </div>
-            {/* Hiển thị ngày hoàn thành bên phải nếu trạng thái là COMPLETED */}
-            {trade.status === "COMPLETED" && trade.dateComplete && (
-              <div className="history-completion-date">
-                <i className="bi bi-check-circle-fill me-2"></i>
-                Hoàn thành: {formatCompletionDate(trade.dateComplete)}
-              </div>
-            )}
           </div>
 
           {/* Trade Items */}

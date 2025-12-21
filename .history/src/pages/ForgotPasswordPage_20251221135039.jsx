@@ -79,20 +79,11 @@ const ForgotPasswordPage = () => {
 
     setOtpSubmitting(true);
     setOtpError("");
-
-    try {
-      await verifyRegisterOtp(email, otpCode.trim());
-
-      setShowOtpModal(false);
-      navigate("/reset-password", { state: { email } });
-    } catch (err) {
-      setOtpError(
-        err?.response?.data?.message ||
-          "Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại."
-      );
-    } finally {
-      setOtpSubmitting(false);
-    }
+    res = await verifyRegisterOtp(email, otpCode.trim());
+    setShowOtpModal(false);
+    res == true
+      ? navigate("/reset-password", { state: { email } })
+      : alert("OTP không đúng");
   };
 
   return (

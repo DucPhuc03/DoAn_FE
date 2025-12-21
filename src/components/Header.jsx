@@ -41,6 +41,7 @@ const Header = () => {
             time: formatTime(announcement.time || announcement.time),
             read: announcement.read || announcement.isRead || false,
             link: announcement.link || announcement.url || "#",
+            conversationId: announcement.conversationId || announcement.conversation_id || null,
           }));
           setNotifications(mappedNotifications);
         } else {
@@ -61,25 +62,61 @@ const Header = () => {
   const formatTime = (dateString) => {
     if (!dateString) return "";
 
-    const date = new Date(dateString);
-    const now = new Date();
-    console.log(date);
-    console.log(now);
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    console.log(diffInSeconds);
-    if (diffInSeconds < 60) {
-      return "Vừa xong";
-    } else if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} phút trước`;
-    } else if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} giờ trước`;
-    } else if (diffInSeconds < 604800) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days} ngày trước`;
-    } else {
-      return date.toLocaleDateString("vi-VN");
+    try {
+      // Xử lý định dạng "2025-12-21 11:42:23.934853"
+      // Loại bỏ microseconds nếu có và chuyển thành định dạng ISO
+      let formattedDateString = dateString;
+      
+      // Nếu có format với microseconds, loại bỏ phần microseconds
+      if (dateString.includes('.') && dateString.match(/\.\d{6}/)) {
+        formattedDateString = dateString.replace(/\.\d{6}$/, '');
+      }
+      
+      // Chuyển đổi "YYYY-MM-DD HH:mm:ss" thành "YYYY-MM-DDTHH:mm:ss" (ISO format)
+      if (formattedDateString.includes(' ') && !formattedDateString.includes('T')) {
+        formattedDateString = formattedDateString.replace(' ', 'T');
+      }
+      
+      const date = new Date(formattedDateString);
+      const now = new Date();
+      
+      // Kiểm tra nếu date không hợp lệ
+      if (isNaN(date.getTime())) {
+        return dateString; // Trả về nguyên bản nếu không parse được
+      }
+      
+      // Tính chênh lệch thời gian (đảm bảo là số dương)
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      // Nếu thời gian trong tương lai (do timezone), xử lý đặc biệt
+      if (diffInSeconds < 0) {
+        return "Vừa xong";
+      }
+      
+      if (diffInSeconds < 60) {
+        return "Vừa xong";
+      } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} phút trước`;
+      } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} giờ trước`;
+      } else if (diffInSeconds < 604800) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} ngày trước`;
+      } else {
+        // Format ngày tháng năm theo định dạng Việt Nam
+        return date.toLocaleDateString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+    } catch (error) {
+      console.error("Error formatting time:", error);
+      return dateString; // Trả về nguyên bản nếu có lỗi
     }
   };
 
@@ -340,10 +377,17 @@ const Header = () => {
                             </p>
                           </div>
                         ) : notifications.length > 0 ? (
-                          notifications.map((notification) => (
+                          notifications.map((notification) => {
+                            // Nếu là thông báo trao đổi và có conversationId, điều hướng đến chat
+                            const isExchangeNotification = notification.type === "exchange" && notification.conversationId;
+                            const targetLink = isExchangeNotification 
+                              ? `/chat?conversationId=${notification.conversationId}`
+                              : notification.link;
+                            
+                            return (
                             <Link
                               key={notification.id}
-                              to={notification.link}
+                              to={targetLink}
                               className={`header-notification-item ${
                                 !notification.read ? "unread" : ""
                               }`}
@@ -386,7 +430,8 @@ const Header = () => {
                                 </small>
                               </div>
                             </Link>
-                          ))
+                            );
+                          })
                         ) : (
                           <div className="text-center py-5">
                             <div className="header-empty-icon">
@@ -433,17 +478,18 @@ const Header = () => {
                         />
                       ) : (
                         <div
+                          className="profile-avatar-initial"
                           style={{
                             width: "100%",
                             height: "100%",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-
                             borderRadius: "50%",
                             color: "#fff",
                             fontSize: "0.9rem",
                             fontWeight: 600,
+                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                           }}
                         >
                           {userName ? (

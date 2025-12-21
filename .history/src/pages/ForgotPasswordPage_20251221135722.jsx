@@ -81,10 +81,12 @@ const ForgotPasswordPage = () => {
     setOtpError("");
 
     try {
-      await verifyRegisterOtp(email, otpCode.trim());
-
+      const res = await verifyRegisterOtp(email, otpCode.trim());
+      console.log(res);
       setShowOtpModal(false);
-      navigate("/reset-password", { state: { email } });
+      res.data == true
+        ? navigate("/reset-password", { state: { email } })
+        : alert("OTP không đúng");
     } catch (err) {
       setOtpError(
         err?.response?.data?.message ||

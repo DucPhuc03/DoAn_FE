@@ -47,11 +47,14 @@ const MeetingsModal = ({ onClose }) => {
   };
 
   const handleMeetingClick = (meeting) => {
-    // Navigate to chat page
-    // If meeting has conversationId, we can pass it as query param
-    // Otherwise, just navigate to chat and let the chat page handle it
+    // Navigate to chat page with conversationId if available
     onClose(); // Close the modal first
-    navigate("/chat");
+    const conversationId = meeting.conversationId || meeting.conversation_id;
+    if (conversationId) {
+      navigate(`/chat?conversationId=${conversationId}`);
+    } else {
+      navigate("/chat");
+    }
   };
 
   return (

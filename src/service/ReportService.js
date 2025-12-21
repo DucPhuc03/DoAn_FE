@@ -37,3 +37,5 @@ export async function deleteReport(id) {
   const { data } = await axios.delete(`/api/report/admin/${id}`);
   return data;
 }
+
+

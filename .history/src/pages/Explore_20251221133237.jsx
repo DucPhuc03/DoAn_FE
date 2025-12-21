@@ -16,8 +16,8 @@ const Explore = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [maxDistance, setMaxDistance] = useState(100);
-  const [tempDistance, setTempDistance] = useState(100);
+  const [maxDistance, setMaxDistance] = useState(200);
+  const [tempDistance, setTempDistance] = useState(200);
   const [showDistanceFilter, setShowDistanceFilter] = useState(false);
   const [showSuggested, setShowSuggested] = useState(false);
   const [suggestedPosts, setSuggestedPosts] = useState([]);
@@ -238,8 +238,8 @@ const Explore = () => {
                     <button
                       className="btn btn-sm btn-outline-secondary explore-distance-btn-reset"
                       onClick={() => {
-                        setMaxDistance(100);
-                        setTempDistance(100);
+                        setMaxDistance(200);
+                        setTempDistance(200);
                         setCurrentPage(1);
                         setShowDistanceFilter(false);
                       }}
