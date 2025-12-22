@@ -9,9 +9,11 @@ import {
   likePost,
   deletePost,
   createViewHistory,
+  getPostSimilarity,
 } from "../service/PostService";
 import { createTrade } from "../service/TradeService";
 import { createReportPost } from "../service/ReportService";
+import MapInlineView from "../components/MapInlineView";
 import "../css/PostDetail.css";
 
 const PostDetail = () => {
@@ -24,6 +26,8 @@ const PostDetail = () => {
   const [user, setUser] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [similarPosts, setSimilarPosts] = useState([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
   const viewHistoryTimeoutRef = useRef(null);
   const hasCreatedViewHistoryRef = useRef(false);
   const currentPostIdRef = useRef(null);
@@ -32,7 +36,25 @@ const PostDetail = () => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
     setUser(currentUser);
     fetchPostDetail();
+    fetchSimilarPosts();
   }, [id]);
+
+  const fetchSimilarPosts = async () => {
+    try {
+      setLoadingSimilar(true);
+      const response = await getPostSimilarity(id);
+      if (response.data) {
+        setSimilarPosts(response.data);
+      } else {
+        setSimilarPosts(response);
+      }
+    } catch (error) {
+      console.error("Error fetching similar posts:", error);
+      setSimilarPosts([]);
+    } finally {
+      setLoadingSimilar(false);
+    }
+  };
 
   // Track view history after 10 seconds
   useEffect(() => {
@@ -470,7 +492,7 @@ const PostDetail = () => {
 
               {/* Item Details */}
               <div className="mb-3">
-                <label className=" fw-bold  d-block mb-1 fw-semibold">
+                <label className="fw-bold d-block mb-1 fw-semibold">
                   Mô tả
                 </label>
                 <p
@@ -482,21 +504,21 @@ const PostDetail = () => {
               </div>
               <div className="mb-4">
                 <div className="mb-3">
-                  <label className="  fw-bold text-dark d-block mb-1 fw-semibold">
+                  <label className="fw-bold text-dark d-block mb-1 fw-semibold">
                     Danh mục
                   </label>
-                  <p className="mb-0  ">{post.category?.name || "Chưa có"}</p>
+                  <p className="mb-0">{post.category?.name || "Chưa có"}</p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className="fw-bold d-block mb-1 fw-semibold">
                     Tình trạng
                   </label>
-                  <p className="mb-0  text-dark">
+                  <p className="mb-0 text-dark">
                     {post.itemCondition || "Chưa có"}
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className="fw-bold d-block mb-1 fw-semibold">
                     Yêu cầu trao đổi
                   </label>
                   <p
@@ -507,31 +529,25 @@ const PostDetail = () => {
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className=" fw-bold  d-block mb-1 fw-semibold">
+                  <label className="fw-bold d-block mb-1 fw-semibold">
                     Trạng thái
                   </label>
-                  <p className={`mb-0  ${getStatusColor(post.postStatus)}`}>
+                  <p className={`mb-0 ${getStatusColor(post.postStatus)}`}>
                     {getStatusLabel(post.postStatus)}
                   </p>
                 </div>
-                {post.tradeLocation && (
-                  <div className="mb-3">
-                    <label className=" fw-bold  d-block mb-1 fw-semibold">
-                      Địa điểm trao đổi
-                    </label>
-                    <p className="mb-0  text-dark">
-                      <i className="bi bi-geo-alt me-1"></i>
-                      {post.tradeLocation}
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
               <div className="d-flex gap-2 flex-wrap">
                 {!post.owner && (
                   <button
-                    className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
+                    className={`btn flex-grow-1 py-3 rounded-3 fw-semibold ${
+                      post.postStatus === "PENDING" ||
+                      post.postStatus === "COMPLETED"
+                        ? "btn-secondary"
+                        : "btn-warning"
+                    }`}
                     onClick={handleProposeExchange}
                     style={{ fontSize: "1rem" }}
                     disabled={
@@ -539,7 +555,22 @@ const PostDetail = () => {
                       post.postStatus === "COMPLETED"
                     }
                   >
-                    Bắt đầu trao đổi
+                    {post.postStatus === "COMPLETED" ? (
+                      <>
+                        <i className="bi bi-check-circle me-2"></i>
+                        Đã trao đổi
+                      </>
+                    ) : post.postStatus === "PENDING" ? (
+                      <>
+                        <i className="bi bi-hourglass-split me-2"></i>
+                        Đang trao đổi
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-arrow-left-right me-2"></i>
+                        Bắt đầu trao đổi
+                      </>
+                    )}
                   </button>
                 )}
                 {post.canReport && !post.owner && (
@@ -580,122 +611,94 @@ const PostDetail = () => {
                   </button>
                 )}
               </div>
+
+              {/* Trade Location Map - Below Action Buttons */}
+              {post.tradeLocation && (
+                <div className="mt-4">
+                  <MapInlineView address={post.tradeLocation} />
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Comments Section */}
-        <div className="mt-5">
-          <h4 className="fw-bold text-dark mb-4">
-            Bình luận {post.totalComments > 0 && `(${post.totalComments})`}
-          </h4>
+        <div className="row  g-4" style={{ marginTop: "-250px" }}>
+          {/* Comments Section */}
+          <div className="col-12">
+            <h4 className="fw-bold text-dark mb-4">
+              <i className="bi bi-chat-dots me-2"></i>
+              Bình luận {post.totalComments > 0 && `(${post.totalComments})`}
+            </h4>
 
-          {/* Comment Input */}
-          {user && (
-            <form
-              onSubmit={handleSubmitComment}
-              className="mb-4"
-              style={{ width: "50%" }}
-            >
-              <div className="d-flex align-items-start gap-3">
-                {/* User Avatar */}
-                <div
-                  className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                  style={{ width: "40px", height: "40px" }}
-                >
-                  {user.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.fullName || user.name}
-                      className="rounded-circle"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <i className="bi bi-person-fill text-white"></i>
-                  )}
-                </div>
-                <div className="flex-grow-1">
-                  <div className="mb-2">
-                    <input
-                      type="text"
-                      className="form-control form-control-sm mb-2"
-                      placeholder="Tên"
-                      value={user.fullName || user.name || ""}
-                      disabled
-                      style={{ fontSize: "0.9rem" }}
-                    />
-                    <textarea
-                      className="form-control"
-                      rows="3"
-                      placeholder="Bình luận..."
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      style={{ fontSize: "0.9rem" }}
-                    />
-                  </div>
-                  <div className="d-flex align-items-center justify-content-end gap-2">
-                    <button
-                      type="submit"
-                      className="btn btn-link p-0 text-primary"
-                      style={{ fontSize: "1.2rem" }}
-                      title="Gửi bình luận"
-                      disabled={!commentText.trim()}
+            <div className="comments-container">
+              {/* Comment Input */}
+              {user && (
+                <form onSubmit={handleSubmitComment} className="mb-4">
+                  <div className="d-flex align-items-start gap-3">
+                    {/* User Avatar */}
+                    <div
+                      className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                      style={{ width: "40px", height: "40px" }}
                     >
-                      <i className="bi bi-send-fill"></i>
-                    </button>
+                      {user.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt={user.fullName || user.name}
+                          className="rounded-circle"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <i className="bi bi-person-fill text-white"></i>
+                      )}
+                    </div>
+                    <div className="flex-grow-1">
+                      <div className="mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-control-sm mb-2"
+                          placeholder="Tên"
+                          value={user.fullName || user.name || ""}
+                          disabled
+                          style={{ fontSize: "0.9rem" }}
+                        />
+                        <textarea
+                          className="form-control"
+                          rows="3"
+                          placeholder="Bình luận..."
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          style={{ fontSize: "0.9rem" }}
+                        />
+                      </div>
+                      <div className="d-flex align-items-center justify-content-end gap-2 mt-2">
+                        <button
+                          type="submit"
+                          className="comment-submit-btn"
+                          title="Gửi bình luận"
+                          disabled={!commentText.trim()}
+                        >
+                          <i className="bi bi-send-fill me-2"></i>
+                          Gửi
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </form>
-          )}
+                </form>
+              )}
 
-          {/* Comments List */}
-          <div className="mt-4">
-            {post.comments && post.comments.length > 0 ? (
-              post.comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="d-flex gap-3 mb-4 pb-3 border-bottom"
-                >
-                  <div
-                    className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                    style={{ width: "40px", height: "40px" }}
-                    onClick={() => {
-                      const commentUserId =
-                        comment.userId ||
-                        comment.userID ||
-                        comment.user?.id ||
-                        comment.user_id;
-                      if (commentUserId) {
-                        navigate(`/profile/${commentUserId}`);
-                      }
-                    }}
-                    role="button"
-                  >
-                    {comment.avatarUrl ? (
-                      <img
-                        src={comment.avatarUrl}
-                        alt={comment.fullName}
-                        className="rounded-circle"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <i className="bi bi-person-fill text-white"></i>
-                    )}
-                  </div>
-                  <div className="flex-grow-1">
-                    <div className="d-flex align-items-center gap-2 mb-1">
-                      <strong
-                        className="text-dark small"
-                        style={{ cursor: "pointer" }}
+              {/* Comments List */}
+              <div className="comments-list">
+                {post.comments && post.comments.length > 0 ? (
+                  post.comments.map((comment) => (
+                    <div key={comment.id} className="comment-item">
+                      <div
+                        className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style={{ width: "40px", height: "40px" }}
                         onClick={() => {
                           const commentUserId =
                             comment.userId ||
@@ -706,29 +709,127 @@ const PostDetail = () => {
                             navigate(`/profile/${commentUserId}`);
                           }
                         }}
+                        role="button"
                       >
-                        {comment.fullName || "Người dùng"}
-                      </strong>
-                      <small className="text-muted">
-                        {formatDate(comment.commentDate)}
-                      </small>
+                        {comment.avatarUrl ? (
+                          <img
+                            src={comment.avatarUrl}
+                            alt={comment.fullName}
+                            className="rounded-circle"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          <i className="bi bi-person-fill text-white"></i>
+                        )}
+                      </div>
+                      <div className="flex-grow-1">
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                          <strong
+                            className="text-dark small"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              const commentUserId =
+                                comment.userId ||
+                                comment.userID ||
+                                comment.user?.id ||
+                                comment.user_id;
+                              if (commentUserId) {
+                                navigate(`/profile/${commentUserId}`);
+                              }
+                            }}
+                          >
+                            {comment.fullName || "Người dùng"}
+                          </strong>
+                          <small className="text-muted">
+                            {formatDate(comment.commentDate)}
+                          </small>
+                        </div>
+                        <p
+                          className="mb-0 text-dark"
+                          style={{ fontSize: "0.9rem", lineHeight: "1.6" }}
+                        >
+                          {comment.content}
+                        </p>
+                      </div>
                     </div>
-                    <p
-                      className="mb-0 text-dark"
-                      style={{ fontSize: "0.9rem", lineHeight: "1.6" }}
-                    >
-                      {comment.content}
+                  ))
+                ) : (
+                  <div className="text-center text-muted py-4">
+                    <i className="bi bi-chat-dots fs-3 d-block mb-2"></i>
+                    <p className="mb-0">Chưa có bình luận nào</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Similar Products Section */}
+        <div className="mt-5 mb-4">
+          <h4 className="fw-bold text-dark mb-4">
+            <i className="bi bi-grid me-2"></i>
+            Sản phẩm tương tự
+          </h4>
+          {loadingSimilar ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Đang tải...</span>
+              </div>
+              <p className="text-muted mt-3 mb-0">
+                Đang tải bài đăng tương tự...
+              </p>
+            </div>
+          ) : similarPosts && similarPosts.length > 0 ? (
+            <div className="similar-products-grid">
+              {similarPosts.map((item) => (
+                <div
+                  key={item.id}
+                  className="similar-product-card"
+                  onClick={() => navigate(`/post/${item.id}`)}
+                >
+                  <div className="similar-product-image-wrapper">
+                    <img
+                      src={
+                        item.imageUrls?.[0] ||
+                        item.imageUrl ||
+                        "https://via.placeholder.com/300x200?text=No+Image"
+                      }
+                      alt={item.title}
+                      className="similar-product-image"
+                    />
+                  </div>
+                  <div className="similar-product-content">
+                    <h6 className="similar-product-title">{item.title}</h6>
+                    <p className="similar-product-meta">
+                      <span>
+                        <i className="bi bi-person me-1"></i>
+                        {item.username}
+                      </span>
+                      <span className="similar-product-likes">
+                        <i className="bi bi-heart-fill"></i>
+                        <span>{item.totalLikes || 0}</span>
+                      </span>
                     </p>
+                    {item.distance !== undefined && (
+                      <p className="similar-product-distance">
+                        <i className="bi bi-geo-alt"></i>
+                        <span>{item.distance} km</span>
+                      </p>
+                    )}
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center text-muted py-4">
-                <i className="bi bi-chat-dots fs-3 d-block mb-2"></i>
-                <p className="mb-0">Chưa có bình luận nào</p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-muted py-4">
+              <i className="bi bi-grid fs-3 d-block mb-2"></i>
+              <p className="mb-0">Không có sản phẩm tương tự</p>
+            </div>
+          )}
         </div>
       </div>
 

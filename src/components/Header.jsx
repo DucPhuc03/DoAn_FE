@@ -69,7 +69,7 @@ const Header = () => {
       
       // Nếu có format với microseconds, loại bỏ phần microseconds
       if (dateString.includes('.') && dateString.match(/\.\d{6}/)) {
-        formattedDateString = dateString.replace(/\.\d{6}$/, '');
+        formattedDateString = formattedDateString.replace(/\.\d{6}$/, '');
       }
       
       // Chuyển đổi "YYYY-MM-DD HH:mm:ss" thành "YYYY-MM-DDTHH:mm:ss" (ISO format)
@@ -77,7 +77,8 @@ const Header = () => {
         formattedDateString = formattedDateString.replace(' ', 'T');
       }
       
-      const date = new Date(formattedDateString);
+      // Thêm 'Z' để đánh dấu đây là UTC time, sau đó JavaScript sẽ tự chuyển sang local time
+      const date = new Date(formattedDateString + 'Z');
       const now = new Date();
       
       // Kiểm tra nếu date không hợp lệ

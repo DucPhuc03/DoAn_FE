@@ -203,7 +203,11 @@
 }
 
 .topic-scroll {
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> main
   justify-content: center;
   overflow-x: auto;
   padding-bottom: 0.5rem;

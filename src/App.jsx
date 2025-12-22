@@ -13,6 +13,7 @@ import NewPost from "./pages/NewPost";
 import AccountManagement from "./pages/admin/AccountManagement";
 import ReportManagement from "./pages/admin/ReportManagement";
 import PostReportDetail from "./pages/admin/PostReportDetail";
+import UserReportDetail from "./pages/admin/UserReportDetail";
 import PendingManagement from "./pages/admin/PendingManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import EditPost from "./pages/EditPost";
@@ -20,6 +21,7 @@ import EditProfile from "./pages/EditProfile";
 import GoogleCallBack from "./pages/GoogleCallBack";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import SelectInterests from "./pages/SelectInterests";
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/select-interests" element={<SelectInterests />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/edit-profile/:id" element={<EditProfile />} />
         <Route path="/post/:id" element={<PostDetail />} />
@@ -48,6 +51,10 @@ function App() {
         <Route
           path="/admin/post_report/:postId"
           element={<PostReportDetail />}
+        />
+        <Route
+          path="/admin/user_report/:userId"
+          element={<UserReportDetail />}
         />
         <Route
           path="/admin/pending_management"

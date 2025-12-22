@@ -151,19 +151,18 @@ export default function ReportManagement() {
         return;
       }
 
-      // Nếu là báo cáo user, hiển thị thông tin chi tiết
-      alert(
-        `Chi tiết báo cáo #${id}\n\n` +
-          `Người báo cáo: ${report.reporterName} (${report.reporterEmail})\n` +
-          `Loại: ${getReportedTypeText(report.reportedType)}\n` +
-          `Bị báo cáo: ${report.reportedBy}\n` +
-          `${
-            report.reportedTitle ? `Bài đăng: ${report.reportedTitle}\n` : ""
-          }` +
-          `Lý do: ${report.reason}\n` +
-          `Trạng thái: ${getStatusColor(report.status).text}\n` +
-          `Ngày: ${report.date}`
-      );
+      // Nếu là báo cáo user, điều hướng đến trang chi tiết người dùng
+      if (report.reportedType === "user") {
+        const targetUserId = report.reportedId;
+        if (targetUserId) {
+          navigate(`/admin/user_report/${targetUserId}`, {
+            state: { reason: report.reason, reporterName: report.reporterName }
+          });
+        } else {
+          alert("Không tìm thấy thông tin người dùng được báo cáo.");
+        }
+        return;
+      }
     }
   }
 

@@ -1,0 +1,619 @@
+/* ==========================================
+   POSTDETAIL PAGE STYLES
+   ========================================== */
+
+/* ==========================================
+   Layout & Container
+   ========================================== */
+.postdetail-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.postdetail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+/* ==========================================
+   Page Title
+   ========================================== */
+.postdetail-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 24px;
+}
+
+/* ==========================================
+   Image Gallery Container
+   ========================================== */
+.postdetail-gallery-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Thumbnails Column - Left Side */
+.postdetail-thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    flex-shrink: 0;
+}
+
+/* Custom scrollbar for thumbnails */
+.postdetail-thumbnails::-webkit-scrollbar {
+    width: 4px;
+}
+
+.postdetail-thumbnails::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.postdetail-thumbnails::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.postdetail-thumbnails::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Individual Thumbnail */
+.postdetail-thumbnail {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.postdetail-thumbnail:hover {
+    border-color: #6b7280;
+    transform: scale(1.05);
+}
+
+.postdetail-thumbnail.active {
+    border-color: #354404;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.postdetail-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Main Image Gallery */
+.postdetail-gallery {
+    flex: 1;
+    height: 500px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    position: relative;
+}
+
+.postdetail-gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.postdetail-gallery-nav {
+    width: 45px;
+    height: 45px;
+    z-index: 10;
+}
+
+.postdetail-gallery-indicator {
+    width: 10px;
+    height: 10px;
+}
+
+.postdetail-no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.postdetail-no-image i {
+    font-size: 4rem;
+}
+
+/* ==========================================
+   Poster Info
+   ========================================== */
+.postdetail-poster {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+}
+
+.postdetail-avatar {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.postdetail-avatar:hover {
+    transform: scale(1.1);
+}
+
+.postdetail-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.postdetail-username {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.postdetail-username:hover {
+    color: #2563eb;
+}
+
+/* Like Button */
+.postdetail-like-btn {
+    font-size: 1.2rem;
+}
+
+.postdetail-like-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   Post Details
+   ========================================== */
+.postdetail-info {
+    height: 100%;
+}
+
+.postdetail-info-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+}
+
+.postdetail-info-section {
+    margin-bottom: 12px;
+}
+
+.postdetail-info-label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.postdetail-info-value {
+    margin-bottom: 0;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+/* ==========================================
+   Action Buttons
+   ========================================== */
+.postdetail-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.postdetail-exchange-btn {
+    flex-grow: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.postdetail-status-btn {
+    min-width: 120px;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+/* ==========================================
+   Comments Section
+   ========================================== */
+.postdetail-comments {
+    margin-top: 40px;
+}
+
+.postdetail-comments-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+}
+
+.postdetail-comment-form {
+    width: 50%;
+    margin-bottom: 16px;
+}
+
+.postdetail-comment-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.postdetail-comment-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.postdetail-comment-input {
+    font-size: 0.9rem;
+}
+
+.postdetail-comment-submit {
+    font-size: 1.2rem;
+}
+
+/* Comment Item */
+.postdetail-comment-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.postdetail-comment-content {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Empty Comments */
+.postdetail-no-comments {
+    text-align: center;
+    color: #6b7280;
+    padding: 24px 0;
+}
+
+.postdetail-no-comments i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Comments Container Box */
+.comments-container {
+    max-width: 600px;
+
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Comment Submit Button */
+.comment-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.comment-submit-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.comment-submit-btn:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.comments-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================
+   Status Modal
+   ========================================== */
+.postdetail-modal-overlay {
+    display: block;
+    background-color: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+}
+
+.postdetail-modal-content {
+    border-radius: 16px;
+    border: none;
+}
+
+.postdetail-modal-header {
+    border: none;
+    padding-bottom: 0;
+}
+
+.postdetail-modal-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.postdetail-modal-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.postdetail-modal-body {
+    padding-top: 12px;
+}
+
+.postdetail-modal-footer {
+    border: none;
+    padding-top: 0;
+}
+
+.status-btn {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.status-btn:hover {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+}
+
+.status-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   Loading & Error States
+   ========================================== */
+.postdetail-loading,
+.postdetail-error {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.postdetail-loading .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* ==========================================
+   Similar Products Section
+   ========================================== */
+.similar-products-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1400px) {
+    .similar-products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .similar-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .similar-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .similar-products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.similar-product-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.similar-product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.similar-product-image-wrapper {
+    height: 140px;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    position: relative;
+}
+
+.similar-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.similar-product-card:hover .similar-product-image {
+    transform: scale(1.08);
+}
+
+.similar-product-content {
+    padding: 10px;
+}
+
+.similar-product-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #1f2937;
+}
+
+.similar-product-meta {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.similar-product-likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.similar-product-likes i {
+    color: #ef4444;
+    font-size: 0.75rem;
+}
+
+.similar-product-distance {
+    font-size: 0.8rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.similar-product-distance i {
+    font-size: 0.7rem;
+    margin-right: 4px;
+}
+
+/* ==========================================
+   Map Inline View
+   ========================================== */
+.map-inline-container {
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.map-inline-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #8e8e8b;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.map-inline-header i {
+    color: #fff;
+}
+
+.map-inline-title {
+    font-weight: 600;
+}
+
+.map-inline-address {
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+}
+
+.map-inline-address i {
+    color: #6366f1;
+}
+
+.map-inline-wrapper {
+    height: 250px;
+    position: relative;
+    background: #f3f4f6;
+    overflow: hidden;
+}
+
+.map-inline-loading,
+.map-inline-error {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.map-inline-error {
+    color: #f59e0b;
+}

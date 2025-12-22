@@ -124,103 +124,121 @@ export default function PostReportDetail() {
       <Sidebar active="report" />
       <main className="report-main">
         <div className="report-container">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h1 className="report-title">Chi tiết báo cáo bài đăng</h1>
-            <button
-              className="btn btn-outline-secondary"
-              onClick={() => navigate("/admin/report_management")}
-            >
-              <i className="bi bi-arrow-left me-1"></i>
-              Quay lại
-            </button>
+          {/* Header */}
+          <div className="report-detail-header">
+            <div>
+              <button
+                className="report-back-btn"
+                onClick={() => navigate("/admin/report_management")}
+              >
+                <i className="bi bi-arrow-left"></i>
+                Quay lại
+              </button>
+              <h1 className="report-detail-title">Chi tiết báo cáo bài đăng</h1>
+            </div>
+            <div className="report-count-badge">
+              <i className="bi bi-exclamation-triangle-fill"></i>
+              <span>{data.count} báo cáo</span>
+            </div>
           </div>
 
-          {/* Một khối duy nhất chứa toàn bộ nội dung */}
-          <div className="card">
-            <div className="card-body">
-              <div className="row g-4">
-                {/* Thông tin bài và ảnh */}
-                <div className="col-12">
-                  <div className="d-flex flex-wrap gap-3 align-items-start">
-                    {data.imageUrl && data.imageUrl.length > 0 && (
-                      <div style={{ maxWidth: 320 }}>
-                        <img
-                          src={data.imageUrl[0]}
-                          alt={data.postTitle}
-                          className="img-fluid rounded"
-                          style={{
-                            maxHeight: "260px",
-                            objectFit: "cover",
-                            width: "100%",
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className="flex-grow-1">
-                      <h4 className="mb-2">{data.postTitle}</h4>
-                      <p className="mb-2">
-                        <strong>Người đăng:</strong>{" "}
-                        {data.avatarUrl && (
-                          <img
-                            src={data.avatarUrl}
-                            alt={data.fullName}
-                            className="rounded-circle me-2"
-                            style={{ width: "32px", height: "32px" }}
-                          />
-                        )}
-                        {data.fullName}
-                      </p>
-                      <p className="mb-2">
-                        <strong>Mã bài đăng:</strong> #{data.postId}
-                      </p>
-                      <p className="mb-0">
-                        <strong>Số lần báo cáo:</strong>{" "}
-                        <span className="badge bg-danger">
-                          {data.count} lần
-                        </span>
-                      </p>
+          <div className="report-detail-grid">
+            {/* Left Column - Post Info */}
+            <div className="report-detail-left">
+              {/* Post Card */}
+              <div className="report-post-card">
+                <div className="report-post-card-header">
+                  <i className="bi bi-file-post"></i>
+                  <span>Thông tin bài đăng</span>
+                </div>
+                
+                {/* Post Image */}
+                {data.imageUrl && data.imageUrl.length > 0 && (
+                  <div className="report-post-image">
+                    <img
+                      src={data.imageUrl[0]}
+                      alt={data.postTitle}
+                    />
+                  </div>
+                )}
+                
+                {/* Post Details */}
+                <div className="report-post-info">
+                  <h3 className="report-post-title">{data.postTitle}</h3>
+                  
+                  <div className="report-post-meta">
+                    <div className="report-post-meta-item">
+                      <span className="report-meta-label">Mã bài đăng</span>
+                      <span className="report-meta-value">#{data.postId}</span>
+                    </div>
+                  </div>
+
+                  {/* Poster Info */}
+                  <div className="report-poster-info">
+                    <div className="report-poster-avatar">
+                      {data.avatarUrl ? (
+                        <img src={data.avatarUrl} alt={data.fullName} />
+                      ) : (
+                        <i className="bi bi-person-fill"></i>
+                      )}
+                    </div>
+                    <div className="report-poster-details">
+                      <span className="report-poster-label">Người đăng</span>
+                      <span className="report-poster-name">{data.fullName}</span>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* Lý do và hành động trong cùng khối */}
-                <div className="col-12">
-                  <div className="row g-3">
-                    <div className="col-md-7">
-                      <h5 className="mb-3">Lý do báo cáo</h5>
-                      {data.reasons && data.reasons.length > 0 ? (
-                        <ul className="list-group">
-                          {data.reasons.map((reason, idx) => (
-                            <li key={idx} className="list-group-item">
-                              {reason}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-muted mb-0">Chưa có lý do báo cáo</p>
-                      )}
-                    </div>
-
-                    <div className="col-md-5">
-                      <h5 className="mb-3">Hành động</h5>
-                      <div className="report-actions">
-                        <button
-                          className="report-btn report-btn-reject"
-                          onClick={handleDeletePost}
-                          disabled={processing}
-                        >
-                          {processing ? "Đang xử lý..." : "Xóa bài đăng"}
-                        </button>
-                        <button
-                          className="report-btn report-btn-resolve"
-                          onClick={handleWarning}
-                          disabled={processing}
-                        >
-                          {processing ? "Đang xử lý..." : "Cảnh báo người dùng"}
-                        </button>
+            {/* Right Column - Reasons & Actions */}
+            <div className="report-detail-right">
+              {/* Reasons Card */}
+              <div className="report-reasons-card">
+                <div className="report-reasons-header">
+                  <i className="bi bi-flag-fill"></i>
+                  <span>Lý do báo cáo ({data.reasons?.length || 0})</span>
+                </div>
+                <div className="report-reasons-list">
+                  {data.reasons && data.reasons.length > 0 ? (
+                    data.reasons.map((reason, idx) => (
+                      <div key={idx} className="report-reason-item">
+                        <span className="report-reason-number">{idx + 1}</span>
+                        <span className="report-reason-text">{reason}</span>
                       </div>
+                    ))
+                  ) : (
+                    <div className="report-reasons-empty">
+                      <i className="bi bi-inbox"></i>
+                      <span>Chưa có lý do báo cáo</span>
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions Card */}
+              <div className="report-actions-card">
+                <div className="report-actions-header">
+                  <i className="bi bi-gear-fill"></i>
+                  <span>Hành động xử lý</span>
+                </div>
+                <div className="report-actions-content">
+                  <button
+                    className="report-action-btn report-action-delete"
+                    onClick={handleDeletePost}
+                    disabled={processing}
+                  >
+                    <i className="bi bi-trash3-fill"></i>
+                    <span>{processing ? "Đang xử lý..." : "Xóa bài đăng"}</span>
+                  </button>
+                  <button
+                    className="report-action-btn report-action-warn"
+                    onClick={handleWarning}
+                    disabled={processing}
+                  >
+                    <i className="bi bi-bell-fill"></i>
+                    <span>{processing ? "Đang xử lý..." : "Cảnh báo người dùng"}</span>
+                  </button>
                 </div>
               </div>
             </div>

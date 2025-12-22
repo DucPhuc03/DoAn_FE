@@ -1,0 +1,651 @@
+/* ==========================================
+   EXPLORE PAGE STYLES
+   ========================================== */
+
+/* ==========================================
+   Container
+   ========================================== */
+.explore-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+/* ==========================================
+   Search Section
+   ========================================== */
+.explore-search-wrapper {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+}
+
+.explore-search-input {
+    font-size: 1rem;
+    padding: 14px 56px 14px 20px !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 50px !important;
+    background: #f9fafb !important;
+    transition: all 0.3s ease;
+}
+
+.explore-search-input::placeholder {
+    color: #9ca3af;
+}
+
+.explore-search-input:focus {
+    background: #ffffff !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+.explore-search-btn {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.explore-search-btn:hover {
+    background: #2563eb;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.explore-search-btn i {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+/* ==========================================
+   Filter Controls
+   ========================================== */
+.explore-filter-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.explore-filter-btn {
+    position: relative;
+}
+
+.explore-filter-btn-location,
+.explore-filter-btn-distance {
+    padding: 8px 16px;
+    border-radius: 999px;
+}
+
+.explore-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 50px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.explore-filter-pill:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+.explore-filter-pill.active {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+.explore-filter-pill i {
+    font-size: 15px;
+}
+
+.explore-location-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 50px;
+    color: #92400e;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.explore-location-display i {
+    color: #f59e0b;
+}
+
+/* ==========================================
+   Distance Filter Modal
+   ========================================== */
+.explore-distance-modal {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+    min-width: 320px;
+    z-index: 1000;
+    border: 1px solid #e5e7eb;
+    padding: 16px 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.explore-distance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.explore-distance-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+}
+
+.explore-distance-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.explore-distance-slider {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
+.explore-distance-btn-reset {
+    font-size: 13px;
+    border-radius: 999px;
+    padding: 6px 14px;
+}
+
+.explore-distance-btn-apply {
+    font-size: 13px;
+    border-radius: 999px;
+    padding: 6px 16px;
+}
+
+/* ==========================================
+   Date Filter Dropdown
+   ========================================== */
+.explore-filter-dropdown-btn {
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -95px;
+}
+
+.explore-date-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 8px;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.explore-date-dropdown-item {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+}
+
+.explore-date-dropdown-item:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.explore-date-dropdown-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.explore-date-dropdown-item.active i:first-child {
+    color: #2563eb;
+}
+
+.explore-date-dropdown-item i:last-child {
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.explore-date-dropdown-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 4px 0;
+}
+
+.explore-date-dropdown-reset {
+    color: #dc2626 !important;
+}
+
+.explore-date-dropdown-reset:hover {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+}
+
+.explore-date-dropdown-reset i {
+    color: #dc2626 !important;
+}
+
+/* ==========================================
+   Topics Section
+   ========================================== */
+.explore-topics-title {
+    font-weight: 700;
+    margin-bottom: 20px;
+
+}
+
+.topic-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 18px;
+    width: 100%;
+    position: relative;
+    max-width: 100%;
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+    scrollbar-color: #9ca3af #f1f1f1;
+}
+
+.topic-scroll-content {
+    padding-left: 0;
+    padding-right: 0;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    /* Không cho wrap */
+    gap: 16px;
+    width: max-content;
+}
+
+/* Scrollbar styles */
+.topic-scroll::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.topic-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.topic-scroll::-webkit-scrollbar-thumb {
+    background: #9ca3af;
+    border-radius: 10px;
+    border: none;
+    min-width: 50px;
+}
+
+.topic-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9fa0a4;
+}
+
+.explore-topic-item {
+    min-width: auto;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 24px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.explore-topic-item:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.explore-topic-image-wrapper {
+    height: 80px;
+    width: 80px;
+    background: #ffffff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.explore-topic-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.explore-topic-image:hover {
+    transform: scale(1.1);
+}
+
+.explore-topic-name {
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    font-size: 17px;
+}
+
+.explore-topic-name.active {
+    color: #4c6cb1;
+}
+
+.explore-category-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+/* ==========================================
+   Suggested Posts Section
+   ========================================== */
+.explore-suggested-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.explore-suggested-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.explore-suggested-title i {
+    color: #f59e0b;
+}
+
+.explore-suggested-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.explore-suggested-toggle:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.explore-suggested-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 576px) {
+    .explore-suggested-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.explore-section-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+/* ==========================================
+   Content Grid
+   ========================================== */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.explore-loading,
+.explore-empty {
+    text-align: center;
+    color: #6b7280;
+    width: 100%;
+    padding: 24px 0;
+}
+
+/* ==========================================
+   Post Cards
+   ========================================== */
+.explore-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.explore-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.explore-card-image-wrapper {
+    height: 150px;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    position: relative;
+}
+
+.explore-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.explore-card:hover .explore-card-image {
+    transform: scale(1.08);
+}
+
+.explore-card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+}
+
+.explore-card-content {
+    padding: 8px;
+}
+
+.explore-card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explore-card-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.explore-card-likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.explore-card-likes i {
+    color: #ef4444;
+    font-size: 0.8rem;
+}
+
+.explore-card-distance {
+    font-size: 0.85rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+}
+
+.explore-card-distance i {
+    font-size: 0.75rem;
+    margin-right: 4px;
+}
+
+/* ==========================================
+   Pagination
+   ========================================== */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.page-item {
+    list-style: none;
+}
+
+.explore-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+}
+
+.explore-page-btn:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.explore-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f9fafb;
+}
+
+.explore-page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.explore-page-number:hover:not(.active) {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.explore-page-number.active {
+    background: #374151;
+    color: #fff;
+    border-color: #374151;
+}
