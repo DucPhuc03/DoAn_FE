@@ -336,22 +336,22 @@ const Profile = () => {
       color = "#8b5cf6";
       bgColor = "#ede9fe";
       text = `Cấp 4 - Bạch Kim`;
-      icon = "🏆";
-    } else if (level === 3) {
+      icon = "👑";
+    } else if (level === 1) {
       color = "#f59e0b";
       bgColor = "#fef3c7";
       text = `Cấp 3 - Vàng`;
-      icon = "🎖️";
+      icon = "🥇";
     } else if (level === 2) {
       color = "#6366f1";
       bgColor = "#e0e7ff";
       text = `Cấp 2 - Bạc`;
-      icon = "🏅";
+      icon = "🥈";
     } else {
       color = "#10b981";
       bgColor = "#d1fae5";
       text = `Cấp 1 - Đồng`;
-      icon = "🔰";
+      icon = "🥉";
     }
 
     return { color, bgColor, text, level, trustScore, icon };
@@ -426,22 +426,10 @@ const Profile = () => {
                 style={{
                   background: "transparent",
                   padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
                 }}
                 title={`${getLevelInfo.text} (Điểm uy tín: ${getLevelInfo.trustScore})`}
               >
-                <span style={{ fontSize: 28 }}>{getLevelInfo.icon}</span>
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: getLevelInfo.color,
-                  }}
-                >
-                  Cấp {getLevelInfo.level}
-                </span>
+                <span style={{ fontSize: 32 }}>{getLevelInfo.icon}</span>
               </div>
             )}
             {/* Edit Profile Button */}

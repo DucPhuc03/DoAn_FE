@@ -426,22 +426,10 @@ const Profile = () => {
                 style={{
                   background: "transparent",
                   padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
                 }}
                 title={`${getLevelInfo.text} (Điểm uy tín: ${getLevelInfo.trustScore})`}
               >
-                <span style={{ fontSize: 28 }}>{getLevelInfo.icon}</span>
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: getLevelInfo.color,
-                  }}
-                >
-                  Cấp {getLevelInfo.level}
-                </span>
+                <span style={{ fontSize: 32 }}>{getLevelInfo.icon}</span>
               </div>
             )}
             {/* Edit Profile Button */}
