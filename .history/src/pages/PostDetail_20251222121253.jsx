@@ -13,7 +13,7 @@ import {
 } from "../service/PostService";
 import { createTrade } from "../service/TradeService";
 import { createReportPost } from "../service/ReportService";
-import MapInlineView from "../components/MapInlineView";
+import MapViewModal from "../components/MapViewModal";
 import "../css/PostDetail.css";
 
 const PostDetail = () => {
@@ -28,6 +28,7 @@ const PostDetail = () => {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [similarPosts, setSimilarPosts] = useState([]);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
   const viewHistoryTimeoutRef = useRef(null);
   const hasCreatedViewHistoryRef = useRef(false);
   const currentPostIdRef = useRef(null);
@@ -492,7 +493,7 @@ const PostDetail = () => {
 
               {/* Item Details */}
               <div className="mb-3">
-                <label className="fw-bold d-block mb-1 fw-semibold">
+                <label className=" fw-bold  d-block mb-1 fw-semibold">
                   Mô tả
                 </label>
                 <p
@@ -504,21 +505,21 @@ const PostDetail = () => {
               </div>
               <div className="mb-4">
                 <div className="mb-3">
-                  <label className="fw-bold text-dark d-block mb-1 fw-semibold">
+                  <label className="  fw-bold text-dark d-block mb-1 fw-semibold">
                     Danh mục
                   </label>
-                  <p className="mb-0">{post.category?.name || "Chưa có"}</p>
+                  <p className="mb-0  ">{post.category?.name || "Chưa có"}</p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Tình trạng
                   </label>
-                  <p className="mb-0 text-dark">
+                  <p className="mb-0  text-dark">
                     {post.itemCondition || "Chưa có"}
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Yêu cầu trao đổi
                   </label>
                   <p
@@ -529,10 +530,10 @@ const PostDetail = () => {
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Trạng thái
                   </label>
-                  <p className={`mb-0 ${getStatusColor(post.postStatus)}`}>
+                  <p className={`mb-0  ${getStatusColor(post.postStatus)}`}>
                     {getStatusLabel(post.postStatus)}
                   </p>
                 </div>
@@ -542,12 +543,7 @@ const PostDetail = () => {
               <div className="d-flex gap-2 flex-wrap">
                 {!post.owner && (
                   <button
-                    className={`btn flex-grow-1 py-3 rounded-3 fw-semibold ${
-                      post.postStatus === "PENDING" ||
-                      post.postStatus === "COMPLETED"
-                        ? "btn-secondary"
-                        : "btn-warning"
-                    }`}
+                    className="btn btn-warning flex-grow-1 py-3 rounded-3 fw-semibold"
                     onClick={handleProposeExchange}
                     style={{ fontSize: "1rem" }}
                     disabled={
@@ -555,22 +551,7 @@ const PostDetail = () => {
                       post.postStatus === "COMPLETED"
                     }
                   >
-                    {post.postStatus === "COMPLETED" ? (
-                      <>
-                        <i className="bi bi-check-circle me-2"></i>
-                        Đã trao đổi
-                      </>
-                    ) : post.postStatus === "PENDING" ? (
-                      <>
-                        <i className="bi bi-hourglass-split me-2"></i>
-                        Đang trao đổi
-                      </>
-                    ) : (
-                      <>
-                        <i className="bi bi-arrow-left-right me-2"></i>
-                        Bắt đầu trao đổi
-                      </>
-                    )}
+                    Bắt đầu trao đổi
                   </button>
                 )}
                 {post.canReport && !post.owner && (
@@ -612,10 +593,17 @@ const PostDetail = () => {
                 )}
               </div>
 
-              {/* Trade Location Map - Below Action Buttons */}
+              {/* Trade Location Button */}
               {post.tradeLocation && (
-                <div className="mt-4">
-                  <MapInlineView address={post.tradeLocation} />
+                <div className="mt-3">
+                  <button
+                    className="btn btn-outline-primary py-2 px-4 rounded-3 d-flex align-items-center gap-2"
+                    onClick={() => setShowMapModal(true)}
+                  >
+                    <i className="bi bi-geo-alt-fill"></i>
+                    <span>{post.tradeLocation}</span>
+                  </button>
+                  <MapViewModal></MapViewModal>
                 </div>
               )}
             </div>
@@ -623,28 +611,96 @@ const PostDetail = () => {
         </div>
 
         {/* Comments Section */}
-        <div className="row  g-4" style={{ marginTop: "-250px" }}>
-          {/* Comments Section */}
-          <div className="col-12">
-            <h4 className="fw-bold text-dark mb-4">
-              <i className="bi bi-chat-dots me-2"></i>
-              Bình luận {post.totalComments > 0 && `(${post.totalComments})`}
-            </h4>
+        <div className="mt-5">
+          <h4 className="fw-bold text-dark mb-4">
+            <i className="bi bi-chat-dots me-2"></i>
+            Bình luận {post.totalComments > 0 && `(${post.totalComments})`}
+          </h4>
 
-            <div className="comments-container">
-              {/* Comment Input */}
-              {user && (
-                <form onSubmit={handleSubmitComment} className="mb-4">
-                  <div className="d-flex align-items-start gap-3">
-                    {/* User Avatar */}
+          <div className="comments-container">
+            {/* Comment Input */}
+            {user && (
+              <form onSubmit={handleSubmitComment} className="mb-4">
+                <div className="d-flex align-items-start gap-3">
+                  {/* User Avatar */}
+                  <div
+                    className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                    style={{ width: "40px", height: "40px" }}
+                  >
+                    {user.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.fullName || user.name}
+                        className="rounded-circle"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <i className="bi bi-person-fill text-white"></i>
+                    )}
+                  </div>
+                  <div className="flex-grow-1">
+                    <div className="mb-2">
+                      <input
+                        type="text"
+                        className="form-control form-control-sm mb-2"
+                        placeholder="Tên"
+                        value={user.fullName || user.name || ""}
+                        disabled
+                        style={{ fontSize: "0.9rem" }}
+                      />
+                      <textarea
+                        className="form-control"
+                        rows="3"
+                        placeholder="Bình luận..."
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        style={{ fontSize: "0.9rem" }}
+                      />
+                    </div>
+                    <div className="d-flex align-items-center justify-content-end gap-2 mt-2">
+                      <button
+                        type="submit"
+                        className="comment-submit-btn"
+                        title="Gửi bình luận"
+                        disabled={!commentText.trim()}
+                      >
+                        <i className="bi bi-send-fill me-2"></i>
+                        Gửi
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
+
+            {/* Comments List */}
+            <div className="comments-list">
+              {post.comments && post.comments.length > 0 ? (
+                post.comments.map((comment) => (
+                  <div key={comment.id} className="comment-item">
                     <div
                       className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                       style={{ width: "40px", height: "40px" }}
+                      onClick={() => {
+                        const commentUserId =
+                          comment.userId ||
+                          comment.userID ||
+                          comment.user?.id ||
+                          comment.user_id;
+                        if (commentUserId) {
+                          navigate(`/profile/${commentUserId}`);
+                        }
+                      }}
+                      role="button"
                     >
-                      {user.avatarUrl ? (
+                      {comment.avatarUrl ? (
                         <img
-                          src={user.avatarUrl}
-                          alt={user.fullName || user.name}
+                          src={comment.avatarUrl}
+                          alt={comment.fullName}
                           className="rounded-circle"
                           style={{
                             width: "100%",
@@ -657,113 +713,42 @@ const PostDetail = () => {
                       )}
                     </div>
                     <div className="flex-grow-1">
-                      <div className="mb-2">
-                        <input
-                          type="text"
-                          className="form-control form-control-sm mb-2"
-                          placeholder="Tên"
-                          value={user.fullName || user.name || ""}
-                          disabled
-                          style={{ fontSize: "0.9rem" }}
-                        />
-                        <textarea
-                          className="form-control"
-                          rows="3"
-                          placeholder="Bình luận..."
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          style={{ fontSize: "0.9rem" }}
-                        />
-                      </div>
-                      <div className="d-flex align-items-center justify-content-end gap-2 mt-2">
-                        <button
-                          type="submit"
-                          className="comment-submit-btn"
-                          title="Gửi bình luận"
-                          disabled={!commentText.trim()}
+                      <div className="d-flex align-items-center gap-2 mb-1">
+                        <strong
+                          className="text-dark small"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            const commentUserId =
+                              comment.userId ||
+                              comment.userID ||
+                              comment.user?.id ||
+                              comment.user_id;
+                            if (commentUserId) {
+                              navigate(`/profile/${commentUserId}`);
+                            }
+                          }}
                         >
-                          <i className="bi bi-send-fill me-2"></i>
-                          Gửi
-                        </button>
+                          {comment.fullName || "Người dùng"}
+                        </strong>
+                        <small className="text-muted">
+                          {formatDate(comment.commentDate)}
+                        </small>
                       </div>
-                    </div>
-                  </div>
-                </form>
-              )}
-
-              {/* Comments List */}
-              <div className="comments-list">
-                {post.comments && post.comments.length > 0 ? (
-                  post.comments.map((comment) => (
-                    <div key={comment.id} className="comment-item">
-                      <div
-                        className="bg-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                        style={{ width: "40px", height: "40px" }}
-                        onClick={() => {
-                          const commentUserId =
-                            comment.userId ||
-                            comment.userID ||
-                            comment.user?.id ||
-                            comment.user_id;
-                          if (commentUserId) {
-                            navigate(`/profile/${commentUserId}`);
-                          }
-                        }}
-                        role="button"
+                      <p
+                        className="mb-0 text-dark"
+                        style={{ fontSize: "0.9rem", lineHeight: "1.6" }}
                       >
-                        {comment.avatarUrl ? (
-                          <img
-                            src={comment.avatarUrl}
-                            alt={comment.fullName}
-                            className="rounded-circle"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        ) : (
-                          <i className="bi bi-person-fill text-white"></i>
-                        )}
-                      </div>
-                      <div className="flex-grow-1">
-                        <div className="d-flex align-items-center gap-2 mb-1">
-                          <strong
-                            className="text-dark small"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              const commentUserId =
-                                comment.userId ||
-                                comment.userID ||
-                                comment.user?.id ||
-                                comment.user_id;
-                              if (commentUserId) {
-                                navigate(`/profile/${commentUserId}`);
-                              }
-                            }}
-                          >
-                            {comment.fullName || "Người dùng"}
-                          </strong>
-                          <small className="text-muted">
-                            {formatDate(comment.commentDate)}
-                          </small>
-                        </div>
-                        <p
-                          className="mb-0 text-dark"
-                          style={{ fontSize: "0.9rem", lineHeight: "1.6" }}
-                        >
-                          {comment.content}
-                        </p>
-                      </div>
+                        {comment.content}
+                      </p>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center text-muted py-4">
-                    <i className="bi bi-chat-dots fs-3 d-block mb-2"></i>
-                    <p className="mb-0">Chưa có bình luận nào</p>
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="text-center text-muted py-4">
+                  <i className="bi bi-chat-dots fs-3 d-block mb-2"></i>
+                  <p className="mb-0">Chưa có bình luận nào</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -900,6 +885,14 @@ const PostDetail = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Map View Modal */}
+      {showMapModal && (
+        <MapViewModal
+          address={post?.tradeLocation}
+          onClose={() => setShowMapModal(false)}
+        />
       )}
     </div>
   );

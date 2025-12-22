@@ -492,7 +492,7 @@ const PostDetail = () => {
 
               {/* Item Details */}
               <div className="mb-3">
-                <label className="fw-bold d-block mb-1 fw-semibold">
+                <label className=" fw-bold  d-block mb-1 fw-semibold">
                   Mô tả
                 </label>
                 <p
@@ -504,21 +504,21 @@ const PostDetail = () => {
               </div>
               <div className="mb-4">
                 <div className="mb-3">
-                  <label className="fw-bold text-dark d-block mb-1 fw-semibold">
+                  <label className="  fw-bold text-dark d-block mb-1 fw-semibold">
                     Danh mục
                   </label>
-                  <p className="mb-0">{post.category?.name || "Chưa có"}</p>
+                  <p className="mb-0  ">{post.category?.name || "Chưa có"}</p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Tình trạng
                   </label>
-                  <p className="mb-0 text-dark">
+                  <p className="mb-0  text-dark">
                     {post.itemCondition || "Chưa có"}
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Yêu cầu trao đổi
                   </label>
                   <p
@@ -529,10 +529,10 @@ const PostDetail = () => {
                   </p>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold d-block mb-1 fw-semibold">
+                  <label className=" fw-bold  d-block mb-1 fw-semibold">
                     Trạng thái
                   </label>
-                  <p className={`mb-0 ${getStatusColor(post.postStatus)}`}>
+                  <p className={`mb-0  ${getStatusColor(post.postStatus)}`}>
                     {getStatusLabel(post.postStatus)}
                   </p>
                 </div>
@@ -623,7 +623,7 @@ const PostDetail = () => {
         </div>
 
         {/* Comments Section */}
-        <div className="row  g-4" style={{ marginTop: "-250px" }}>
+        <div className="row  g-4">
           {/* Comments Section */}
           <div className="col-12">
             <h4 className="fw-bold text-dark mb-4">

@@ -198,7 +198,7 @@
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
-    border: 5px solid #a1a1b0;
+    border: 5px solid #6366F1;
     flex-shrink: 0;
     transition: transform 0.3s;
 }
@@ -342,7 +342,7 @@
     cursor: pointer;
     transition: all 0.3s;
     border: none;
-    background: #76797a;
+    background: #e0f2fe;
     color: #ffffff;
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }

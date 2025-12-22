@@ -16,7 +16,9 @@ import {
   FaUserPlus,
   FaFlag,
   FaTrophy,
+  FaHeart,
 } from "react-icons/fa";
+import MapViewModal from "../components/MapViewModal";
 import "../css/Profile.css";
 
 const allTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
@@ -45,6 +47,7 @@ const Profile = () => {
   const [showUsersModal, setShowUsersModal] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const [usersModalTitle, setUsersModalTitle] = useState("");
+  const [showMapModal, setShowMapModal] = useState(false);
 
   // Compute tabs based on displayHistory
   const userTabs = React.useMemo(() => {
@@ -460,11 +463,27 @@ const Profile = () => {
                 )}
               </div>
               <div className="profile-address-wrapper">
-                {profileData.address && (
-                  <span className="profile-address">
-                    <FaMapMarkerAlt style={{ marginRight: 8, fontSize: 14 }} />
-                    {profileData.address}
-                  </span>
+                <button
+                  className="profile-info-btn"
+                  onClick={() => setShowMapModal(true)}
+                  disabled={!profileData.address}
+                  title={profileData.address || "Chưa có địa chỉ"}
+                >
+                  <FaMapMarkerAlt style={{ marginRight: 6, fontSize: 14 }} />
+                  Địa chỉ
+                </button>
+                {profileData.interests && profileData.interests.length > 0 && (
+                  <button
+                    className="profile-info-btn profile-info-btn-secondary"
+                    onClick={() => {
+                      // Có thể navigate tới trang sở thích hoặc hiển thị modal
+                      alert(`Sở thích: ${profileData.interests.map(i => i.name || i).join(", ")}`);
+                    }}
+                    title="Xem sở thích của tôi"
+                  >
+                    <FaHeart style={{ marginRight: 6, fontSize: 14 }} />
+                    Sở thích của tôi
+                  </button>
                 )}
               </div>
               {/* Stats */}
@@ -768,7 +787,7 @@ const Profile = () => {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          @{user.username || "user"}
+                  @{user.username || "user"}
                         </div>
                       </div>
                     </div>
@@ -787,6 +806,14 @@ const Profile = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Map View Modal */}
+      {showMapModal && (
+        <MapViewModal
+          address={profileData?.address}
+          onClose={() => setShowMapModal(false)}
+        />
       )}
     </div>
   );

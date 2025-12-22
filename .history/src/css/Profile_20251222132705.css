@@ -198,7 +198,7 @@
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
-    border: 5px solid #a1a1b0;
+    border: 5px solid #9797a3;
     flex-shrink: 0;
     transition: transform 0.3s;
 }
@@ -217,7 +217,7 @@
     color: #ffffff;
     font-size: 56px;
     font-weight: 600;
-    border: 5px solid #6366F1;
+    border: 5px solid #a1a1a6;
     flex-shrink: 0;
     box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
     transition: transform 0.3s;
