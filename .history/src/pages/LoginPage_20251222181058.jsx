@@ -1,14 +1,30 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { login as loginApi } from "../service/auth";
+import { connectNotificationWebSocket } from "../service/notificationWebSocket";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const redirectUri = "http://localhost:5173/auth/google/callback";
+  const scope = "openid profile email";
+  const responseType = "code";
+  const handleLoginGoogle = () => {
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=${responseType}&scope=${encodeURIComponent(scope)}`;
+
+    window.location.href = authUrl;
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -27,10 +43,8 @@ const LoginPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.email) {
-      newErrors.email = "Email là bắt buộc";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email không hợp lệ";
+    if (!formData.username) {
+      newErrors.username = "Tên đăng nhập là bắt buộc";
     }
 
     if (!formData.password) {
@@ -43,12 +57,58 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Handle login logic here
-      console.log("Login data:", formData);
-      alert("Đăng nhập thành công!");
+    if (!validateForm()) return;
+    setSubmitting(true);
+    setErrors((prev) => ({ ...prev, general: "" }));
+    try {
+      const res = await loginApi({
+        username: formData.username,
+        password: formData.password,
+      });
+      // Chuẩn hóa dữ liệu dựa theo response mẫu bạn cung cấp
+      const token =
+        res?.accessToken ||
+        res?.token ||
+        res?.data?.accessToken ||
+        res?.data?.token;
+      const user = res?.user || res?.data?.user;
+
+      // Kiểm tra trạng thái tài khoản
+      if (user && user.status !== "ACTIVE") {
+        setErrors((prev) => ({
+          ...prev,
+          general:
+            "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
+        }));
+        return;
+      }
+
+      if (token) {
+        Cookies.set("access_token", token, { expires: 70 });
+      }
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
+      if (user && user.role === "ADMIN") {
+        navigate("/admin/pending_management");
+        return;
+      }
+      if (user && user.userNew === true && user.role != "ADMIN") {
+        navigate("/select-interests");
+      }
+      connectNotificationWebSocket();
+
+      // Điều hướng về trang chủ
+      navigate("/");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.";
+      setErrors((prev) => ({ ...prev, general: message }));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -73,30 +133,33 @@ const LoginPage = () => {
 
                 {/* Login Form */}
                 <form onSubmit={handleSubmit}>
-                  {/* Email Field */}
+                  {/* Username Field */}
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label fw-semibold">
+                    <label
+                      htmlFor="username"
+                      className="form-label fw-semibold"
+                    >
                       Tên đăng nhập
                     </label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-end-0">
-                        <i className="bi bi-envelope text-muted"></i>
+                        <i className="bi bi-person text-muted"></i>
                       </span>
                       <input
-                        type="email"
+                        type="text"
                         className={`form-control border-start-0 ${
-                          errors.email ? "is-invalid" : ""
+                          errors.username ? "is-invalid" : ""
                         }`}
-                        id="email"
-                        name="email"
-                        value={formData.email}
+                        id="username"
+                        name="username"
+                        value={formData.username}
                         onChange={handleChange}
-                        placeholder="Nhập email của bạn"
+                        placeholder="Nhập tên đăng nhập"
                       />
                     </div>
-                    {errors.email && (
+                    {errors.username && (
                       <div className="invalid-feedback d-block">
-                        {errors.email}
+                        {errors.username}
                       </div>
                     )}
                   </div>
@@ -167,12 +230,19 @@ const LoginPage = () => {
                   </div>
 
                   {/* Submit Button */}
+                  {errors.general && (
+                    <div className="alert alert-danger py-2" role="alert">
+                      {errors.general}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     className="btn btn-primary w-100 py-2 fw-semibold rounded-3 mb-3"
                     style={{ fontSize: "1.1rem" }}
+                    disabled={submitting}
                   >
-                    Đăng Nhập
+                    {submitting ? "Đang đăng nhập..." : "Đăng Nhập"}
                   </button>
 
                   {/* Divider */}
@@ -180,37 +250,27 @@ const LoginPage = () => {
                     <span className="text-muted">hoặc</span>
                   </div>
 
-                  {/* Social Login Buttons */}
-                  <div className="row g-2 mb-4">
-                    <div className="col-6">
-                      <button
-                        type="button"
-                        className="btn btn-outline-danger w-100 py-2 rounded-3"
-                      >
-                        <i className="bi bi-google me-2"></i>
-                        Google
-                      </button>
-                    </div>
-                    <div className="col-6">
-                      <button
-                        type="button"
-                        className="btn btn-outline-primary w-100 py-2 rounded-3"
-                      >
-                        <i className="bi bi-facebook me-2"></i>
-                        Facebook
-                      </button>
-                    </div>
-                  </div>
+                  {/* Google Login Button */}
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger w-100 py-2 rounded-3 mb-4"
+                    onClick={handleLoginGoogle}
+                  >
+                    <i className="bi bi-google me-2"></i>
+                    Đăng nhập với Google
+                  </button>
 
-                  {/* Register Link */}
-                  <div className="text-center">
-                    <span className="text-muted">Chưa có tài khoản? </span>
-                    <Link
-                      to="/register"
-                      className="text-decoration-none fw-semibold text-primary"
-                    >
-                      Đăng ký ngay
-                    </Link>
+                  {/* Register & Forgot Password Links */}
+                  <div className="d-flex justify-content-between align-items-center mt-2">
+                    <div>
+                      <span className="text-muted">Chưa có tài khoản? </span>
+                      <Link
+                        to="/register"
+                        className="text-decoration-none fw-semibold text-primary"
+                      >
+                        Đăng ký ngay
+                      </Link>
+                    </div>
                   </div>
                 </form>
               </div>

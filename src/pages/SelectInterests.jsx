@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCategoryList } from "../service/CategoryService";
+import { createInterest, createVecForUser } from "../service/InterestService";
 import "../css/SelectInterests.css";
 
 const SelectInterests = () => {
@@ -9,6 +10,9 @@ const SelectInterests = () => {
   const [loading, setLoading] = useState(true);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Lấy user từ localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   // Fake data fallback
   const fakeCategories = [
@@ -64,8 +68,14 @@ const SelectInterests = () => {
 
     try {
       setSubmitting(true);
-      // TODO: Call API to save user interests
-      // await saveUserInterests(selectedInterests);
+      
+      // Gọi API createInterest với mảng categoryIds
+      await createInterest(selectedInterests);
+      
+      // Sau khi createInterest hoàn thành, gọi createVecForUser với userId
+      if (user?.id) {
+        await createVecForUser(user.id);
+      }
       
       // Mark that user has selected interests
       localStorage.setItem("hasSelectedInterests", "true");

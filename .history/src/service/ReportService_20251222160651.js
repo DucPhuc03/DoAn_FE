@@ -39,6 +39,6 @@ export async function deleteReport(id) {
 }
 
 export async function getUserReport(userId) {
-  const { data } = await axios.get(`/api/user/profile/${userId}`);
+  const { data } = await axios.get(`/api/user/${userId}`);
   return data;
 }

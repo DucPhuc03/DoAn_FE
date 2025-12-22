@@ -74,12 +74,13 @@ const LoginPage = () => {
         res?.data?.accessToken ||
         res?.data?.token;
       const user = res?.user || res?.data?.user;
-      
+
       // Kiểm tra trạng thái tài khoản
       if (user && user.status !== "ACTIVE") {
         setErrors((prev) => ({
           ...prev,
-          general: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
+          general:
+            "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
         }));
         return;
       }
@@ -94,6 +95,9 @@ const LoginPage = () => {
       if (user && user.role === "ADMIN") {
         navigate("/admin/pending_management");
         return;
+      }
+      if (user && user.userNew === true && user.role != "ADMIN") {
+        navigate("/select-interests");
       }
       connectNotificationWebSocket();
 
@@ -267,7 +271,6 @@ const LoginPage = () => {
                         Đăng ký ngay
                       </Link>
                     </div>
-                   
                   </div>
                 </form>
               </div>

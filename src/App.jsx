@@ -13,6 +13,7 @@ import NewPost from "./pages/NewPost";
 import AccountManagement from "./pages/admin/AccountManagement";
 import ReportManagement from "./pages/admin/ReportManagement";
 import PostReportDetail from "./pages/admin/PostReportDetail";
+import UserReportDetail from "./pages/admin/UserReportDetail";
 import PendingManagement from "./pages/admin/PendingManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import EditPost from "./pages/EditPost";
@@ -50,6 +51,10 @@ function App() {
         <Route
           path="/admin/post_report/:postId"
           element={<PostReportDetail />}
+        />
+        <Route
+          path="/admin/user_report/:userId"
+          element={<UserReportDetail />}
         />
         <Route
           path="/admin/pending_management"

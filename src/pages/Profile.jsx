@@ -304,31 +304,58 @@ const Profile = () => {
     }
   }, [id, reportReason]);
 
-  // Get level badge color and text
+  // Get level badge color and text based on trustScore
   const getLevelInfo = React.useMemo(() => {
-    if (!profileData?.level) return null;
+    const trustScore = profileData?.trustScore ?? 0;
+    
+    // Tính cấp độ dựa trên trustScore
+    let level = 1;
+    if (trustScore >= 90) {
+      level = 5;
+    } else if (trustScore >= 70) {
+      level = 4;
+    } else if (trustScore >= 50) {
+      level = 3;
+    } else if (trustScore >= 31) {
+      level = 2;
+    } else {
+      level = 1;
+    }
 
-    const level = profileData.level;
     let color = "#6b7280";
     let bgColor = "#f3f4f6";
     let text = `Cấp ${level}`;
+    let icon = "🛡️";
 
-    if (level >= 10) {
+    if (level === 5) {
       color = "#f59e0b";
       bgColor = "#fef3c7";
-      text = `Cấp ${level} - Vàng`;
-    } else if (level >= 5) {
+      text = `Cấp 5 - Kim Cương`;
+      icon = "💎";
+    } else if (level === 4) {
+      color = "#8b5cf6";
+      bgColor = "#ede9fe";
+      text = `Cấp 4 - Bạch Kim`;
+      icon = "🏆";
+    } else if (level === 3) {
+      color = "#f59e0b";
+      bgColor = "#fef3c7";
+      text = `Cấp 3 - Vàng`;
+      icon = "🎖️";
+    } else if (level === 2) {
       color = "#6366f1";
       bgColor = "#e0e7ff";
-      text = `Cấp ${level} - Bạc`;
+      text = `Cấp 2 - Bạc`;
+      icon = "🏅";
     } else {
       color = "#10b981";
       bgColor = "#d1fae5";
-      text = `Cấp ${level} - Đồng`;
+      text = `Cấp 1 - Đồng`;
+      icon = "🔰";
     }
 
-    return { color, bgColor, text };
-  }, [profileData?.level]);
+    return { color, bgColor, text, level, trustScore, icon };
+  }, [profileData?.trustScore]);
 
   if (loading) {
     return (
@@ -397,12 +424,18 @@ const Profile = () => {
               <div
                 className="profile-level-badge"
                 style={{
-                  background: getLevelInfo.bgColor,
-                  color: getLevelInfo.color,
+                  background: "transparent",
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
                 }}
+                title={`${getLevelInfo.text} (Điểm uy tín: ${getLevelInfo.trustScore})`}
               >
-                <FaTrophy style={{ fontSize: 20 }} />
-                {getLevelInfo.text}
+                <span style={{ fontSize: 28 }}>{getLevelInfo.icon}</span>
+                <span style={{ fontSize: 16, fontWeight: 600, color: getLevelInfo.color }}>
+                  Cấp {getLevelInfo.level}
+                </span>
               </div>
             )}
             {/* Edit Profile Button */}
