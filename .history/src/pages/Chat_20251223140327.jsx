@@ -38,7 +38,6 @@ const Chat = () => {
   const stompClientRef = useRef(null);
   const subscriptionRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
-  const messagesEndRef = useRef(null);
 
   const selectedConversation = useMemo(
     () =>
@@ -435,9 +434,7 @@ const Chat = () => {
       if (selectedFile) {
         try {
           const uploadResponse = await uploadChatFile(selectedFile);
-
-          fileUrl = uploadResponse.fileUrl;
-          fileName = uploadResponse.fileName;
+          fileUrl = uploadResponse?.data;
         } catch (uploadError) {
           console.error("Error uploading file:", uploadError);
           setWsError("Không thể tải file lên. Vui lòng thử lại.");
@@ -746,10 +743,8 @@ const Chat = () => {
                             conversation.messages.length - 1
                           ];
                         const itemTitle = conversation.itemTitle || "Sản phẩm";
-                        // Show "1 file mới" if content is empty but has file
-                        const preview = lastMessage?.content 
-                          ? lastMessage.content 
-                          : (lastMessage?.fileUrl ? "📎 1 file mới" : "Chưa có tin nhắn");
+                        const preview =
+                          lastMessage?.content || "Chưa có tin nhắn";
                         const timestamp = formatTimestamp(
                           lastMessage?.timestamp
                         );
@@ -977,12 +972,7 @@ const Chat = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="chat-messages" ref={(el) => {
-            // Auto scroll to bottom when messages change
-            if (el) {
-              el.scrollTop = el.scrollHeight;
-            }
-          }}>
+          <div className="chat-messages">
             {selectedConversation?.messages &&
             selectedConversation.messages.length > 0 ? (
               selectedConversation.messages.map((msg) => {
@@ -997,48 +987,8 @@ const Chat = () => {
                       isMyMessage ? "sent" : "received"
                     }`}
                   >
-                    {/* Show avatar for received messages */}
-                    {!isMyMessage && (
-                      selectedConversation?.userAvatar ? (
-                        <img 
-                          src={selectedConversation.userAvatar} 
-                          alt="" 
-                          className="chat-message-avatar"
-                        />
-                      ) : (
-                        <div className="chat-message-avatar-placeholder">
-                          {selectedConversation?.username?.charAt(0) || "U"}
-                        </div>
-                      )
-                    )}
                     <div className="chat-message-bubble">
-                      {/* Display image if type is IMAGE */}
-                      {msg.type === "IMAGE" && msg.fileUrl && (
-                        <div className="chat-message-image">
-                          <img
-                            src={msg.fileUrl}
-                            alt="Ảnh"
-                            onClick={() => window.open(msg.fileUrl, "_blank")}
-                          />
-                        </div>
-                      )}
-
-                      {/* Display file link if type is FILE */}
-                      {msg.type === "FILE" && msg.fileUrl && (
-                        <a
-                          href={msg.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="chat-message-file"
-                        >
-                          <FaPaperclip />
-                          <span>{msg.fileName || "Tải file"}</span>
-                        </a>
-                      )}
-
-                      {/* Display text content if exists */}
-                      {msg.content && <div>{msg.content}</div>}
-
+                      <div>{msg.content}</div>
                       <div className="chat-message-time">
                         {formatTimestamp(msg.timestamp)}
                       </div>

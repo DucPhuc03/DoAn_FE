@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import {
   getConversation,
   deleteConversation,
-  uploadChatFile,
+  sendChatMessage,
 } from "../service/ConversationService";
 import { acceptedMeeting, cancelMeeting } from "../service/MeetingService";
 import { updateTradeStatus } from "../service/TradeService";
@@ -38,7 +38,6 @@ const Chat = () => {
   const stompClientRef = useRef(null);
   const subscriptionRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
-  const messagesEndRef = useRef(null);
 
   const selectedConversation = useMemo(
     () =>
@@ -408,8 +407,57 @@ const Chat = () => {
     if (!selectedConversation) return;
     if (!trimmed && !selectedFile) return;
 
-    // Check WebSocket connection
+    // Get userId from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    const senderId = user?.id;
+
+    // Determine message type
+    const messageType = selectedFile ? fileType : "TEXT";
+
+    // If there's a file, use HTTP API instead of WebSocket
+    if (selectedFile) {
+      try {
+        setIsSending(true);
+        const response = await sendChatMessage(
+          selectedConversationId,
+          senderId,
+          trimmed,
+          messageType,
+          selectedFile
+        );
+
+        console.log("Message sent via HTTP:", response);
+
+        // Add message to local state if the response contains message data
+        if (response?.data) {
+          setConversations((prev) =>
+            prev.map((conversation) =>
+              conversation.conversationId === selectedConversationId
+                ? {
+                    ...conversation,
+                    messages: [...conversation.messages, response.data],
+                  }
+                : conversation
+            )
+          );
+        }
+
+        // Clear input and file
+        setInputValue("");
+        clearSelectedFile();
+        setWsError(null);
+      } catch (error) {
+        console.error("Error sending message with file:", error);
+        setWsError("Không thể gửi tin nhắn. Vui lòng thử lại.");
+      } finally {
+        setIsSending(false);
+      }
+      return;
+    }
+    // For text-only messages, use WebSocket as before
     if (!stompClientRef.current) return;
+
+    // Check if WebSocket is connected
     if (!stompClientRef.current.connected) {
       // Try to reconnect
       if (selectedConversationId) {
@@ -418,68 +466,32 @@ const Chat = () => {
       return;
     }
 
-    // Get userId from localStorage
-    const user = JSON.parse(localStorage.getItem("user"));
-    const senderId = user?.id;
-
-    // Determine message type
-    const messageType = selectedFile ? fileType : "TEXT";
-
     try {
-      setIsSending(true);
-
-      let fileUrl = null;
-      let fileName = null;
-
-      // If there's a file, upload to S3 first
-      if (selectedFile) {
-        try {
-          const uploadResponse = await uploadChatFile(selectedFile);
-
-          fileUrl = uploadResponse.fileUrl;
-          fileName = uploadResponse.fileName;
-        } catch (uploadError) {
-          console.error("Error uploading file:", uploadError);
-          setWsError("Không thể tải file lên. Vui lòng thử lại.");
-          setIsSending(false);
-          return;
-        }
-      }
-
-      // Build message payload
-      const messagePayload = {
-        senderId: senderId,
-        content: trimmed,
-        type: messageType,
-      };
-
-      // Add file URL if exists
-      if (fileUrl) {
-        messagePayload.fileUrl = fileUrl;
-        messagePayload.fileName = fileName;
-      }
-
       // Send message to backend via WebSocket
       const destination = `/app/chat.sendMessage/${selectedConversationId}`;
-      stompClientRef.current.send(
-        destination,
-        {},
-        JSON.stringify(messagePayload)
-      );
 
-      console.log(`Sent message to ${destination}:`, messagePayload);
+      // Backend expects ChatMessageDTO with senderId, content, and type
+      const messagePayload = JSON.stringify({
+        senderId: senderId,
+        content: trimmed,
+        type: "TEXT",
+      });
 
-      // Clear input and file
+      stompClientRef.current.send(destination, {}, messagePayload);
+      console.log(`Sent message to ${destination}:`, {
+        senderId,
+        content: trimmed,
+        type: "TEXT",
+      });
+
+      // Clear input field
       setInputValue("");
-      clearSelectedFile();
       setWsError(null);
 
       // Note: Message will be received via subscription and added to conversations automatically
     } catch (error) {
       console.error("Error sending message:", error);
       setWsError("Không thể gửi tin nhắn. Vui lòng thử lại.");
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -746,10 +758,8 @@ const Chat = () => {
                             conversation.messages.length - 1
                           ];
                         const itemTitle = conversation.itemTitle || "Sản phẩm";
-                        // Show "1 file mới" if content is empty but has file
-                        const preview = lastMessage?.content 
-                          ? lastMessage.content 
-                          : (lastMessage?.fileUrl ? "📎 1 file mới" : "Chưa có tin nhắn");
+                        const preview =
+                          lastMessage?.content || "Chưa có tin nhắn";
                         const timestamp = formatTimestamp(
                           lastMessage?.timestamp
                         );
@@ -977,12 +987,7 @@ const Chat = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="chat-messages" ref={(el) => {
-            // Auto scroll to bottom when messages change
-            if (el) {
-              el.scrollTop = el.scrollHeight;
-            }
-          }}>
+          <div className="chat-messages">
             {selectedConversation?.messages &&
             selectedConversation.messages.length > 0 ? (
               selectedConversation.messages.map((msg) => {
@@ -997,48 +1002,8 @@ const Chat = () => {
                       isMyMessage ? "sent" : "received"
                     }`}
                   >
-                    {/* Show avatar for received messages */}
-                    {!isMyMessage && (
-                      selectedConversation?.userAvatar ? (
-                        <img 
-                          src={selectedConversation.userAvatar} 
-                          alt="" 
-                          className="chat-message-avatar"
-                        />
-                      ) : (
-                        <div className="chat-message-avatar-placeholder">
-                          {selectedConversation?.username?.charAt(0) || "U"}
-                        </div>
-                      )
-                    )}
                     <div className="chat-message-bubble">
-                      {/* Display image if type is IMAGE */}
-                      {msg.type === "IMAGE" && msg.fileUrl && (
-                        <div className="chat-message-image">
-                          <img
-                            src={msg.fileUrl}
-                            alt="Ảnh"
-                            onClick={() => window.open(msg.fileUrl, "_blank")}
-                          />
-                        </div>
-                      )}
-
-                      {/* Display file link if type is FILE */}
-                      {msg.type === "FILE" && msg.fileUrl && (
-                        <a
-                          href={msg.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="chat-message-file"
-                        >
-                          <FaPaperclip />
-                          <span>{msg.fileName || "Tải file"}</span>
-                        </a>
-                      )}
-
-                      {/* Display text content if exists */}
-                      {msg.content && <div>{msg.content}</div>}
-
+                      <div>{msg.content}</div>
                       <div className="chat-message-time">
                         {formatTimestamp(msg.timestamp)}
                       </div>

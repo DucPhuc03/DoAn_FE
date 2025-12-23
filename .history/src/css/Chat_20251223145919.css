@@ -490,39 +490,13 @@
 
 .chat-message.received {
     align-items: flex-start;
-    flex-direction: row;
-    gap: 8px;
-}
-
-/* Message Avatar */
-.chat-message-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.chat-message-avatar-placeholder {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6b7280;
-    font-size: 14px;
-    font-weight: 600;
-    flex-shrink: 0;
 }
 
 .chat-message-bubble {
-    padding: 14px 18px;
+    padding: 12px 16px;
     border-radius: 12px;
     max-width: 70%;
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -551,64 +525,79 @@
 
 /* Message Image */
 .chat-message-image {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
 .chat-message-image img {
-    max-width: 280px;
-    max-height: 220px;
-    border-radius: 12px;
+    max-width: 250px;
+    max-height: 200px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    display: block;
-    object-fit: cover;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
 .chat-message-image img:hover {
+    opacity: 0.9;
     transform: scale(1.02);
 }
 
-/* Simple styling for messages containing image/file - no card/box */
+/* Styling for messages containing image/file - remove blue background */
 .chat-message.sent .chat-message-bubble:has(.chat-message-image),
-.chat-message.sent .chat-message-bubble:has(.chat-message-file),
-.chat-message.received .chat-message-bubble:has(.chat-message-image),
-.chat-message.received .chat-message-bubble:has(.chat-message-file) {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    border: none;
+.chat-message.sent .chat-message-bubble:has(.chat-message-file) {
+    background: #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+    border: 1px solid #d1d5db;
 }
 
-/* Time text for image/file messages */
+.chat-message.received .chat-message-bubble:has(.chat-message-image),
+.chat-message.received .chat-message-bubble:has(.chat-message-file) {
+    background: #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+    border: 1px solid #d1d5db;
+}
+
+/* Make time text visible on gray background */
 .chat-message.sent .chat-message-bubble:has(.chat-message-image) .chat-message-time,
 .chat-message.sent .chat-message-bubble:has(.chat-message-file) .chat-message-time,
 .chat-message.received .chat-message-bubble:has(.chat-message-image) .chat-message-time,
 .chat-message.received .chat-message-bubble:has(.chat-message-file) .chat-message-time {
-    color: #9ca3af;
-    margin-top: 4px;
+    color: #6b7280;
 }
 
-/* Message File - simple clean style */
+/* Message File */
 .chat-message-file {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
-    background: #eef2ff;
-    border-radius: 10px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-bottom: 8px;
     text-decoration: none;
-    transition: background 0.2s ease;
-    color: #4338ca;
+    transition: background 0.2s;
+}
+
+.chat-message.sent .chat-message-file {
+    color: #2563eb;
+}
+
+.chat-message.received .chat-message-file {
+    color: #2563eb;
+    background: #eef2ff;
 }
 
 .chat-message-file:hover {
-    background: #e0e7ff;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.chat-message.received .chat-message-file:hover {
+    background: #dbeafe;
 }
 
 .chat-message-file svg {
     flex-shrink: 0;
-    font-size: 16px;
-    color: #6366f1;
 }
 
 .chat-message-file span {
@@ -616,8 +605,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 180px;
-    font-weight: 500;
-    font-size: 14px;
 }
 
 /* Empty Messages */

@@ -38,7 +38,6 @@ const Chat = () => {
   const stompClientRef = useRef(null);
   const subscriptionRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
-  const messagesEndRef = useRef(null);
 
   const selectedConversation = useMemo(
     () =>
@@ -746,10 +745,8 @@ const Chat = () => {
                             conversation.messages.length - 1
                           ];
                         const itemTitle = conversation.itemTitle || "Sản phẩm";
-                        // Show "1 file mới" if content is empty but has file
-                        const preview = lastMessage?.content 
-                          ? lastMessage.content 
-                          : (lastMessage?.fileUrl ? "📎 1 file mới" : "Chưa có tin nhắn");
+                        const preview =
+                          lastMessage?.content || "Chưa có tin nhắn";
                         const timestamp = formatTimestamp(
                           lastMessage?.timestamp
                         );
@@ -977,12 +974,7 @@ const Chat = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="chat-messages" ref={(el) => {
-            // Auto scroll to bottom when messages change
-            if (el) {
-              el.scrollTop = el.scrollHeight;
-            }
-          }}>
+          <div className="chat-messages">
             {selectedConversation?.messages &&
             selectedConversation.messages.length > 0 ? (
               selectedConversation.messages.map((msg) => {
@@ -997,20 +989,6 @@ const Chat = () => {
                       isMyMessage ? "sent" : "received"
                     }`}
                   >
-                    {/* Show avatar for received messages */}
-                    {!isMyMessage && (
-                      selectedConversation?.userAvatar ? (
-                        <img 
-                          src={selectedConversation.userAvatar} 
-                          alt="" 
-                          className="chat-message-avatar"
-                        />
-                      ) : (
-                        <div className="chat-message-avatar-placeholder">
-                          {selectedConversation?.username?.charAt(0) || "U"}
-                        </div>
-                      )
-                    )}
                     <div className="chat-message-bubble">
                       {/* Display image if type is IMAGE */}
                       {msg.type === "IMAGE" && msg.fileUrl && (
