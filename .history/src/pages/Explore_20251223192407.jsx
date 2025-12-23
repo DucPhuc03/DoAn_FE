@@ -611,7 +611,7 @@ const Explore = () => {
                     <div className="card-body p-0">
                       {/* Image */}
                       <div className="explore-card-image-wrapper">
-                        {card.postStatus === "PENDING" && (
+                        {card.status === "PENDING" && (
                           <div className="explore-pending-badge">
                             <i className="bi bi-arrow-left-right me-1"></i>
                             Đang trao đổi
