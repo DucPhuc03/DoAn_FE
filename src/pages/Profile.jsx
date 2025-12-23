@@ -330,27 +330,22 @@ const Profile = () => {
     if (level === 5) {
       color = "#f59e0b";
       bgColor = "#fef3c7";
-      text = `Cấp 5 - Kim Cương`;
       icon = "💎";
     } else if (level === 4) {
       color = "#8b5cf6";
       bgColor = "#ede9fe";
-      text = `Cấp 4 - Bạch Kim`;
       icon = "🏆";
     } else if (level === 3) {
       color = "#f59e0b";
       bgColor = "#fef3c7";
-      text = `Cấp 3 - Vàng`;
       icon = "🎖️";
     } else if (level === 2) {
       color = "#6366f1";
       bgColor = "#e0e7ff";
-      text = `Cấp 2 - Bạc`;
       icon = "🏅";
     } else {
       color = "#10b981";
       bgColor = "#d1fae5";
-      text = `Cấp 1 - Đồng`;
       icon = "🔰";
     }
 
@@ -417,35 +412,10 @@ const Profile = () => {
       <div className="profile-container">
         {/* Profile Card */}
         <div className="profile-card">
-          {/* Level Badge and Edit Profile Button - Top Right */}
+          {/* Top Right Actions - Settings/Report and Level Badge */}
           <div className="profile-top-actions">
-            {/* Level Badge */}
-            {getLevelInfo && (
-              <div
-                className="profile-level-badge"
-                style={{
-                  background: "transparent",
-                  padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
-                title={`${getLevelInfo.text} (Điểm uy tín: ${getLevelInfo.trustScore})`}
-              >
-                <span style={{ fontSize: 28 }}>{getLevelInfo.icon}</span>
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: getLevelInfo.color,
-                  }}
-                >
-                  Cấp {getLevelInfo.level}
-                </span>
-              </div>
-            )}
-            {/* Edit Profile Button */}
-            {profileData.canSetting && (
+            {/* Edit Profile Button (own profile) or Report Button (other's profile) */}
+            {profileData.canSetting ? (
               <button
                 onClick={() => navigate(`/edit-profile/${id}`)}
                 className="profile-settings-btn"
@@ -453,6 +423,29 @@ const Profile = () => {
               >
                 <i className="bi bi-gear-fill" style={{ fontSize: "18px" }}></i>
               </button>
+            ) : profileData.canReport ? (
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="profile-settings-btn profile-report-icon-btn"
+                title="Báo cáo người dùng"
+              >
+                <FaFlag style={{ fontSize: "16px" }} />
+              </button>
+            ) : null}
+            {/* Level Badge - Right */}
+            {getLevelInfo && (
+              <div
+                className="profile-level-badge"
+                title={`${getLevelInfo.text} (Điểm uy tín: ${getLevelInfo.trustScore})`}
+              >
+                <span className="profile-level-icon">{getLevelInfo.icon}</span>
+                <span
+                  className="profile-level-text"
+                  style={{ color: getLevelInfo.color }}
+                >
+                  {getLevelInfo.text}
+                </span>
+              </div>
             )}
           </div>
 
@@ -489,15 +482,6 @@ const Profile = () => {
                     style={followButtonInfo.style}
                   >
                     {followButtonInfo.text}
-                  </button>
-                )}
-                {/* Report Button */}
-                {profileData.canReport && (
-                  <button
-                    onClick={() => setShowReportModal(true)}
-                    className="profile-report-btn"
-                  >
-                    <FaFlag style={{ fontSize: 18 }} />
                   </button>
                 )}
               </div>

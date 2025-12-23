@@ -4,18 +4,26 @@
 
 /* Keyframes Animations */
 @keyframes pulse-badge {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes slideDown {
-  from { 
-    opacity: 0; 
-    transform: translateY(-10px); 
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -43,15 +51,16 @@
   text-decoration: none;
   transition: all 0.3s ease;
 }
-.header-logo.image{
+
+.header-logo.image {
   background-color: #ffffff;
 }
+
 .header-logo {
   width: 100px;
   height: 50px;
   border-radius: 14px;
   object-fit: cover;
-  
   transition: all 0.3s ease;
 }
 
@@ -187,7 +196,7 @@
 
 .header-notifications-header {
   padding: 20px 24px;
-  
+
   color: #1e293b;
   display: flex;
   align-items: center;
@@ -228,7 +237,7 @@
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;
-  
+
   background: white;
   border: 1px solid transparent;
 }
