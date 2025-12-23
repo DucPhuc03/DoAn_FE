@@ -26,7 +26,25 @@ const EditProfile = () => {
     lng: null,
   });
 
-  const handleLocationChange = ({ lat, lng }) => {
+  // Reverse geocoding to get address from coordinates
+  const getAddressFromCoords = async (lat, lng) => {
+    try {
+      const API_KEY = "fs7bNKZ4N2c0iyuXllwJQKL7CelQGDDDCvtaExUd";
+      const response = await fetch(
+        `https://rsapi.goong.io/Geocode?latlng=${lat},${lng}&api_key=${API_KEY}`
+      );
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].formatted_address;
+      }
+      return "";
+    } catch (error) {
+      console.error("Error getting address:", error);
+      return "";
+    }
+  };
+
+  const handleLocationChange = async ({ lat, lng }) => {
     console.log("Nhận từ Map:", lat, lng);
     setLocation({ lat, lng });
     setFormData((prev) => ({
@@ -34,6 +52,11 @@ const EditProfile = () => {
       latitude: lat,
       longitude: lng,
     }));
+    // Get address from coordinates and fill in the address field
+    const address = await getAddressFromCoords(lat, lng);
+    if (address) {
+      setFormData((prev) => ({ ...prev, address: address }));
+    }
   };
   const [formData, setFormData] = useState({
     fullName: "",
@@ -330,24 +353,8 @@ const EditProfile = () => {
                   />
                 </div>
 
-                {/* Address */}
-                <div className="editprofile-field">
-                  <label className="editprofile-label">
-                    <i className="bi bi-geo-alt"></i>
-                    Địa chỉ
-                  </label>
-                  <ModelMap onLocationChange={handleLocationChange} />
-                  <input
-                    type="text"
-                    value={formData.address}
-                    onChange={handleChange("address")}
-                    placeholder="Nhập địa chỉ"
-                    className="editprofile-input"
-                  />
-                </div>
-
                 {/* Bio */}
-                <div className="editprofile-field" style={{ marginBottom: 32 }}>
+                <div className="editprofile-field">
                   <label className="editprofile-label">
                     <i className="bi bi-info-circle"></i>
                     Giới thiệu
@@ -358,6 +365,23 @@ const EditProfile = () => {
                     placeholder="Viết vài dòng giới thiệu về bản thân..."
                     rows={5}
                     className="editprofile-textarea"
+                  />
+                </div>
+
+                {/* Address */}
+                <div className="editprofile-field" style={{ marginBottom: 32 }}>
+                  <label className="editprofile-label">
+                    <i className="bi bi-geo-alt"></i>
+                    Địa chỉ
+                  </label>
+                  <ModelMap onLocationChange={handleLocationChange} />
+                  <input
+                    type="text"
+                    value={formData.address}
+                    onChange={handleChange("address")}
+                    placeholder="Nhập địa chỉ hoặc chọn trên bản đồ"
+                    className="editprofile-input"
+                    style={{ marginTop: 12 }}
                   />
                 </div>
 

@@ -82,7 +82,12 @@ const MeetingsModal = ({ onClose }) => {
             <p className="mb-0">{error}</p>
           </div>
         ) : meetings.length > 0 ? (
-          meetings.map((meeting) => (
+          meetings.map((meeting) => {
+            const isSystem = meeting.type === "SYSTEM";
+            const defaultBgColor = isSystem ? "#d4edda" : "transparent";
+            const hoverBgColor = isSystem ? "#c3e6cb" : "#f8f9fa";
+            
+            return (
             <div
               key={meeting.id}
               className="notification-item"
@@ -93,12 +98,13 @@ const MeetingsModal = ({ onClose }) => {
                 padding: "16px",
                 cursor: "pointer",
                 transition: "background-color 0.2s",
+                backgroundColor: defaultBgColor,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f8f9fa";
+                e.currentTarget.style.backgroundColor = hoverBgColor;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.backgroundColor = defaultBgColor;
               }}
             >
               <div className="d-flex align-items-start w-100 gap-3">
@@ -190,7 +196,7 @@ const MeetingsModal = ({ onClose }) => {
                 </div>
               </div>
             </div>
-          ))
+          )})
         ) : (
           <div className="text-center text-muted py-4">
             <i className="bi bi-calendar-x fs-3 d-block mb-2"></i>

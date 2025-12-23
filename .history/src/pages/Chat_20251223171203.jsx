@@ -260,8 +260,7 @@ const Chat = () => {
     setWsError(null);
 
     // Get WebSocket URL from environment or use default
-    const wsUrl =
-      import.meta.env.VITE_WS_URL || "http://traodoido.site:8080/ws";
+    const wsUrl = import.meta.env.VITE_WS_URL || "http://localhost:8080/ws";
     const socket = new SockJS(wsUrl);
     const client = Stomp.over(socket);
 
@@ -996,21 +995,12 @@ const Chat = () => {
                 const userId = user?.id;
                 const isMyMessage = msg.senderId === userId;
                 const isSystemMessage = msg.type === "SYSTEM";
-                
-                // Determine system message type based on content
-                let systemType = "";
-                if (isSystemMessage && msg.content) {
-                  if (msg.content.includes("ĐÃ TẠO LỊCH HẸN") || msg.content.includes("Đã tạo lịch hẹn")) {
-                    systemType = "system-create";
-                  } else if (msg.content.includes("ĐÃ HỦY") || msg.content.includes("ĐÃ TỪ CHỐI") || msg.content.includes("HỦY")) {
-                    systemType = "system-cancel";
-                  }
-                }
-
                 return (
                   <div
                     key={msg.id}
-                    className={`chat-message ${isMyMessage ? "sent" : "received"} ${isSystemMessage ? "system" : ""}`}
+                    className={`chat-message ${
+                      isMyMessage ? "sent" : "received"
+                    } ${isSystemMessage ? "system" : ""}`}
                   >
                     {/* Show avatar for received messages (not system) */}
                     {!isMyMessage &&
@@ -1027,7 +1017,9 @@ const Chat = () => {
                         </div>
                       ))}
                     <div
-                      className={`chat-message-bubble ${isSystemMessage ? `system-bubble ${systemType}` : ""}`}
+                      className={`chat-message-bubble ${
+                        isSystemMessage ? "system-bubble" : ""
+                      }`}
                     >
                       {/* Display image if type is IMAGE */}
                       {msg.type === "IMAGE" && msg.fileUrl && (

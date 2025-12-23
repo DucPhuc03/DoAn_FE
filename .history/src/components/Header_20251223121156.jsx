@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MeetingsModal from "./MeetingsModal";
 import {
   fetchAnnouncements,
@@ -9,7 +9,6 @@ import "../css/Header.css";
 
 const Header = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const userAvatar = user?.avatarUrl;
@@ -180,14 +179,13 @@ const Header = () => {
     }
   };
 
-  const handleMarkAsRead = async (notificationId) => {
+  const handleMarkAsRead = async (notificationId, e) => {
     const notification = notifications.find((n) => n.id === notificationId);
 
     if (!notification || notification.read) {
-      return true; // Already read or not found, allow navigation
+      return;
     }
 
-    // Optimistic update
     setNotifications((prevNotifications) =>
       prevNotifications.map((n) =>
         n.id === notificationId ? { ...n, read: true } : n
@@ -197,25 +195,20 @@ const Header = () => {
     try {
       const response = await updateIsRead(notificationId);
       if (response && response.code !== 1000) {
-        // Revert on failure
         setNotifications((prevNotifications) =>
           prevNotifications.map((n) =>
             n.id === notificationId ? { ...n, read: false } : n
           )
         );
         console.error("Failed to mark notification as read:", response);
-        return false;
       }
-      return true;
     } catch (error) {
-      // Revert on error
       setNotifications((prevNotifications) =>
         prevNotifications.map((n) =>
           n.id === notificationId ? { ...n, read: false } : n
         )
       );
       console.error("Error marking notification as read:", error);
-      return false;
     }
   };
 
@@ -228,7 +221,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="header-logo-container">
               <img
-                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo2.jpg"
+                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
                 alt="logo"
                 className="header-logo"
               />
@@ -401,17 +394,15 @@ const Header = () => {
                               : notification.link;
 
                             return (
-                              <div
+                              <Link
                                 key={notification.id}
+                                to={targetLink}
                                 className={`header-notification-item ${
                                   !notification.read ? "unread" : ""
                                 }`}
-                                style={{ cursor: "pointer" }}
-                                onClick={async (e) => {
-                                  e.preventDefault();
+                                onClick={(e) => {
+                                  handleMarkAsRead(notification.id, e);
                                   setShowNotifications(false);
-                                  await handleMarkAsRead(notification.id);
-                                  navigate(targetLink);
                                 }}
                               >
                                 <div
@@ -447,7 +438,7 @@ const Header = () => {
                                     {notification.time}
                                   </small>
                                 </div>
-                              </div>
+                              </Link>
                             );
                           })
                         ) : (

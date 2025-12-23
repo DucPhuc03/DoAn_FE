@@ -38,7 +38,6 @@ const Chat = () => {
   const stompClientRef = useRef(null);
   const subscriptionRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
-  const messagesEndRef = useRef(null);
 
   const selectedConversation = useMemo(
     () =>
@@ -260,8 +259,7 @@ const Chat = () => {
     setWsError(null);
 
     // Get WebSocket URL from environment or use default
-    const wsUrl =
-      import.meta.env.VITE_WS_URL || "http://traodoido.site:8080/ws";
+    const wsUrl = import.meta.env.VITE_WS_URL || "http://localhost:8080/ws";
     const socket = new SockJS(wsUrl);
     const client = Stomp.over(socket);
 
@@ -436,9 +434,8 @@ const Chat = () => {
       if (selectedFile) {
         try {
           const uploadResponse = await uploadChatFile(selectedFile);
-
-          fileUrl = uploadResponse.fileUrl;
-          fileName = uploadResponse.fileName;
+          console.log(uploadResponse);
+          fileUrl = uploadResponse?.data;
         } catch (uploadError) {
           console.error("Error uploading file:", uploadError);
           setWsError("Không thể tải file lên. Vui lòng thử lại.");
@@ -747,12 +744,8 @@ const Chat = () => {
                             conversation.messages.length - 1
                           ];
                         const itemTitle = conversation.itemTitle || "Sản phẩm";
-                        // Show "1 file mới" if content is empty but has file
-                        const preview = lastMessage?.content
-                          ? lastMessage.content
-                          : lastMessage?.fileUrl
-                          ? "📎 1 file mới"
-                          : "Chưa có tin nhắn";
+                        const preview =
+                          lastMessage?.content || "Chưa có tin nhắn";
                         const timestamp = formatTimestamp(
                           lastMessage?.timestamp
                         );
@@ -980,90 +973,23 @@ const Chat = () => {
           </div>
 
           {/* Messages Area */}
-          <div
-            className="chat-messages"
-            ref={(el) => {
-              // Auto scroll to bottom when messages change
-              if (el) {
-                el.scrollTop = el.scrollHeight;
-              }
-            }}
-          >
+          <div className="chat-messages">
             {selectedConversation?.messages &&
             selectedConversation.messages.length > 0 ? (
               selectedConversation.messages.map((msg) => {
                 const user = JSON.parse(localStorage.getItem("user"));
                 const userId = user?.id;
                 const isMyMessage = msg.senderId === userId;
-                const isSystemMessage = msg.type === "SYSTEM";
-                
-                // Determine system message type based on content
-                let systemType = "";
-                if (isSystemMessage && msg.content) {
-                  if (msg.content.includes("ĐÃ TẠO LỊCH HẸN") || msg.content.includes("Đã tạo lịch hẹn")) {
-                    systemType = "system-create";
-                  } else if (msg.content.includes("ĐÃ HỦY") || msg.content.includes("ĐÃ TỪ CHỐI") || msg.content.includes("HỦY")) {
-                    systemType = "system-cancel";
-                  }
-                }
 
                 return (
                   <div
                     key={msg.id}
-                    className={`chat-message ${isMyMessage ? "sent" : "received"} ${isSystemMessage ? "system" : ""}`}
+                    className={`chat-message ${
+                      isMyMessage ? "sent" : "received"
+                    }`}
                   >
-                    {/* Show avatar for received messages (not system) */}
-                    {!isMyMessage &&
-                      !isSystemMessage &&
-                      (selectedConversation?.userAvatar ? (
-                        <img
-                          src={selectedConversation.userAvatar}
-                          alt=""
-                          className="chat-message-avatar"
-                        />
-                      ) : (
-                        <div className="chat-message-avatar-placeholder">
-                          {selectedConversation?.username?.charAt(0) || "U"}
-                        </div>
-                      ))}
-                    <div
-                      className={`chat-message-bubble ${isSystemMessage ? `system-bubble ${systemType}` : ""}`}
-                    >
-                      {/* Display image if type is IMAGE */}
-                      {msg.type === "IMAGE" && msg.fileUrl && (
-                        <div className="chat-message-image">
-                          <img
-                            src={msg.fileUrl}
-                            alt="Ảnh"
-                            onClick={() => window.open(msg.fileUrl, "_blank")}
-                          />
-                        </div>
-                      )}
-
-                      {/* Display file link if type is FILE */}
-                      {msg.type === "FILE" && msg.fileUrl && (
-                        <a
-                          href={msg.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="chat-message-file"
-                        >
-                          <FaPaperclip />
-                          <span>{msg.fileName || "Tải file"}</span>
-                        </a>
-                      )}
-
-                      {/* Display text content if exists */}
-                      {msg.content && (
-                        <div
-                          style={{
-                            whiteSpace: isSystemMessage ? "pre-line" : "normal",
-                          }}
-                        >
-                          {msg.content}
-                        </div>
-                      )}
-
+                    <div className="chat-message-bubble">
+                      <div>{msg.content}</div>
                       <div className="chat-message-time">
                         {formatTimestamp(msg.timestamp)}
                       </div>
@@ -1190,8 +1116,6 @@ const Chat = () => {
           onClose={() => setShowPlanModal(false)}
           conversation={selectedConversation}
           onSuccess={refreshConversations}
-          stompClient={stompClientRef.current}
-          conversationId={selectedConversationId}
         />
       )}
     </div>

@@ -45,8 +45,31 @@ const NewPost = () => {
     lng: null,
   });
 
-  const handleLocationChange = ({ lat, lng }) => {
+  // Reverse geocoding to get address from coordinates
+  const getAddressFromCoords = async (lat, lng) => {
+    try {
+      const API_KEY = "fs7bNKZ4N2c0iyuXllwJQKL7CelQGDDDCvtaExUd";
+      const response = await fetch(
+        `https://rsapi.goong.io/Geocode?latlng=${lat},${lng}&api_key=${API_KEY}`
+      );
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].formatted_address;
+      }
+      return "";
+    } catch (error) {
+      console.error("Error getting address:", error);
+      return "";
+    }
+  };
+
+  const handleLocationChange = async ({ lat, lng }) => {
     setLocation({ lat, lng });
+    // Get address from coordinates and fill in the meetingSpot field
+    const address = await getAddressFromCoords(lat, lng);
+    if (address) {
+      setFormData((prev) => ({ ...prev, meetingSpot: address }));
+    }
   };
 
   const previews = useMemo(

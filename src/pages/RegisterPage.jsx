@@ -87,7 +87,6 @@ const RegisterPage = () => {
     setOtpTimeLeft(0);
   };
 
-  // Bước 1: gọi API gửi OTP qua email, sau đó mở popup nhập mã
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -112,7 +111,6 @@ const RegisterPage = () => {
     }
   };
 
-  // Bước 2: xác thực OTP qua API, nếu đúng mã thì mới gọi API tạo user
   const handleVerifyOtpAndRegister = async () => {
     if (!otpCode.trim()) {
       setOtpError("Vui lòng nhập mã OTP");

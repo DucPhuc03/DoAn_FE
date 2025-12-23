@@ -15,7 +15,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-  const redirectUri = "http://traodoido.site/auth/google/callback";
+  const redirectUri = "http://localhost:5173/auth/google/callback";
   const scope = "openid profile email";
   const responseType = "code";
   const handleLoginGoogle = () => {
