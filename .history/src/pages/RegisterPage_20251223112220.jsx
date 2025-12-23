@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register as registerApi } from "../service/auth";
+import {
+  register as registerApi,
+  sendRegisterOtp,
+  verifyRegisterOtp,
+} from "../service/auth";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +16,13 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // OTP state
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpSubmitting, setOtpSubmitting] = useState(false);
+  const [otpTimeLeft, setOtpTimeLeft] = useState(0); // giây, 300 = 5 phút
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -56,25 +67,85 @@ const RegisterPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Đếm ngược thời gian OTP
+  useEffect(() => {
+    let timer;
+    if (showOtpModal && otpTimeLeft > 0) {
+      timer = setInterval(() => {
+        setOtpTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [showOtpModal, otpTimeLeft]);
+
+  const handleCloseOtpModal = () => {
+    setShowOtpModal(false);
+    setOtpCode("");
+    setOtpError("");
+    setOtpTimeLeft(0);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+
     setSubmitting(true);
     setErrors((prev) => ({ ...prev, general: "" }));
+    setOtpError("");
+    setOtpTimeLeft(0);
+    setShowOtpModal(true);
     try {
+      // Gọi API gửi OTP email
+      await sendRegisterOtp(formData.email);
+
+      setOtpTimeLeft(300); // 5 phút
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        "Không thể gửi mã xác thực. Vui lòng thử lại.";
+      setErrors((prev) => ({ ...prev, general: message }));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleVerifyOtpAndRegister = async () => {
+    if (!otpCode.trim()) {
+      setOtpError("Vui lòng nhập mã OTP");
+      return;
+    }
+
+    if (otpTimeLeft <= 0) {
+      setOtpError("Mã OTP đã hết hạn, vui lòng gửi lại mã mới.");
+      return;
+    }
+
+    setOtpSubmitting(true);
+    setOtpError("");
+
+    try {
+      // Xác thực OTP qua API
+      await verifyRegisterOtp(formData.email, otpCode.trim());
+
+      // OTP hợp lệ -> gọi API đăng ký thật
       await registerApi({
         username: formData.username,
         fullName: formData.displayName,
         email: formData.email,
         password: formData.password,
       });
+
+      setShowOtpModal(false);
       navigate("/login");
     } catch (err) {
       const message =
-        err?.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại.";
-      setErrors((prev) => ({ ...prev, general: message }));
+        err?.response?.data?.message ||
+        "Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.";
+      setOtpError(message);
     } finally {
-      setSubmitting(false);
+      setOtpSubmitting(false);
     }
   };
 
@@ -246,7 +317,7 @@ const RegisterPage = () => {
                     style={{ fontSize: "1.1rem" }}
                     disabled={submitting}
                   >
-                    {submitting ? "Đang tạo tài khoản..." : "Tạo Tài Khoản"}
+                    {submitting ? "Đang xử lý..." : "Tạo Tài Khoản"}
                   </button>
 
                   {/* Divider */}
@@ -267,6 +338,132 @@ const RegisterPage = () => {
                     </Link>
                   </div>
                 </form>
+
+                {/* OTP Modal */}
+                {showOtpModal && (
+                  <div
+                    className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: "rgba(15,23,42,0.45)",
+                      zIndex: 1050,
+                    }}
+                  >
+                    <div
+                      className="bg-white rounded-4 shadow-lg p-4"
+                      style={{ width: "100%", maxWidth: 420 }}
+                    >
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5 className="mb-0 fw-bold text-dark">
+                          Xác thực email
+                        </h5>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary"
+                          onClick={handleCloseOtpModal}
+                          disabled={otpSubmitting}
+                        >
+                          <i className="bi bi-x-lg" />
+                        </button>
+                      </div>
+
+                      <p
+                        className="text-muted mb-3"
+                        style={{ fontSize: "0.9rem" }}
+                      >
+                        Chúng tôi đã gửi mã xác thực (OTP) tới email{" "}
+                        <span className="fw-semibold">{formData.email}</span>.
+                        Vui lòng kiểm tra hộp thư và nhập mã bên dưới để hoàn
+                        tất đăng ký.
+                      </p>
+
+                      {otpTimeLeft > 0 ? (
+                        <p
+                          className="text-danger fw-semibold mb-3"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          Mã sẽ hết hạn sau{" "}
+                          {String(Math.floor(otpTimeLeft / 60)).padStart(
+                            2,
+                            "0"
+                          )}
+                          :{String(otpTimeLeft % 60).padStart(2, "0")}
+                        </p>
+                      ) : (
+                        <p
+                          className="text-danger fw-semibold mb-3"
+                          style={{ fontSize: "0.85rem" }}
+                        >
+                          Mã OTP đã hết hạn, vui lòng gửi lại mã mới.
+                        </p>
+                      )}
+
+                      <div className="mb-3">
+                        <label className="form-label fw-semibold">Mã OTP</label>
+                        <input
+                          type="text"
+                          className={`form-control text-center fw-bold ${
+                            otpError ? "is-invalid" : ""
+                          }`}
+                          placeholder="Nhập mã OTP"
+                          value={otpCode}
+                          onChange={(e) => {
+                            setOtpCode(e.target.value);
+                            if (otpError) setOtpError("");
+                          }}
+                        />
+                        {otpError && (
+                          <div className="invalid-feedback d-block">
+                            {otpError}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="d-flex justify-content-between align-items-center mt-3">
+                        <button
+                          type="button"
+                          className="btn btn-link p-0"
+                          disabled={otpSubmitting}
+                          onClick={async () => {
+                            try {
+                              setOtpError("");
+                              setOtpSubmitting(true);
+                              await sendRegisterOtp(formData.email);
+                              setOtpTimeLeft(300);
+                            } catch (err) {
+                              setOtpError(
+                                err?.response?.data?.message ||
+                                  "Không thể gửi lại mã. Vui lòng thử lại."
+                              );
+                            } finally {
+                              setOtpSubmitting(false);
+                            }
+                          }}
+                        >
+                          Gửi lại mã
+                        </button>
+
+                        <div className="d-flex gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={handleCloseOtpModal}
+                            disabled={otpSubmitting}
+                          >
+                            Hủy
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleVerifyOtpAndRegister}
+                            disabled={otpSubmitting || otpTimeLeft <= 0}
+                          >
+                            {otpSubmitting ? "Đang xác thực..." : "Xác nhận"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

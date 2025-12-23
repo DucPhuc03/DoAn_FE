@@ -10,7 +10,7 @@ const SelectInterests = () => {
   const [loading, setLoading] = useState(true);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [submitting, setSubmitting] = useState(false);
-
+  
   // Lấy user từ localStorage
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
@@ -68,18 +68,18 @@ const SelectInterests = () => {
 
     try {
       setSubmitting(true);
-
+      
       // Gọi API createInterest với mảng categoryIds
       await createInterest(selectedInterests);
-
+      
       // Sau khi createInterest hoàn thành, gọi createVecForUser với userId
       if (user?.id) {
         await createVecForUser(user.id);
       }
-
+      
       // Mark that user has selected interests
       localStorage.setItem("hasSelectedInterests", "true");
-
+      
       // Navigate to explore page
       navigate("/explore");
     } catch (error) {
@@ -105,8 +105,7 @@ const SelectInterests = () => {
           </div>
           <h1 className="select-interests-title">Chọn sở thích của bạn</h1>
           <p className="select-interests-subtitle">
-            Chọn các danh mục bạn quan tâm để chúng tôi gợi ý sản phẩm phù hợp
-            với bạn
+            Chọn các danh mục bạn quan tâm để chúng tôi gợi ý sản phẩm phù hợp với bạn
           </p>
         </div>
 
@@ -167,6 +166,13 @@ const SelectInterests = () => {
 
         {/* Action Buttons */}
         <div className="select-interests-actions">
+          <button
+            className="btn-skip"
+            onClick={handleSkip}
+            disabled={submitting}
+          >
+            Bỏ qua
+          </button>
           <button
             className="btn-continue"
             onClick={handleSubmit}

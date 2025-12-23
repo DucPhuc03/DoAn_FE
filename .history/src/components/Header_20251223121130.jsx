@@ -221,7 +221,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="header-logo-container">
               <img
-                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo2.jpg"
+                src="https://lh3.googleusercontent.com/rd-gg-dl/ABS2GSlGcXVprNWkoW9t-IM7rrJ882Ft_LI-yWclGkakHRdT82IVq4e7ACJAveNyCsphSDdwE3D7bIhqC5UCryZKbulvNNjcpZA6IV2Ga7Co432c7rjTBOUmgvTJRST0PYmniY1RNkEfJFsDSxweHS6K0tQT95OLM_G-9pB5kHM0uaRbjBI30sD20dCAYAOBhlLkiBKua3Ff7Kc2UDFpkgtGYVjel5vEA8VNoOSQkramWAnNvExy7J_bMmrU8hg1P7w7DJssnDmdx3cxBjZINPSef5U_xBZXsf-6DFJsazW5MKSpLfyjsglkt2lbX9dFmd8PuPCeoJohoCaWQMszmWEtNBvC1mcA1MKzAhQdTPYoBNsZXxwHPCGt3W_vaQD2k4hCWgbo9zKbV8GFqaP1fD87zKG3ZSCqlYQHtVfZKjMPsXJVlP1f9C6NZbcruiPedMLDP25WJ879zZ7cDGA77ln2NDd_Qs0YS-wAoEV6c28HlGpwgpMMapSNeli8_0qiqum_c2Z-Gk2iCZbPUlzHGDZa6677ZnPeGvZ94BqL3xGyND4iER7A3Yhy7Jga2FwY5DjHAwoAfRJ-GZoC9eRJ9eGkNTB75Zht_EOnJYkj7bL5aCiy4IvMwbh5JvZ6k1Pm16HpKeo6TdSe-gaxTO2qgQnD0XK-Wrx_CoHiTMB1KXVhWSzvEXVVC4vQWljukimQSRNz2AxEP5W2DKuWcjuf-XmS6gjcIWZNVSYNG2Y75mGySRdLhwzr-1jxTszDaN_1I-tOb549Ly323NJzQ-1RIyP6U5VCywYAqsHxt-ZY6O4tvpafFw85U1ujU3t8O1-7_Dox3BDMGbbbqnGEIRsZmwjRGpl001qp7YbKIhVNHTb16O82zbj8v4cjcK9tvHXszAxe8_UYAl8BtQ-fQRX0bW3OQvzb-mST8lAf8MtL9TY8N3PXaAWh4v6gVETPa8ZkuhXoV_Rizvslod2sQgfWO66LMhovJ-KEBhudl4sMKiUxLhS5DYcaam0_Nyst6E1YYUy5EtVVeeb8WEsauV35HBoIL_e3dBMhu-nFHvUUkT0mWX9j1y2AFaS0-iQgH-NlqpXsoF15V2xsoMwMfZvrfJ1XX-HtYw24N7c8MeVV8GNi5VsRLHeAmRXs__dgYzeX0aa5WIFMaJFtliG3t8ry7jRHov3B4jqB1-waHozR8BAqMWy43uT-moW0=s1024-rj"
                 alt="logo"
                 className="header-logo"
               />

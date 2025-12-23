@@ -221,7 +221,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="header-logo-container">
               <img
-                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo2.jpg"
+                src="https://traodoido.s3.ap-southeast-1.amazonaws.com/logo.png"
                 alt="logo"
                 className="header-logo"
               />

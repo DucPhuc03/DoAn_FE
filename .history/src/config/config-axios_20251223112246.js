@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 // Dev: dùng proxy "/api" để tránh CORS; Prod: dùng VITE_BASE_URL
 const baseURL = import.meta?.env?.DEV
   ? "/api"
-  : import.meta?.env?.VITE_BASE_URL || "http://localhost:8080";
+  : import.meta?.env?.VITE_BASE_URL || "http://13.214.139.27:8080";
 
 // Tạo một instance của axios
 const axiosInstance = axios.create({ baseURL });
