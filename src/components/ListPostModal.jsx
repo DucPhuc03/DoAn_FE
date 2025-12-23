@@ -52,6 +52,11 @@ const ListPostModal = ({ onClose, userId, tradeId, onSelectPost }) => {
       return;
     }
 
+    // Confirmation popup
+    if (!window.confirm(`Bạn có chắc chắn muốn chọn bài đăng "${post.title}" để cập nhật trao đổi không?`)) {
+      return;
+    }
+
     try {
       setUpdating(true);
       setError(null);

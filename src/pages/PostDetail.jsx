@@ -28,6 +28,8 @@ const PostDetail = () => {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [similarPosts, setSimilarPosts] = useState([]);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
+  const [showExchangeConfirm, setShowExchangeConfirm] = useState(false);
+  const [creatingTrade, setCreatingTrade] = useState(false);
   const viewHistoryTimeoutRef = useRef(null);
   const hasCreatedViewHistoryRef = useRef(false);
   const currentPostIdRef = useRef(null);
@@ -153,21 +155,28 @@ const PostDetail = () => {
       return;
     }
 
+    // Show confirmation modal
+    setShowExchangeConfirm(true);
+  };
+
+  const confirmExchange = async () => {
+    setCreatingTrade(true);
     const payload = {
       ownerPostId: Number(id),
       userOwnerId: post.userId,
     };
 
-    createTrade(payload)
-      .then((res) => {
-        // Nếu backend trả về tradeId trong res.data, có thể điều hướng tới chat hoặc chi tiết trade
-        alert("Tạo yêu cầu trao đổi thành công");
-        navigate("/chat");
-      })
-      .catch((error) => {
-        console.error("Error creating trade:", error);
-        alert("Không thể tạo yêu cầu trao đổi. Vui lòng thử lại.");
-      });
+    try {
+      await createTrade(payload);
+      setShowExchangeConfirm(false);
+      alert("Tạo yêu cầu trao đổi thành công");
+      navigate("/chat");
+    } catch (error) {
+      console.error("Error creating trade:", error);
+      alert("Không thể tạo yêu cầu trao đổi. Vui lòng thử lại.");
+    } finally {
+      setCreatingTrade(false);
+    }
   };
 
   const handleUpdateStatus = async (newStatus) => {
@@ -832,6 +841,89 @@ const PostDetail = () => {
           )}
         </div>
       </div>
+
+      {/* Exchange Confirmation Modal */}
+      {showExchangeConfirm && (
+        <div
+          className="modal fade show postdetail-modal-overlay"
+          onClick={() => !creatingTrade && setShowExchangeConfirm(false)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content shadow-lg postdetail-modal-content">
+              <div className="modal-header postdetail-modal-header">
+                <div>
+                  <h5 className="modal-title postdetail-modal-title">
+                    <i className="bi bi-arrow-left-right me-2"></i>
+                    Xác nhận trao đổi
+                  </h5>
+                </div>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowExchangeConfirm(false)}
+                  disabled={creatingTrade}
+                ></button>
+              </div>
+
+              <div className="modal-body postdetail-modal-body">
+                <div className="text-center py-3">
+                  <div
+                    className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                    style={{
+                      width: "64px",
+                      height: "64px",
+                      background: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+                    }}
+                  >
+                    <i className="bi bi-arrow-left-right text-white fs-3"></i>
+                  </div>
+                  <h6 className="fw-bold mb-2">Bắt đầu trao đổi?</h6>
+                  <p className="text-muted mb-0">
+                    Bạn có chắc muốn bắt đầu trao đổi với{" "}
+                    <strong>{post.username || "người đăng bài"}</strong> cho sản phẩm{" "}
+                    <strong>"{post.title}"</strong>?
+                  </p>
+                </div>
+              </div>
+
+              <div className="modal-footer postdetail-modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light border"
+                  onClick={() => setShowExchangeConfirm(false)}
+                  disabled={creatingTrade}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={confirmExchange}
+                  disabled={creatingTrade}
+                >
+                  {creatingTrade ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-check-lg me-2"></i>
+                      Xác nhận
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Status Update Modal */}
       {showStatusModal && (

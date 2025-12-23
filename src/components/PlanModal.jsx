@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createMeeting } from "../service/MeetingService";
 import ModelMap from "./ModelMap";
 
-const PlanModal = ({ onClose, conversation, onSuccess }) => {
+const PlanModal = ({ onClose, conversation, onSuccess, stompClient, conversationId, meeting }) => {
+  // Determine if we're in edit mode
+  const isEditMode = !!meeting;
+  
+  // Extract date and time from meetingDate if editing
+  const getInitialDate = () => {
+    if (meeting?.meetingDate) {
+      const date = new Date(meeting.meetingDate);
+      return date.toISOString().split("T")[0];
+    }
+    return "";
+  };
+  
+  const getInitialTime = () => {
+    if (meeting?.time) {
+      return meeting.time;
+    }
+    if (meeting?.meetingDate) {
+      const date = new Date(meeting.meetingDate);
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${hours}:${minutes}`;
+    }
+    return "";
+  };
+
   const [formData, setFormData] = useState({
-    date: "",
-    time: "",
-    location: "",
-    note: "",
+    date: getInitialDate(),
+    time: getInitialTime(),
+    location: meeting?.location || "",
+    note: meeting?.note || "",
     tradeId: conversation?.tradeId || null,
   });
 
@@ -82,11 +107,32 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
         tradeId: formData.tradeId,
       };
 
-      // Call API to create meeting
+      // Call API to create/update meeting
       await createMeeting(meetingData);
 
+      // Send SYSTEM message via WebSocket if connected (only for new meetings, not updates)
+      if (!isEditMode && stompClient && stompClient.connected && conversationId) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const systemMessageContent = `🗓️ ĐÃ TẠO LỊCH HẸN MỚI\n\n📆 Ngày: ${formData.date}\n🕐 Giờ: ${formData.time}\n📍 Địa điểm: ${formData.location}${formData.note ? `\n💬 Ghi chú: ${formData.note}` : ""}`;
+        
+        const messagePayload = {
+          senderId: user?.id,
+          content: systemMessageContent,
+          type: "SYSTEM",
+        };
+
+        const destination = `/app/chat.sendMessage/${conversationId}`;
+        try {
+          stompClient.send(destination, {}, JSON.stringify(messagePayload));
+          console.log("Sent SYSTEM message for meeting creation");
+        } catch (msgError) {
+          console.error("Error sending SYSTEM message:", msgError);
+        }
+      }
+
       // Show success message
-      alert("Lịch hẹn đã được tạo thành công!");
+      const successMsg = isEditMode ? "Lịch hẹn đã được cập nhật thành công!" : "Lịch hẹn đã được tạo thành công!";
+      alert(successMsg);
 
       // Call onSuccess callback if provided (to refresh conversations)
       if (onSuccess) {
@@ -96,7 +142,7 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
       // Close modal
       onClose();
     } catch (error) {
-      console.error("Error creating plan:", error);
+      console.error("Error creating/updating plan:", error);
       const errorMessage =
         error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại.";
       alert(errorMessage);
@@ -195,7 +241,7 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
               color: "#1f2937",
             }}
           >
-            Tạo lịch hẹn
+            {isEditMode ? "Sửa lịch hẹn" : "Tạo lịch hẹn"}
           </h3>
           <p
             style={{
@@ -204,7 +250,7 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
               color: "#6b7280",
             }}
           >
-            Chọn ngày, giờ và địa điểm trao đổi
+            {isEditMode ? "Cập nhật thông tin lịch hẹn" : "Chọn ngày, giờ và địa điểm trao đổi"}
           </p>
         </div>
 
@@ -511,7 +557,7 @@ const PlanModal = ({ onClose, conversation, onSuccess }) => {
               }}
               disabled={submitting}
             >
-              {submitting ? "Đang tạo..." : "Tạo lịch hẹn"}
+              {submitting ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...") : (isEditMode ? "Cập nhật lịch hẹn" : "Tạo lịch hẹn")}
             </button>
           </div>
         </form>
