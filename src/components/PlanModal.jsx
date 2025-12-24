@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createMeeting } from "../service/MeetingService";
+import { createMeeting, updateMeeting } from "../service/MeetingService";
 import ModelMap from "./ModelMap";
 
 const PlanModal = ({ onClose, conversation, onSuccess, stompClient, conversationId, meeting }) => {
@@ -98,17 +98,29 @@ const PlanModal = ({ onClose, conversation, onSuccess, stompClient, conversation
     }
     setSubmitting(true);
     try {
-      // Prepare data according to API format
-      const meetingData = {
-        location: formData.location.trim(),
-        note: formData.note.trim() || "",
-        time: formData.time,
-        date: formData.date,
-        tradeId: formData.tradeId,
-      };
-
-      // Call API to create/update meeting
-      await createMeeting(meetingData);
+      if (isEditMode) {
+        // Prepare data for update meeting API
+        const updateData = {
+          meetingId: meeting.meetingId,
+          location: formData.location.trim(),
+          time: formData.time,
+          note: formData.note.trim() || "",
+          date: formData.date,
+        };
+        // Call API to update meeting
+        await updateMeeting(updateData);
+      } else {
+        // Prepare data for create meeting API
+        const meetingData = {
+          location: formData.location.trim(),
+          note: formData.note.trim() || "",
+          time: formData.time,
+          date: formData.date,
+          tradeId: formData.tradeId,
+        };
+        // Call API to create meeting
+        await createMeeting(meetingData);
+      }
 
       // Send SYSTEM message via WebSocket if connected (only for new meetings, not updates)
       if (!isEditMode && stompClient && stompClient.connected && conversationId) {

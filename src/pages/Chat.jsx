@@ -602,6 +602,11 @@ const Chat = () => {
   const [headerActionLoading, setHeaderActionLoading] = useState(false);
 
   const handleCompleteTradeFromHeader = async () => {
+    if (
+      !window.confirm("Bạn có chắc chắn muốn hoàn thành trao đổi này không?")
+    ) {
+      return;
+    }
     if (!selectedConversation?.tradeId) {
       alert("Không tìm thấy mã trao đổi");
       return;
@@ -1030,14 +1035,12 @@ const Chat = () => {
                     >
                       {headerActionLoading ? "Đang xử lý..." : "Hoàn thành"}
                     </button>
-                    {selectedConversation?.meeting?.status !== "SCHEDULED" && (
-                      <button
-                        className="chat-dropdown-btn"
-                        onClick={handleDeleteConversation}
-                      >
-                        Hủy
-                      </button>
-                    )}
+                    <button
+                      className="chat-dropdown-btn"
+                      onClick={handleDeleteConversation}
+                    >
+                      Hủy
+                    </button>
                   </div>
                 )}
               </div>
