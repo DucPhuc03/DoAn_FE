@@ -183,6 +183,16 @@
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
+.history-avatar.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.history-avatar.clickable:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
 .history-avatar img {
     width: 100%;
     height: 100%;

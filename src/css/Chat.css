@@ -237,6 +237,12 @@
     white-space: nowrap;
 }
 
+/* Unread message preview - bold and darker */
+.chat-item-preview.unread {
+    font-weight: 600;
+    color: #1f2937;
+}
+
 .chat-item-meta {
     display: flex;
     flex-direction: column;

@@ -11,6 +11,7 @@ import {
   getConversation,
   deleteConversation,
   uploadChatFile,
+  updateMessage,
 } from "../service/ConversationService";
 import { acceptedMeeting, cancelMeeting } from "../service/MeetingService";
 import { updateTradeStatus } from "../service/TradeService";
@@ -651,6 +652,41 @@ const Chat = () => {
     }
   };
 
+  // Handle selecting a conversation - mark messages as read
+  const handleSelectConversation = async (conversation) => {
+    const conversationId = conversation.conversationId;
+    
+    // Set selected conversation immediately for better UX
+    setSelectedConversationId(conversationId);
+    
+    // Check if there are unread messages
+    const hasUnreadMessages = conversation.messages.some((m) => m.read === false);
+    
+    if (hasUnreadMessages) {
+      try {
+        // Call API to mark messages as read
+        await updateMessage(conversationId);
+        
+        // Update local state to mark all messages as read
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.conversationId === conversationId
+              ? {
+                  ...conv,
+                  messages: conv.messages.map((msg) => ({
+                    ...msg,
+                    read: true,
+                  })),
+                }
+              : conv
+          )
+        );
+      } catch (error) {
+        console.error("Error marking messages as read:", error);
+      }
+    }
+  };
+
   // Tạo list dùng cho tab (Chats / Meetings)
   const tabGroups = useMemo(() => {
     if (leftTab === "chats") return groupedConversations;
@@ -779,13 +815,14 @@ const Chat = () => {
                           (m) => m.read === false
                         ).length;
 
+                        // Check if last message is unread
+                        const isLastMessageUnread = lastMessage?.read === false;
+
                         return (
                           <div
                             key={conversation.conversationId}
                             onClick={() =>
-                              setSelectedConversationId(
-                                conversation.conversationId
-                              )
+                              handleSelectConversation(conversation)
                             }
                             className={`chat-item ${isActive ? "active" : ""}`}
                           >
@@ -803,7 +840,9 @@ const Chat = () => {
 
                             <div className="chat-item-info">
                               <div className="chat-item-title">{itemTitle}</div>
-                              <div className="chat-item-preview">{preview}</div>
+                              <div className={`chat-item-preview ${isLastMessageUnread ? "unread" : ""}`}>
+                                {preview}
+                              </div>
                             </div>
 
                             <div className="chat-item-meta">
@@ -1244,6 +1283,7 @@ const Chat = () => {
           onSuccess={refreshConversations}
           stompClient={stompClientRef.current}
           conversationId={selectedConversationId}
+          meeting={selectedConversation?.meeting}
         />
       )}
     </div>

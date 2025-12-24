@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaExchangeAlt, FaStar, FaRegStar } from "react-icons/fa";
 import { updateTradeStatus } from "../../service/TradeService";
 import { createReview } from "../../service/ReviewService";
 import "../../css/ProfileHistoryTab.css";
 
 const ProfileHistoryTab = ({ trades, loadingTrades, onRefreshTrades }) => {
+  const navigate = useNavigate();
   const [submittingTradeId, setSubmittingTradeId] = useState(null);
   const [reviewingTradeId, setReviewingTradeId] = useState(null);
   const [reviewForm, setReviewForm] = useState({
@@ -147,7 +149,11 @@ const ProfileHistoryTab = ({ trades, loadingTrades, onRefreshTrades }) => {
           <div className="history-header">
             <div className="history-user-section">
               {/* User Avatar */}
-              <div className="history-avatar">
+              <div
+                className="history-avatar clickable"
+                onClick={() => trade.userId && navigate(`/profile/${trade.userId}`)}
+                title="Xem hồ sơ"
+              >
                 {trade.userAvatar ? (
                   <img src={trade.userAvatar} alt={trade.userName} />
                 ) : (

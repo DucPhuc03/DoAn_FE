@@ -36,7 +36,7 @@ export async function register(payload) {
 }
 export async function resetPassword(email, password) {
   // payload: { name, email, password, ... }
-  const { data } = await axios.post("/api/auth/reset-password", {
+  const { data } = await axios.post("/api/auth//reset-password", {
     email: email,
     password: password,
   });

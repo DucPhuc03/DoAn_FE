@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { resetPassword } from "../service/auth";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -32,16 +33,18 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    // Demo: không gọi API, chỉ giả lập thành công
     setSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await resetPassword(email, password);
       setSuccessMessage("Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.");
       setTimeout(() => {
         navigate("/login");
-      }, 1200);
+      }, 1500);
     } catch (err) {
-      setError("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      setError(
+        err?.response?.data?.message ||
+          "Có lỗi xảy ra. Vui lòng thử lại sau."
+      );
     } finally {
       setSubmitting(false);
     }
