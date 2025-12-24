@@ -711,13 +711,6 @@ const Chat = () => {
               tabGroups.map((group) => {
                 const isOpen = expandedGroups.has(group.partnerId);
                 const totalConvs = group.conversations.length;
-                
-                // Calculate total unread messages for this group
-                const totalUnreadInGroup = group.conversations.reduce(
-                  (sum, conv) =>
-                    sum + conv.messages.filter((m) => m.read === false).length,
-                  0
-                );
 
                 return (
                   <div key={group.partnerId}>
@@ -744,13 +737,6 @@ const Chat = () => {
                           {totalConvs} trao đổi
                         </div>
                       </div>
-                      
-                      {/* Total unread badge for this group */}
-                      {totalUnreadInGroup > 0 && (
-                        <div className="chat-group-unread">
-                          {totalUnreadInGroup > 99 ? "99+" : totalUnreadInGroup}
-                        </div>
-                      )}
                     </div>
 
                     {/* Conversation Items */}
@@ -773,11 +759,6 @@ const Chat = () => {
                         const isActive =
                           selectedConversationId ===
                           conversation.conversationId;
-                        
-                        // Count unread messages (where read === false)
-                        const unreadCount = conversation.messages.filter(
-                          (m) => m.read === false
-                        ).length;
 
                         return (
                           <div
@@ -806,14 +787,7 @@ const Chat = () => {
                               <div className="chat-item-preview">{preview}</div>
                             </div>
 
-                            <div className="chat-item-meta">
-                              <div className="chat-item-time">{timestamp}</div>
-                              {unreadCount > 0 && (
-                                <div className="chat-item-unread">
-                                  {unreadCount > 99 ? "99+" : unreadCount}
-                                </div>
-                              )}
-                            </div>
+                            <div className="chat-item-time">{timestamp}</div>
                           </div>
                         );
                       })}
