@@ -664,8 +664,12 @@ const Chat = () => {
     // Set selected conversation immediately for better UX
     setSelectedConversationId(conversationId);
     
-    // Check if there are unread messages
-    const hasUnreadMessages = conversation.messages.some((m) => m.read === false);
+    // Get current user id
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user?.id;
+    
+    // Check if there are unread messages from other users
+    const hasUnreadMessages = conversation.messages.some((m) => m.read === false && m.senderId !== currentUserId);
     
     if (hasUnreadMessages) {
       try {
@@ -753,10 +757,14 @@ const Chat = () => {
                 const isOpen = expandedGroups.has(group.partnerId);
                 const totalConvs = group.conversations.length;
                 
-                // Calculate total unread messages for this group
+                // Get current user id for filtering
+                const currentUser = JSON.parse(localStorage.getItem("user"));
+                const currentUserId = currentUser?.id;
+                
+                // Calculate total unread messages for this group (only from other users)
                 const totalUnreadInGroup = group.conversations.reduce(
                   (sum, conv) =>
-                    sum + conv.messages.filter((m) => m.read === false).length,
+                    sum + conv.messages.filter((m) => m.read === false && m.senderId !== currentUserId).length,
                   0
                 );
 
@@ -815,13 +823,17 @@ const Chat = () => {
                           selectedConversationId ===
                           conversation.conversationId;
                         
-                        // Count unread messages (where read === false)
+                        // Get current user id
+                        const currentUser = JSON.parse(localStorage.getItem("user"));
+                        const currentUserId = currentUser?.id;
+                        
+                        // Count unread messages (where read === false and from other users)
                         const unreadCount = conversation.messages.filter(
-                          (m) => m.read === false
+                          (m) => m.read === false && m.senderId !== currentUserId
                         ).length;
 
-                        // Check if last message is unread
-                        const isLastMessageUnread = lastMessage?.read === false;
+                        // Check if last message is unread (from other user)
+                        const isLastMessageUnread = lastMessage?.read === false && lastMessage?.senderId !== currentUserId;
 
                         return (
                           <div

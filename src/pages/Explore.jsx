@@ -24,6 +24,92 @@ const Explore = () => {
   const [showSuggested, setShowSuggested] = useState(false);
   const [suggestedPosts, setSuggestedPosts] = useState([]);
   const [loadingRecommended, setLoadingRecommended] = useState(false);
+  const [currentCity, setCurrentCity] = useState("Đang xác định...");
+
+  // Function to extract city from address
+  const extractCityFromAddress = (address) => {
+    if (!address) return null;
+    
+    // Split address by comma and get parts
+    const parts = address.split(",").map((p) => p.trim());
+    
+    // Look for city/province in parts (usually second to last before "Việt Nam")
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const part = parts[i];
+      // Skip "Việt Nam" or "Vietnam"
+      if (/Việt\s*Nam|Vietnam/i.test(part)) continue;
+      // Skip if it's just a number (postal code)
+      if (/^\d+$/.test(part)) continue;
+      // Check if this looks like a city/province
+      if (part.length > 0) {
+        // Remove "Thành phố", "TP.", "Tỉnh" prefix if present
+        const cleanedPart = part
+          .replace(/^(Thành phố|TP\.?\s*|Tỉnh)\s*/i, "")
+          .trim();
+        if (cleanedPart.length > 0) {
+          return cleanedPart;
+        }
+      }
+    }
+    return null;
+  };
+
+  // Reverse geocoding to get city from coordinates
+  const getCityFromCoords = async (lat, lng) => {
+    try {
+      const API_KEY = "fs7bNKZ4N2c0iyuXllwJQKL7CelQGDDDCvtaExUd";
+      const response = await fetch(
+        `https://rsapi.goong.io/Geocode?latlng=${lat},${lng}&api_key=${API_KEY}`
+      );
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0];
+        
+        // Try to get province/city from compound field first
+        if (result.compound && result.compound.province) {
+          return result.compound.province;
+        }
+        
+        // Fallback to parsing formatted_address
+        const address = result.formatted_address;
+        const city = extractCityFromAddress(address);
+        return city || "Việt Nam";
+      }
+      return null;
+    } catch (error) {
+      console.error("Error getting city from coords:", error);
+      return null;
+    }
+  };
+
+  // Get current city on component mount using geolocation
+  useEffect(() => {
+    const loadCurrentCity = async () => {
+      // Get from geolocation (current GPS location)
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            const city = await getCityFromCoords(latitude, longitude);
+            if (city) {
+              setCurrentCity(city);
+            } else {
+              setCurrentCity("Việt Nam");
+            }
+          },
+          (error) => {
+            console.log("Geolocation error:", error);
+            setCurrentCity("Việt Nam");
+          },
+          { timeout: 10000, enableHighAccuracy: true }
+        );
+      } else {
+        setCurrentCity("Việt Nam");
+      }
+    };
+
+    loadCurrentCity();
+  }, []);
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
 
@@ -421,7 +507,7 @@ const Explore = () => {
 
                 <div className="explore-location-display">
                   <i className="bi bi-geo-alt-fill"></i>
-                  Hà Nội
+                  {currentCity}
                 </div>
               </div>
             </div>

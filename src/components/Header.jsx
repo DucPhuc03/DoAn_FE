@@ -82,7 +82,7 @@ const Header = () => {
               group.forEach((conv) => {
                 if (Array.isArray(conv.messages)) {
                   totalUnread += conv.messages.filter(
-                    (m) => m.read === false
+                    (m) => m.read === false && m.senderId !== userId
                   ).length;
                 }
               });
