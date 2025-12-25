@@ -303,7 +303,7 @@ const Chat = () => {
         // Subscribe to the chat topic
         const topic = `/chat-trade/${selectedConversationId}`;
         try {
-          subscriptionRef.current = client.subscribe(topic, (message) => {
+          subscriptionRef.current = client.subscribe(topic, async (message) => {
             try {
               const messageData = JSON.parse(message.body);
               console.log("Received message:", messageData);
@@ -327,6 +327,50 @@ const Chat = () => {
                 updateMessage(selectedConversationId).catch((err) => {
                   console.error("Error marking message as read:", err);
                 });
+                
+                // If it's a SYSTEM message from another user, refresh conversations to update meeting status
+                if (messageData.type === "SYSTEM") {
+                  console.log("Received SYSTEM message from partner, refreshing conversations...");
+                  try {
+                    const response = await getConversation();
+                    const conversationsData = [];
+
+                    if (response?.data && typeof response.data === "object") {
+                      Object.values(response.data).forEach((group) => {
+                        if (Array.isArray(group)) {
+                          group.forEach((conv) => conversationsData.push(conv));
+                        }
+                      });
+                    } else if (Array.isArray(response)) {
+                      conversationsData.push(...response);
+                    }
+
+                    const transformedConversations = conversationsData.map((conv) => {
+                      const partner = conv.partner || {};
+                      return {
+                        conversationId: conv.conversationId || conv.id,
+                        itemTitle: conv.itemTitle || conv.postTitle,
+                        itemImage: conv.itemImage || conv.postImage,
+                        username:
+                          partner.username ||
+                          conv.username ||
+                          conv.partnerUsername ||
+                          "Người dùng",
+                        userAvatar:
+                          partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
+                        messages: Array.isArray(conv.messages) ? conv.messages : [],
+                        meeting: conv.meeting || null,
+                        tradeId: conv.tradeId || null,
+                        partner,
+                      };
+                    });
+
+                    setConversations(transformedConversations);
+                    console.log("Conversations refreshed after SYSTEM message");
+                  } catch (refreshErr) {
+                    console.error("Error refreshing conversations:", refreshErr);
+                  }
+                }
               }
             } catch (error) {
               console.error("Error parsing message:", error);
@@ -531,7 +575,7 @@ const Chat = () => {
     }
   };
 
-  // Refresh conversations to update meeting status
+  // Refresh conversations to update meeting status (preserve current messages)
   const refreshConversations = async () => {
     try {
       const response = await getConversation();
@@ -547,27 +591,42 @@ const Chat = () => {
         conversationsData.push(...response);
       }
 
-      const transformedConversations = conversationsData.map((conv) => {
-        const partner = conv.partner || {};
-        return {
-          conversationId: conv.conversationId || conv.id,
-          itemTitle: conv.itemTitle || conv.postTitle,
-          itemImage: conv.itemImage || conv.postImage,
-          username:
-            partner.username ||
-            conv.username ||
-            conv.partnerUsername ||
-            "Người dùng",
-          userAvatar:
-            partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
-          messages: Array.isArray(conv.messages) ? conv.messages : [],
-          meeting: conv.meeting || null,
-          tradeId: conv.tradeId || null,
-          partner,
-        };
+      // Update conversations while preserving current messages
+      setConversations((prevConversations) => {
+        const transformedConversations = conversationsData.map((conv) => {
+          const partner = conv.partner || {};
+          const convId = conv.conversationId || conv.id;
+          
+          // Find existing conversation to preserve messages
+          const existingConv = prevConversations.find(
+            (c) => c.conversationId === convId
+          );
+          
+          // Use existing messages if available, otherwise use API messages
+          const messages = existingConv?.messages?.length > 0 
+            ? existingConv.messages 
+            : (Array.isArray(conv.messages) ? conv.messages : []);
+          
+          return {
+            conversationId: convId,
+            itemTitle: conv.itemTitle || conv.postTitle,
+            itemImage: conv.itemImage || conv.postImage,
+            username:
+              partner.username ||
+              conv.username ||
+              conv.partnerUsername ||
+              "Người dùng",
+            userAvatar:
+              partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
+            messages,
+            meeting: conv.meeting || null,
+            tradeId: conv.tradeId || null,
+            partner,
+          };
+        });
+        
+        return transformedConversations;
       });
-
-      setConversations(transformedConversations);
     } catch (err) {
       console.error("Error refreshing conversations:", err);
     }

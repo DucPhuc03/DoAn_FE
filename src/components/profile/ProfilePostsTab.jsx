@@ -10,6 +10,7 @@ const ProfilePostsTab = ({ posts, navigate }) => {
     if (!status) return null;
     if (status === "PENDING") return "Đang trao đổi";
     if (status === "WAITING") return "Đang chờ duyệt";
+    if (status === "COMPLETED") return "Đã hoàn thành";
     return null;
   };
 
@@ -18,7 +19,7 @@ const ProfilePostsTab = ({ posts, navigate }) => {
       {posts.map((post) => {
         const rawStatus = post.postStatus || post.status;
         const statusLabel = getStatusLabel(rawStatus);
-        const statusClass = rawStatus === "PENDING" ? "pending" : "waiting";
+        const statusClass = rawStatus === "PENDING" ? "pending" : rawStatus === "COMPLETED" ? "completed" : "waiting";
 
         return (
           <div
