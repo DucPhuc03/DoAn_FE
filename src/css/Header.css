@@ -378,3 +378,280 @@
   font-size: 2rem;
   color: #94a3b8;
 }
+
+/* ==========================================
+   Hamburger Menu Button
+   ========================================== */
+.header-hamburger-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  color: #475569;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.header-hamburger-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.header-hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================
+   Mobile Navigation Menu
+   ========================================== */
+.header-mobile-menu {
+  display: none;
+  padding: 16px 0;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  animation: slideDown 0.3s ease-out;
+}
+
+.header-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header-mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  text-decoration: none;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-mobile-nav-link i {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+  color: #667eea;
+}
+
+.header-mobile-nav-link:hover {
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  color: #667eea;
+  transform: translateX(6px);
+}
+
+.header-mobile-nav-link:active {
+  transform: translateX(3px);
+}
+
+/* Mobile Badge */
+.header-mobile-badge {
+  margin-left: auto;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 50px;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Mobile Profile */
+.header-mobile-profile {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.header-mobile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.header-mobile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-mobile-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Mobile Auth Buttons */
+.header-mobile-auth {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.header-mobile-auth-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.header-mobile-auth-login {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.header-mobile-auth-login:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.header-mobile-auth-register {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+}
+
+.header-mobile-auth-register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* ==========================================
+   Responsive Breakpoints
+   ========================================== */
+
+/* Tablet and below */
+@media (max-width: 992px) {
+  .header-nav-desktop {
+    display: none !important;
+  }
+
+  .header-logo-text {
+    font-size: 1.2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header-main .container-fluid {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .header-desktop-actions {
+    display: none !important;
+  }
+
+  .header-hamburger-btn {
+    display: flex;
+  }
+
+  .header-mobile-menu {
+    display: block;
+  }
+
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .header-logo-container {
+    gap: 10px;
+  }
+
+  .header-logo-text {
+    font-size: 1.1rem;
+  }
+
+  .header-notifications-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: 24px 24px 0 0;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .header-notifications-list {
+    max-height: 50vh;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .header-logo-text {
+    font-size: 1rem;
+  }
+
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .header-hamburger-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+
+  .header-mobile-nav-link {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .header-mobile-auth {
+    flex-direction: column;
+  }
+
+  .header-mobile-auth-btn {
+    padding: 12px 16px;
+  }
+}
+
+/* Slide up animation for mobile notifications */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

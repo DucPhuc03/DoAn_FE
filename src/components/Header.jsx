@@ -20,8 +20,10 @@ const Header = () => {
   const isLoggedIn = !!userId;
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMeetings, setShowMeetings] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const notificationRef = useRef(null);
   const meetingsRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const [notifications, setNotifications] = useState([]);
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(true);
@@ -200,16 +202,27 @@ const Header = () => {
       if (meetingsRef.current && !meetingsRef.current.contains(event.target)) {
         setShowMeetings(false);
       }
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setShowMobileMenu(false);
+      }
     };
 
-    if (showNotifications || showMeetings) {
+    if (showNotifications || showMeetings || showMobileMenu) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotifications, showMeetings]);
+  }, [showNotifications, showMeetings, showMobileMenu]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setShowMobileMenu(false);
+  }, [location.pathname]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -296,8 +309,8 @@ const Header = () => {
               <span className="header-logo-text">TraoĐổiĐồ</span>
             </Link>
 
-            {/* Navigation Links */}
-            <nav className="d-flex align-items-center gap-2">
+            {/* Navigation Links - Desktop */}
+            <nav className="header-nav-desktop d-flex align-items-center gap-2">
               <Link to="/" className="header-nav-link">
                 <i className="bi bi-house-door me-2"></i>
                 Trang chủ
@@ -311,294 +324,388 @@ const Header = () => {
 
           {/* Right side - Icons or Login/Register buttons */}
           <div className="d-flex align-items-center gap-3">
-            {/* If on homepage and not logged in, show login/register buttons */}
-            {isHomePage && !isLoggedIn ? (
-              <>
-                <Link
-                  to="/login"
-                  className="btn btn-outline-primary"
-                  style={{
-                    padding: "8px 20px",
-                    borderRadius: "8px",
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    textDecoration: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2563eb";
-                    e.currentTarget.style.color = "#fff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = "#2563eb";
-                  }}
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn btn-primary"
-                  style={{
-                    padding: "8px 20px",
-                    borderRadius: "8px",
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    textDecoration: "none",
-                    background:
-                      "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-                    border: "none",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 12px rgba(37, 99, 235, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  Đăng ký
-                </Link>
-              </>
-            ) : (
-              <>
-                {/* Plus Icon - Create Post */}
-                <Link
-                  to="/new-post"
-                  className="header-icon-btn header-icon-btn-primary"
-                  title="Đăng bài mới"
-                >
-                  <i
-                    className="bi bi-plus-lg"
-                    style={{ fontSize: "1.2rem" }}
-                  ></i>
-                </Link>
-
-                {/* Chat Icon */}
-                <Link
-                  to="/chat"
-                  className="header-icon-btn header-icon-btn-default"
-                  title="Tin nhắn"
-                >
-                  <i
-                    className="bi bi-chat-dots"
-                    style={{ fontSize: "1.1rem" }}
-                  ></i>
-                  {unreadMessagesCount > 0 && (
-                    <span className="header-badge">
-                      {unreadMessagesCount > 99 ? "99+" : unreadMessagesCount}
-                    </span>
-                  )}
-                </Link>
-
-                {/* Calendar Icon with Meetings Dropdown */}
-                <div className="position-relative" ref={meetingsRef}>
-                  <button
-                    className="header-icon-btn header-icon-btn-default"
-                    title="Lịch hẹn"
-                    onClick={() => setShowMeetings(!showMeetings)}
-                  >
-                    <i
-                      className="bi bi-calendar-event"
-                      style={{ fontSize: "1.1rem" }}
-                    ></i>
-                    {meetingsCount > 0 && (
-                      <span className="header-badge">
-                        {meetingsCount > 99 ? "99+" : meetingsCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {showMeetings && (
-                    <MeetingsModal onClose={() => setShowMeetings(false)} />
-                  )}
-                </div>
-
-                {/* Bell Icon with Notifications Dropdown */}
-                <div className="position-relative" ref={notificationRef}>
-                  <button
-                    className="header-icon-btn header-icon-btn-default"
-                    title="Thông báo"
-                    onClick={() => setShowNotifications(!showNotifications)}
-                  >
-                    <i
-                      className="bi bi-bell"
-                      style={{ fontSize: "1.1rem" }}
-                    ></i>
-                    {unreadCount > 0 && (
-                      <span className="header-badge">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Notifications Dropdown */}
-                  {showNotifications && (
-                    <div className="header-notifications-dropdown">
-                      <div className="header-notifications-header">
-                        <div className="d-flex align-items-center gap-2">
-                          <i className="bi bi-bell-fill"></i>
-                          <h6 className="mb-0 fw-bold">Thông báo</h6>
-                        </div>
-                        {unreadCount > 0 && (
-                          <span className="header-notifications-badge">
-                            {unreadCount} mới
-                          </span>
-                        )}
-                      </div>
-                      <div className="header-notifications-list">
-                        {isLoadingNotifications ? (
-                          <div className="text-center py-5">
-                            <div className="d-flex justify-content-center gap-2 mb-3">
-                              <div className="header-loading-dot"></div>
-                              <div className="header-loading-dot"></div>
-                              <div className="header-loading-dot"></div>
-                            </div>
-                            <p className="mb-0 text-muted">
-                              Đang tải thông báo...
-                            </p>
-                          </div>
-                        ) : notifications.length > 0 ? (
-                          notifications.map((notification) => {
-                            // Nếu là thông báo trao đổi và có conversationId, điều hướng đến chat
-                            const isExchangeNotification =
-                              notification.type === "exchange" &&
-                              notification.conversationId;
-                            const targetLink = isExchangeNotification
-                              ? `/chat?conversationId=${notification.conversationId}`
-                              : notification.link;
-
-                            return (
-                              <div
-                                key={notification.id}
-                                className={`header-notification-item ${
-                                  !notification.read ? "unread" : ""
-                                }`}
-                                style={{ cursor: "pointer" }}
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  setShowNotifications(false);
-                                  await handleMarkAsRead(notification.id);
-                                  navigate(targetLink);
-                                }}
-                              >
-                                <div
-                                  className="header-notification-icon"
-                                  style={{
-                                    backgroundColor: `${getNotificationColor(
-                                      notification.type
-                                    )}15`,
-                                    color: getNotificationColor(
-                                      notification.type
-                                    ),
-                                  }}
-                                >
-                                  <i
-                                    className={`bi ${getNotificationIcon(
-                                      notification.type
-                                    )}`}
-                                  ></i>
-                                </div>
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                  <div className="d-flex align-items-center gap-2 mb-1">
-                                    <strong className="header-notification-title">
-                                      {notification.title}
-                                    </strong>
-                                    {!notification.read && (
-                                      <span className="header-unread-dot"></span>
-                                    )}
-                                  </div>
-                                  <p className="header-notification-message">
-                                    {notification.message}
-                                  </p>
-                                  <small className="header-notification-time">
-                                    {notification.time}
-                                  </small>
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <div className="text-center py-5">
-                            <div className="header-empty-icon">
-                              <i className="bi bi-bell-slash"></i>
-                            </div>
-                            <p className="mb-0 text-muted">
-                              Chưa có thông báo nào
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                      {notifications.length > 0 && (
-                        <div className="header-notifications-footer">
-                          <button
-                            className="btn btn-link text-decoration-none p-0 header-close-btn"
-                            onClick={() => setShowNotifications(false)}
-                          >
-                            Đóng thông báo
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Profile Icon */}
-                {userId && (
+            {/* Desktop icons */}
+            <div className="header-desktop-actions d-flex align-items-center gap-3">
+              {/* If on homepage and not logged in, show login/register buttons */}
+              {isHomePage && !isLoggedIn ? (
+                <>
                   <Link
-                    to={`/profile/${userId}`}
-                    className="header-icon-btn profile-avatar-btn"
-                    title="Hồ sơ của bạn"
+                    to="/login"
+                    className="btn btn-outline-primary header-auth-btn"
+                    style={{
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      textDecoration: "none",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#2563eb";
+                      e.currentTarget.style.color = "#fff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color = "#2563eb";
+                    }}
                   >
-                    <div className="profile-avatar-inner">
-                      {userAvatar ? (
-                        <img
-                          src={userAvatar}
-                          alt={userName || "User"}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="profile-avatar-initial"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "50%",
-                            color: "#fff",
-                            fontSize: "0.9rem",
-                            fontWeight: 600,
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          }}
-                        >
-                          {userName ? (
-                            userName.charAt(0).toUpperCase()
-                          ) : (
-                            <i
-                              className="bi bi-person-fill"
-                              style={{ fontSize: "1.1rem" }}
-                            ></i>
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="btn btn-primary header-auth-btn"
+                    style={{
+                      padding: "8px 20px",
+                      borderRadius: "8px",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      textDecoration: "none",
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                      border: "none",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 12px rgba(37, 99, 235, 0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    Đăng ký
+                  </Link>
+                </>
+              ) : (
+                <>
+                  {/* Plus Icon - Create Post */}
+                  <Link
+                    to="/new-post"
+                    className="header-icon-btn header-icon-btn-primary"
+                    title="Đăng bài mới"
+                  >
+                    <i
+                      className="bi bi-plus-lg"
+                      style={{ fontSize: "1.2rem" }}
+                    ></i>
+                  </Link>
+
+                  {/* Chat Icon */}
+                  <Link
+                    to="/chat"
+                    className="header-icon-btn header-icon-btn-default"
+                    title="Tin nhắn"
+                  >
+                    <i
+                      className="bi bi-chat-dots"
+                      style={{ fontSize: "1.1rem" }}
+                    ></i>
+                    {unreadMessagesCount > 0 && (
+                      <span className="header-badge">
+                        {unreadMessagesCount > 99 ? "99+" : unreadMessagesCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  {/* Calendar Icon with Meetings Dropdown */}
+                  <div className="position-relative" ref={meetingsRef}>
+                    <button
+                      className="header-icon-btn header-icon-btn-default"
+                      title="Lịch hẹn"
+                      onClick={() => setShowMeetings(!showMeetings)}
+                    >
+                      <i
+                        className="bi bi-calendar-event"
+                        style={{ fontSize: "1.1rem" }}
+                      ></i>
+                      {meetingsCount > 0 && (
+                        <span className="header-badge">
+                          {meetingsCount > 99 ? "99+" : meetingsCount}
+                        </span>
+                      )}
+                    </button>
+
+                    {showMeetings && (
+                      <MeetingsModal onClose={() => setShowMeetings(false)} />
+                    )}
+                  </div>
+
+                  {/* Bell Icon with Notifications Dropdown */}
+                  <div className="position-relative" ref={notificationRef}>
+                    <button
+                      className="header-icon-btn header-icon-btn-default"
+                      title="Thông báo"
+                      onClick={() => setShowNotifications(!showNotifications)}
+                    >
+                      <i
+                        className="bi bi-bell"
+                        style={{ fontSize: "1.1rem" }}
+                      ></i>
+                      {unreadCount > 0 && (
+                        <span className="header-badge">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      )}
+                    </button>
+
+                    {/* Notifications Dropdown */}
+                    {showNotifications && (
+                      <div className="header-notifications-dropdown">
+                        <div className="header-notifications-header">
+                          <div className="d-flex align-items-center gap-2">
+                            <i className="bi bi-bell-fill"></i>
+                            <h6 className="mb-0 fw-bold">Thông báo</h6>
+                          </div>
+                          {unreadCount > 0 && (
+                            <span className="header-notifications-badge">
+                              {unreadCount} mới
+                            </span>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </Link>
-                )}
-              </>
-            )}
+                        <div className="header-notifications-list">
+                          {isLoadingNotifications ? (
+                            <div className="text-center py-5">
+                              <div className="d-flex justify-content-center gap-2 mb-3">
+                                <div className="header-loading-dot"></div>
+                                <div className="header-loading-dot"></div>
+                                <div className="header-loading-dot"></div>
+                              </div>
+                              <p className="mb-0 text-muted">
+                                Đang tải thông báo...
+                              </p>
+                            </div>
+                          ) : notifications.length > 0 ? (
+                            notifications.map((notification) => {
+                              // Nếu là thông báo trao đổi và có conversationId, điều hướng đến chat
+                              const isExchangeNotification =
+                                notification.type === "exchange" &&
+                                notification.conversationId;
+                              const targetLink = isExchangeNotification
+                                ? `/chat?conversationId=${notification.conversationId}`
+                                : notification.link;
+
+                              return (
+                                <div
+                                  key={notification.id}
+                                  className={`header-notification-item ${
+                                    !notification.read ? "unread" : ""
+                                  }`}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={async (e) => {
+                                    e.preventDefault();
+                                    setShowNotifications(false);
+                                    await handleMarkAsRead(notification.id);
+                                    navigate(targetLink);
+                                  }}
+                                >
+                                  <div
+                                    className="header-notification-icon"
+                                    style={{
+                                      backgroundColor: `${getNotificationColor(
+                                        notification.type
+                                      )}15`,
+                                      color: getNotificationColor(
+                                        notification.type
+                                      ),
+                                    }}
+                                  >
+                                    <i
+                                      className={`bi ${getNotificationIcon(
+                                        notification.type
+                                      )}`}
+                                    ></i>
+                                  </div>
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div className="d-flex align-items-center gap-2 mb-1">
+                                      <strong className="header-notification-title">
+                                        {notification.title}
+                                      </strong>
+                                      {!notification.read && (
+                                        <span className="header-unread-dot"></span>
+                                      )}
+                                    </div>
+                                    <p className="header-notification-message">
+                                      {notification.message}
+                                    </p>
+                                    <small className="header-notification-time">
+                                      {notification.time}
+                                    </small>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="text-center py-5">
+                              <div className="header-empty-icon">
+                                <i className="bi bi-bell-slash"></i>
+                              </div>
+                              <p className="mb-0 text-muted">
+                                Chưa có thông báo nào
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {notifications.length > 0 && (
+                          <div className="header-notifications-footer">
+                            <button
+                              className="btn btn-link text-decoration-none p-0 header-close-btn"
+                              onClick={() => setShowNotifications(false)}
+                            >
+                              Đóng thông báo
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Profile Icon */}
+                  {userId && (
+                    <Link
+                      to={`/profile/${userId}`}
+                      className="header-icon-btn profile-avatar-btn"
+                      title="Hồ sơ của bạn"
+                    >
+                      <div className="profile-avatar-inner">
+                        {userAvatar ? (
+                          <img
+                            src={userAvatar}
+                            alt={userName || "User"}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              borderRadius: "50%",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="profile-avatar-initial"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: "50%",
+                              color: "#fff",
+                              fontSize: "0.9rem",
+                              fontWeight: 600,
+                              background:
+                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            }}
+                          >
+                            {userName ? (
+                              userName.charAt(0).toUpperCase()
+                            ) : (
+                              <i
+                                className="bi bi-person-fill"
+                                style={{ fontSize: "1.1rem" }}
+                              ></i>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Hamburger Menu Button - Mobile */}
+            <button
+              className="header-hamburger-btn"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Menu"
+            >
+              <i className={`bi ${showMobileMenu ? "bi-x-lg" : "bi-list"}`}></i>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {showMobileMenu && (
+          <div className="header-mobile-menu" ref={mobileMenuRef}>
+            {/* Mobile Nav Links */}
+            <nav className="header-mobile-nav">
+              <Link to="/" className="header-mobile-nav-link" onClick={() => setShowMobileMenu(false)}>
+                <i className="bi bi-house-door"></i>
+                <span>Trang chủ</span>
+              </Link>
+              <Link to="/explore" className="header-mobile-nav-link" onClick={() => setShowMobileMenu(false)}>
+                <i className="bi bi-compass"></i>
+                <span>Khám phá</span>
+              </Link>
+              
+              {isLoggedIn ? (
+                <>
+                  <Link to="/new-post" className="header-mobile-nav-link" onClick={() => setShowMobileMenu(false)}>
+                    <i className="bi bi-plus-circle"></i>
+                    <span>Đăng bài mới</span>
+                  </Link>
+                  <Link to="/chat" className="header-mobile-nav-link" onClick={() => setShowMobileMenu(false)}>
+                    <i className="bi bi-chat-dots"></i>
+                    <span>Tin nhắn</span>
+                    {unreadMessagesCount > 0 && (
+                      <span className="header-mobile-badge">{unreadMessagesCount > 99 ? "99+" : unreadMessagesCount}</span>
+                    )}
+                  </Link>
+                  <button 
+                    className="header-mobile-nav-link" 
+                    onClick={() => {
+                      setShowMobileMenu(false);
+                      setShowMeetings(true);
+                    }}
+                  >
+                    <i className="bi bi-calendar-event"></i>
+                    <span>Lịch hẹn</span>
+                    {meetingsCount > 0 && (
+                      <span className="header-mobile-badge">{meetingsCount > 99 ? "99+" : meetingsCount}</span>
+                    )}
+                  </button>
+                  <button 
+                    className="header-mobile-nav-link" 
+                    onClick={() => {
+                      setShowMobileMenu(false);
+                      setShowNotifications(true);
+                    }}
+                  >
+                    <i className="bi bi-bell"></i>
+                    <span>Thông báo</span>
+                    {unreadCount > 0 && (
+                      <span className="header-mobile-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                    )}
+                  </button>
+                  {userId && (
+                    <Link to={`/profile/${userId}`} className="header-mobile-nav-link header-mobile-profile" onClick={() => setShowMobileMenu(false)}>
+                      <div className="header-mobile-avatar">
+                        {userAvatar ? (
+                          <img src={userAvatar} alt={userName || "User"} />
+                        ) : (
+                          <div className="header-mobile-avatar-placeholder">
+                            {userName ? userName.charAt(0).toUpperCase() : <i className="bi bi-person-fill"></i>}
+                          </div>
+                        )}
+                      </div>
+                      <span>Hồ sơ của tôi</span>
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <div className="header-mobile-auth">
+                  <Link to="/login" className="header-mobile-auth-btn header-mobile-auth-login" onClick={() => setShowMobileMenu(false)}>
+                    Đăng nhập
+                  </Link>
+                  <Link to="/register" className="header-mobile-auth-btn header-mobile-auth-register" onClick={() => setShowMobileMenu(false)}>
+                    Đăng ký
+                  </Link>
+                </div>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
