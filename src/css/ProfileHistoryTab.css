@@ -549,3 +549,85 @@
     margin-bottom: 8px;
     display: block;
 }
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .history-card {
+        padding: 16px;
+        border-radius: 14px;
+        margin-bottom: 14px;
+    }
+
+    .history-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+    }
+
+    .history-avatar-text {
+        font-size: 18px;
+    }
+
+    .history-user-name {
+        font-size: 15px;
+    }
+
+    .history-trade-id {
+        font-size: 11px;
+    }
+
+    .history-trade-id-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .history-completion-date {
+        font-size: 13px;
+    }
+
+    .history-product-card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .history-product-image,
+    .history-product-placeholder {
+        height: 120px;
+        border-radius: 10px;
+    }
+
+    .history-product-title {
+        font-size: 12px;
+    }
+
+    .history-status-badge {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .history-complete-btn,
+    .history-review-btn {
+        padding: 10px 20px;
+        font-size: 12px;
+    }
+
+    .history-review-form {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .history-star {
+        font-size: 24px;
+    }
+
+    .history-textarea {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .history-cancel-btn,
+    .history-submit-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+}

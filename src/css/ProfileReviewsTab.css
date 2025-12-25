@@ -177,3 +177,107 @@
     font-size: 12px;
     color: #94a3b8;
 }
+
+/* ==========================================
+   Responsive Styles - ProfileReviewsTab
+   ========================================== */
+
+@media (max-width: 768px) {
+
+    .profile-reviews-loading,
+    .profile-reviews-empty {
+        padding: 40px 16px;
+    }
+
+    .profile-reviews-empty-icon {
+        font-size: 48px;
+    }
+
+    .profile-reviews-empty-title {
+        font-size: 16px;
+    }
+
+    .profile-reviews-card {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+
+    .profile-reviews-card-inner {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .profile-reviews-reviewer {
+        gap: 10px;
+    }
+
+    .profile-reviews-avatar {
+        width: 42px;
+        height: 42px;
+    }
+
+    .profile-reviews-avatar-text {
+        font-size: 16px;
+    }
+
+    .profile-reviews-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .profile-reviews-name {
+        font-size: 14px;
+    }
+
+    .profile-reviews-rating i {
+        font-size: 12px;
+    }
+
+    .profile-reviews-date {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
+    .profile-reviews-text {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .profile-reviews-item {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .profile-reviews-item-image,
+    .profile-reviews-item-placeholder {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-reviews-item-title {
+        font-size: 13px;
+    }
+
+    .profile-reviews-item-label {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-reviews-card {
+        padding: 12px;
+    }
+
+    .profile-reviews-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .profile-reviews-item-image,
+    .profile-reviews-item-placeholder {
+        width: 40px;
+        height: 40px;
+    }
+}

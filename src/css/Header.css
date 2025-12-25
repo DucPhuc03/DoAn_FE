@@ -378,3 +378,300 @@
   font-size: 2rem;
   color: #94a3b8;
 }
+
+/* ==========================================
+   Responsive Styles - Header
+   ========================================== */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .header-nav-link {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .header-logo-text {
+    font-size: 1.2rem;
+  }
+
+  .header-icon-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header-main .container-fluid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .header-main .py-3 {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .header-logo-container {
+    gap: 8px;
+  }
+
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .header-logo-text {
+    font-size: 1.1rem;
+  }
+
+  .header-nav-link {
+    display: none;
+  }
+
+  .header-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .header-icon-btn i {
+    font-size: 1rem !important;
+  }
+
+  .header-badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.6rem;
+    top: -3px;
+    right: -3px;
+  }
+
+  /* Right side icons */
+  .header-main .gap-3 {
+    gap: 8px !important;
+  }
+
+  /* Notifications dropdown - full width on mobile */
+  .header-notifications-dropdown {
+    position: fixed;
+    top: 60px;
+    bottom: auto;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: calc(100vh - 80px);
+    border-radius: 16px;
+    z-index: 9999;
+    animation: none;
+  }
+
+  .header-notifications-header {
+    padding: 16px 20px;
+  }
+
+  .header-notifications-list {
+    max-height: 280px;
+    padding: 8px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .header-notification-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .header-notification-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .header-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-logo-text {
+    font-size: 1rem;
+  }
+
+  .header-icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
+
+  .header-badge {
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.55rem;
+    padding: 0 4px;
+  }
+
+  .header-main .gap-3 {
+    gap: 6px !important;
+  }
+
+  .header-notification-title {
+    font-size: 0.85rem;
+  }
+
+  .header-notification-message {
+    font-size: 0.8rem;
+  }
+}
+
+/* Slide up animation for mobile */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   Meetings Modal Styles (notifications-dropdown)
+   ========================================== */
+
+.notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+  z-index: 1001;
+}
+
+.notifications-header {
+  padding: 20px 24px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.notifications-list {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.notifications-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 10px;
+}
+
+.notification-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  background: white;
+  border: 1px solid transparent;
+  margin-bottom: 8px;
+}
+
+.notification-item:hover {
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+  border-color: #e0e7ff;
+  transform: translateX(4px);
+}
+
+.notification-title {
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.notifications-footer {
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Meetings Modal Responsive */
+@media (max-width: 768px) {
+  .notifications-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    bottom: auto !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-height: calc(100vh - 80px);
+    border-radius: 16px;
+    z-index: 9999;
+    animation: none;
+    transform: none;
+  }
+
+  .notifications-header {
+    padding: 16px 20px;
+  }
+
+  .notifications-list {
+    max-height: 320px;
+    padding: 8px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .notification-item {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .notification-title {
+    font-size: 0.85rem;
+  }
+
+  .notifications-footer {
+    padding: 14px 20px;
+  }
+
+  /* Also fix header-notifications-dropdown */
+  .header-notifications-dropdown {
+    z-index: 9999;
+    animation: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-dropdown {
+    left: 4px !important;
+    right: 4px !important;
+    max-height: calc(100vh - 70px);
+  }
+
+  .notifications-list {
+    max-height: calc(100vh - 180px);
+  }
+
+  .notification-item {
+    padding: 10px;
+  }
+}

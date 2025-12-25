@@ -80,7 +80,7 @@
     .editprofile-card-wrapper {
         padding: 24px;
     }
-    
+
     .editprofile-layout {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -328,4 +328,98 @@
 .editprofile-logout-btn:hover {
     background: #fee2e2;
     border-color: #fca5a5;
+}
+
+/* ==========================================
+   Responsive Styles - EditProfile Page
+   ========================================== */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .editprofile-container {
+        padding: 24px 12px;
+    }
+
+    .editprofile-title {
+        font-size: 26px;
+    }
+
+    .editprofile-subtitle {
+        font-size: 14px;
+    }
+
+    .editprofile-avatar-preview {
+        width: 140px;
+        height: 140px;
+    }
+
+    .editprofile-avatar-placeholder {
+        font-size: 60px;
+    }
+
+    .editprofile-field {
+        margin-bottom: 20px;
+    }
+
+    .editprofile-label {
+        font-size: 13px;
+    }
+
+    .editprofile-input,
+    .editprofile-textarea {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .editprofile-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .editprofile-actions-left {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .editprofile-cancel-btn,
+    .editprofile-submit-btn,
+    .editprofile-logout-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .editprofile-container {
+        padding: 16px 10px;
+    }
+
+    .editprofile-title {
+        font-size: 22px;
+    }
+
+    .editprofile-avatar-preview {
+        width: 120px;
+        height: 120px;
+    }
+
+    .editprofile-avatar-placeholder {
+        font-size: 48px;
+    }
+
+    .editprofile-avatar-select,
+    .editprofile-avatar-upload {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .editprofile-input,
+    .editprofile-textarea {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
 }

@@ -269,3 +269,95 @@
     width: 3rem;
     height: 3rem;
 }
+
+/* ==========================================
+   Responsive Styles - EditPost Page
+   ========================================== */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .editpost-container {
+        padding: 16px 10px;
+    }
+
+    .editpost-title {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+
+    .editpost-form {
+        padding: 20px 16px;
+    }
+
+    .editpost-upload-area {
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .editpost-upload-title {
+        font-size: 1rem;
+    }
+
+    .editpost-upload-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .editpost-upload-btn {
+        padding: 6px 18px;
+        font-size: 0.9rem;
+    }
+
+    .editpost-preview-image {
+        aspect-ratio: 1;
+    }
+
+    .editpost-preview-remove {
+        width: 24px;
+        height: 24px;
+    }
+
+    .editpost-label {
+        font-size: 0.9rem;
+    }
+
+    .editpost-input-lg {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .editpost-meeting-section {
+        padding: 10px;
+    }
+
+    .editpost-selection-card {
+        padding: 10px;
+    }
+
+    .editpost-cancel-btn,
+    .editpost-submit-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .editpost-form {
+        padding: 16px 12px;
+    }
+
+    .editpost-upload-area {
+        padding: 16px 12px;
+    }
+
+    .editpost-preview-wrapper {
+        border-radius: 12px;
+    }
+
+    .editpost-input,
+    .editpost-input-lg,
+    .editpost-select {
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+}
