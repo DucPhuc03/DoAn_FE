@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
 import { getProfile, followUser } from "../service/UserService";
 import { createReportUser } from "../service/ReportService";
@@ -23,6 +23,22 @@ import "../css/Profile.css";
 
 const allTabs = ["Bài đăng", "Đã thích", "Đánh giá", "Lịch sử"];
 
+// Map tab names for URL (Vietnamese display name -> URL slug)
+const tabUrlMap = {
+  "Bài đăng": "posts",
+  "Đã thích": "liked",
+  "Đánh giá": "reviews",
+  "Lịch sử": "history"
+};
+
+// Reverse map: URL slug -> tab index
+const urlToTabIndex = {
+  "posts": 0,
+  "liked": 1,
+  "reviews": 2,
+  "history": 3
+};
+
 const primary = "#6366F1"; // Blue
 const secondary = "#1f2937";
 const muted = "#6b7280";
@@ -32,7 +48,12 @@ const bgProfile = "#f8fafc";
 const Profile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [tab, setTab] = useState(0);
+  const [searchParams] = useSearchParams();
+  
+  // Initialize tab from URL or default to 0
+  const tabFromUrl = searchParams.get("tab") || "posts";
+  const initialTab = urlToTabIndex[tabFromUrl] ?? 0;
+  const [tab, setTab] = useState(initialTab);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,6 +112,19 @@ const Profile = () => {
       setTab(0);
     }
   }, [userTabs.length, profileData]);
+
+  // Keep URL in sync with selected tab
+  useEffect(() => {
+    const currentTabName = userTabs[tab];
+    const tabSlug = tabUrlMap[currentTabName] || "posts";
+    
+    if (tabSlug !== "posts") {
+      navigate(`/profile/${id}?tab=${tabSlug}`, { replace: true });
+    } else {
+      // Remove tab param if tab is "posts" (default)
+      navigate(`/profile/${id}`, { replace: true });
+    }
+  }, [tab, id, navigate, userTabs]);
 
   // Fetch reviews when tab changes to reviews tab or when id changes
   useEffect(() => {

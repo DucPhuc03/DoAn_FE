@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import "../../css/ReportManagement.css";
 import {
@@ -10,7 +10,10 @@ import {
 
 export default function ReportManagement() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("user"); // "user" or "post"
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Read activeTab from URL, default to "user"
+  const activeTab = searchParams.get("tab") || "user";
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -236,7 +239,7 @@ export default function ReportManagement() {
           >
             <button
               onClick={() => {
-                setActiveTab("user");
+                setSearchParams({ tab: "user" });
                 setPage(1);
               }}
               style={{
@@ -259,7 +262,7 @@ export default function ReportManagement() {
             </button>
             <button
               onClick={() => {
-                setActiveTab("post");
+                setSearchParams({ tab: "post" });
                 setPage(1);
               }}
               style={{
