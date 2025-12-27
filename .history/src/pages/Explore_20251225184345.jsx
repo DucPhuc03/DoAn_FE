@@ -94,17 +94,17 @@ const Explore = () => {
             if (city) {
               setCurrentCity(city);
             } else {
-              setCurrentCity("Hà Nội");
+              setCurrentCity("Việt Nam");
             }
           },
           (error) => {
             console.log("Geolocation error:", error);
-            setCurrentCity("Hà Nội");
+            setCurrentCity("Việt Nam");
           },
           { timeout: 10000, enableHighAccuracy: true }
         );
       } else {
-        setCurrentCity("Hà Nội");
+        setCurrentCity("Việt Nam");
       }
     };
 
@@ -597,7 +597,7 @@ const Explore = () => {
               </button>
             </div>
             {showSuggested && (
-              <div className="content-grid">
+              <div className="explore-suggested-grid">
                 {loadingRecommended ? (
                   <div
                     className="explore-loading"

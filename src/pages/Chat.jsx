@@ -153,6 +153,21 @@ const Chat = () => {
           });
           if (foundConversation) {
             setSelectedConversationId(foundConversation.conversationId);
+            
+            // Expand the group containing this conversation
+            const partner = foundConversation.partner || {};
+            const partnerId =
+              partner.id ||
+              partner.userId ||
+              foundConversation.partnerId ||
+              foundConversation.username ||
+              foundConversation.partnerUsername ||
+              "unknown";
+            setExpandedGroups((prev) => {
+              const next = new Set(prev);
+              next.add(partnerId);
+              return next;
+            });
           } else {
             // If not found, select first conversation
             if (transformedConversations.length > 0) {
@@ -181,15 +196,13 @@ const Chat = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Clear URL parameter after conversation is selected
+  // Keep URL in sync with selected conversation
   useEffect(() => {
-    const conversationIdFromUrl = searchParams.get("conversationId");
-    if (conversationIdFromUrl && selectedConversationId) {
-      // Only clear if the selected conversation matches the URL param
-      const selectedId = selectedConversationId?.toString();
-      const urlId = conversationIdFromUrl.toString();
-      if (selectedId === urlId) {
-        navigate("/chat", { replace: true });
+    if (selectedConversationId) {
+      const currentUrlId = searchParams.get("conversationId");
+      // Update URL if it doesn't match selected conversation
+      if (currentUrlId !== selectedConversationId?.toString()) {
+        navigate(`/chat?conversationId=${selectedConversationId}`, { replace: true });
       }
     }
   }, [selectedConversationId, searchParams, navigate]);
@@ -290,22 +303,75 @@ const Chat = () => {
         // Subscribe to the chat topic
         const topic = `/chat-trade/${selectedConversationId}`;
         try {
-          subscriptionRef.current = client.subscribe(topic, (message) => {
+          subscriptionRef.current = client.subscribe(topic, async (message) => {
             try {
               const messageData = JSON.parse(message.body);
               console.log("Received message:", messageData);
 
               // Update conversations with the new message
+              // Mark as read since user is viewing this conversation
               setConversations((prev) =>
                 prev.map((conversation) =>
                   conversation.conversationId === selectedConversationId
                     ? {
                         ...conversation,
-                        messages: [...conversation.messages, messageData],
+                        messages: [...conversation.messages, { ...messageData, read: true }],
                       }
                     : conversation
                 )
               );
+
+              // Call API to mark messages as read only if message is from another user
+              const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+              if (messageData.senderId !== currentUser?.id) {
+                updateMessage(selectedConversationId).catch((err) => {
+                  console.error("Error marking message as read:", err);
+                });
+                
+                // If it's a SYSTEM message from another user, refresh conversations to update meeting status
+                if (messageData.type === "SYSTEM") {
+                  console.log("Received SYSTEM message from partner, refreshing conversations...");
+                  try {
+                    const response = await getConversation();
+                    const conversationsData = [];
+
+                    if (response?.data && typeof response.data === "object") {
+                      Object.values(response.data).forEach((group) => {
+                        if (Array.isArray(group)) {
+                          group.forEach((conv) => conversationsData.push(conv));
+                        }
+                      });
+                    } else if (Array.isArray(response)) {
+                      conversationsData.push(...response);
+                    }
+
+                    const transformedConversations = conversationsData.map((conv) => {
+                      const partner = conv.partner || {};
+                      return {
+                        conversationId: conv.conversationId || conv.id,
+                        itemTitle: conv.itemTitle || conv.postTitle,
+                        itemImage: conv.itemImage || conv.postImage,
+                        username:
+                          partner.username ||
+                          conv.username ||
+                          conv.partnerUsername ||
+                          "Người dùng",
+                        userAvatar:
+                          partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
+                        messages: Array.isArray(conv.messages) ? conv.messages : [],
+                        meeting: conv.meeting || null,
+                        tradeId: conv.tradeId || null,
+                        partner,
+                      };
+                    });
+
+                    setConversations(transformedConversations);
+                    console.log("Conversations refreshed after SYSTEM message");
+                  } catch (refreshErr) {
+                    console.error("Error refreshing conversations:", refreshErr);
+                  }
+                }
+              }
             } catch (error) {
               console.error("Error parsing message:", error);
             }
@@ -495,7 +561,10 @@ const Chat = () => {
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "";
     try {
-      return new Date(timestamp).toLocaleString("vi-VN", {
+      // Add 7 hours for Vietnam timezone (UTC+7)
+      const date = new Date(timestamp);
+      date.setHours(date.getHours() + 7);
+      return date.toLocaleString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
         day: "2-digit",
@@ -506,7 +575,7 @@ const Chat = () => {
     }
   };
 
-  // Refresh conversations to update meeting status
+  // Refresh conversations to update meeting status (preserve current messages)
   const refreshConversations = async () => {
     try {
       const response = await getConversation();
@@ -522,27 +591,42 @@ const Chat = () => {
         conversationsData.push(...response);
       }
 
-      const transformedConversations = conversationsData.map((conv) => {
-        const partner = conv.partner || {};
-        return {
-          conversationId: conv.conversationId || conv.id,
-          itemTitle: conv.itemTitle || conv.postTitle,
-          itemImage: conv.itemImage || conv.postImage,
-          username:
-            partner.username ||
-            conv.username ||
-            conv.partnerUsername ||
-            "Người dùng",
-          userAvatar:
-            partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
-          messages: Array.isArray(conv.messages) ? conv.messages : [],
-          meeting: conv.meeting || null,
-          tradeId: conv.tradeId || null,
-          partner,
-        };
+      // Update conversations while preserving current messages
+      setConversations((prevConversations) => {
+        const transformedConversations = conversationsData.map((conv) => {
+          const partner = conv.partner || {};
+          const convId = conv.conversationId || conv.id;
+          
+          // Find existing conversation to preserve messages
+          const existingConv = prevConversations.find(
+            (c) => c.conversationId === convId
+          );
+          
+          // Use existing messages if available, otherwise use API messages
+          const messages = existingConv?.messages?.length > 0 
+            ? existingConv.messages 
+            : (Array.isArray(conv.messages) ? conv.messages : []);
+          
+          return {
+            conversationId: convId,
+            itemTitle: conv.itemTitle || conv.postTitle,
+            itemImage: conv.itemImage || conv.postImage,
+            username:
+              partner.username ||
+              conv.username ||
+              conv.partnerUsername ||
+              "Người dùng",
+            userAvatar:
+              partner.avatarUrl || conv.userAvatar || conv.partnerAvatar || null,
+            messages,
+            meeting: conv.meeting || null,
+            tradeId: conv.tradeId || null,
+            partner,
+          };
+        });
+        
+        return transformedConversations;
       });
-
-      setConversations(transformedConversations);
     } catch (err) {
       console.error("Error refreshing conversations:", err);
     }
@@ -558,6 +642,45 @@ const Chat = () => {
 
     try {
       await acceptedMeeting(selectedConversation.meeting.meetingId);
+
+      // Send SYSTEM message via WebSocket if connected
+      if (stompClientRef.current && stompClientRef.current.connected && selectedConversationId) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const meeting = selectedConversation.meeting;
+        const systemMessageContent = `✅ LỊCH HẸN ĐÃ ĐƯỢC XÁC NHẬN\n\n📆 Ngày: ${meeting.meetingDate ? new Date(meeting.meetingDate).toLocaleDateString("vi-VN") : ""}\n🕐 Giờ: ${meeting.time || ""}\n📍 Địa điểm: ${meeting.location || ""}`;
+
+        const messagePayload = {
+          senderId: user?.id,
+          content: systemMessageContent,
+          type: "SYSTEM",
+        };
+
+        const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+        try {
+          stompClientRef.current.send(destination, {}, JSON.stringify(messagePayload));
+          console.log("Sent SYSTEM message for meeting acceptance");
+
+          // Optimistic update: Add message to local state immediately
+          const optimisticMessage = {
+            ...messagePayload,
+            timestamp: new Date(),
+            read: true,
+          };
+          setConversations((prev) =>
+            prev.map((conversation) =>
+              conversation.conversationId === selectedConversationId
+                ? {
+                    ...conversation,
+                    messages: [...conversation.messages, optimisticMessage],
+                  }
+                : conversation
+            )
+          );
+        } catch (msgError) {
+          console.error("Error sending SYSTEM message:", msgError);
+        }
+      }
+
       // Refresh conversations to update meeting status
       await refreshConversations();
     } catch (error) {
@@ -574,6 +697,45 @@ const Chat = () => {
 
     try {
       await cancelMeeting(selectedConversation.meeting.meetingId);
+
+      // Send SYSTEM message via WebSocket if connected
+      if (stompClientRef.current && stompClientRef.current.connected && selectedConversationId) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const meeting = selectedConversation.meeting;
+        const systemMessageContent = `❌ LỊCH HẸN ĐÃ BỊ TỪ CHỐI\n\n📆 Ngày: ${meeting.meetingDate ? new Date(meeting.meetingDate).toLocaleDateString("vi-VN") : ""}\n🕐 Giờ: ${meeting.time || ""}\n📍 Địa điểm: ${meeting.location || ""}`;
+
+        const messagePayload = {
+          senderId: user?.id,
+          content: systemMessageContent,
+          type: "SYSTEM",
+        };
+
+        const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+        try {
+          stompClientRef.current.send(destination, {}, JSON.stringify(messagePayload));
+          console.log("Sent SYSTEM message for meeting rejection");
+
+          // Optimistic update: Add message to local state immediately
+          const optimisticMessage = {
+            ...messagePayload,
+            timestamp: new Date(),
+            read: true,
+          };
+          setConversations((prev) =>
+            prev.map((conversation) =>
+              conversation.conversationId === selectedConversationId
+                ? {
+                    ...conversation,
+                    messages: [...conversation.messages, optimisticMessage],
+                  }
+                : conversation
+            )
+          );
+        } catch (msgError) {
+          console.error("Error sending SYSTEM message:", msgError);
+        }
+      }
+
       // Refresh conversations to update meeting status
       await refreshConversations();
     } catch (error) {
@@ -590,6 +752,45 @@ const Chat = () => {
 
     try {
       await cancelMeeting(selectedConversation.meeting.meetingId);
+
+      // Send SYSTEM message via WebSocket if connected
+      if (stompClientRef.current && stompClientRef.current.connected && selectedConversationId) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const meeting = selectedConversation.meeting;
+        const systemMessageContent = `❌ LỊCH HẸN ĐÃ BỊ HỦY\n\n📆 Ngày: ${meeting.meetingDate ? new Date(meeting.meetingDate).toLocaleDateString("vi-VN") : ""}\n🕐 Giờ: ${meeting.time || ""}\n📍 Địa điểm: ${meeting.location || ""}`;
+
+        const messagePayload = {
+          senderId: user?.id,
+          content: systemMessageContent,
+          type: "SYSTEM",
+        };
+
+        const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+        try {
+          stompClientRef.current.send(destination, {}, JSON.stringify(messagePayload));
+          console.log("Sent SYSTEM message for meeting cancellation");
+
+          // Optimistic update: Add message to local state immediately
+          const optimisticMessage = {
+            ...messagePayload,
+            timestamp: new Date(),
+            read: true,
+          };
+          setConversations((prev) =>
+            prev.map((conversation) =>
+              conversation.conversationId === selectedConversationId
+                ? {
+                    ...conversation,
+                    messages: [...conversation.messages, optimisticMessage],
+                  }
+                : conversation
+            )
+          );
+        } catch (msgError) {
+          console.error("Error sending SYSTEM message:", msgError);
+        }
+      }
+
       // Refresh conversations to update meeting status
       await refreshConversations();
     } catch (error) {
@@ -602,6 +803,11 @@ const Chat = () => {
   const [headerActionLoading, setHeaderActionLoading] = useState(false);
 
   const handleCompleteTradeFromHeader = async () => {
+    if (
+      !window.confirm("Bạn có chắc chắn muốn hoàn thành trao đổi này không?")
+    ) {
+      return;
+    }
     if (!selectedConversation?.tradeId) {
       alert("Không tìm thấy mã trao đổi");
       return;
@@ -610,6 +816,43 @@ const Chat = () => {
       setHeaderActionLoading(true);
       const response = await updateTradeStatus(selectedConversation.tradeId);
       if (response?.code === 1000) {
+        // Send SYSTEM message via WebSocket if connected
+        if (stompClientRef.current && stompClientRef.current.connected && selectedConversationId) {
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
+          const systemMessageContent = `✅ GIAO DỊCH ĐÃ HOÀN THÀNH\n\n📦 Sản phẩm: ${selectedConversation.itemTitle || "Không xác định"}\n🎉 Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!`;
+
+          const messagePayload = {
+            senderId: user?.id,
+            content: systemMessageContent,
+            type: "SYSTEM",
+          };
+
+          const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+          try {
+            stompClientRef.current.send(destination, {}, JSON.stringify(messagePayload));
+            console.log("Sent SYSTEM message for trade completion");
+
+            // Optimistic update: Add message to local state immediately
+            const optimisticMessage = {
+              ...messagePayload,
+              timestamp: new Date(),
+              read: true,
+            };
+            setConversations((prev) =>
+              prev.map((conversation) =>
+                conversation.conversationId === selectedConversationId
+                  ? {
+                      ...conversation,
+                      messages: [...conversation.messages, optimisticMessage],
+                    }
+                  : conversation
+              )
+            );
+          } catch (msgError) {
+            console.error("Error sending SYSTEM message:", msgError);
+          }
+        }
+
         alert("Đã cập nhật trạng thái trao đổi");
         await refreshConversations();
       } else {
@@ -659,8 +902,27 @@ const Chat = () => {
     // Set selected conversation immediately for better UX
     setSelectedConversationId(conversationId);
     
-    // Check if there are unread messages
-    const hasUnreadMessages = conversation.messages.some((m) => m.read === false);
+    // Expand the group containing this conversation
+    const partner = conversation.partner || {};
+    const partnerId =
+      partner.id ||
+      partner.userId ||
+      conversation.partnerId ||
+      conversation.username ||
+      conversation.partnerUsername ||
+      "unknown";
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      next.add(partnerId);
+      return next;
+    });
+    
+    // Get current user id
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user?.id;
+    
+    // Check if there are unread messages from other users
+    const hasUnreadMessages = conversation.messages.some((m) => m.read === false && m.senderId !== currentUserId);
     
     if (hasUnreadMessages) {
       try {
@@ -748,10 +1010,14 @@ const Chat = () => {
                 const isOpen = expandedGroups.has(group.partnerId);
                 const totalConvs = group.conversations.length;
                 
-                // Calculate total unread messages for this group
+                // Get current user id for filtering
+                const currentUser = JSON.parse(localStorage.getItem("user"));
+                const currentUserId = currentUser?.id;
+                
+                // Calculate total unread messages for this group (only from other users)
                 const totalUnreadInGroup = group.conversations.reduce(
                   (sum, conv) =>
-                    sum + conv.messages.filter((m) => m.read === false).length,
+                    sum + conv.messages.filter((m) => m.read === false && m.senderId !== currentUserId).length,
                   0
                 );
 
@@ -810,13 +1076,17 @@ const Chat = () => {
                           selectedConversationId ===
                           conversation.conversationId;
                         
-                        // Count unread messages (where read === false)
+                        // Get current user id
+                        const currentUser = JSON.parse(localStorage.getItem("user"));
+                        const currentUserId = currentUser?.id;
+                        
+                        // Count unread messages (where read === false and from other users)
                         const unreadCount = conversation.messages.filter(
-                          (m) => m.read === false
+                          (m) => m.read === false && m.senderId !== currentUserId
                         ).length;
 
-                        // Check if last message is unread
-                        const isLastMessageUnread = lastMessage?.read === false;
+                        // Check if last message is unread (from other user)
+                        const isLastMessageUnread = lastMessage?.read === false && lastMessage?.senderId !== currentUserId;
 
                         return (
                           <div
@@ -1030,14 +1300,12 @@ const Chat = () => {
                     >
                       {headerActionLoading ? "Đang xử lý..." : "Hoàn thành"}
                     </button>
-                    {selectedConversation?.meeting?.status !== "SCHEDULED" && (
-                      <button
-                        className="chat-dropdown-btn"
-                        onClick={handleDeleteConversation}
-                      >
-                        Hủy
-                      </button>
-                    )}
+                    <button
+                      className="chat-dropdown-btn"
+                      onClick={handleDeleteConversation}
+                    >
+                      Hủy
+                    </button>
                   </div>
                 )}
               </div>

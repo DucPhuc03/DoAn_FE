@@ -904,3 +904,264 @@
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
 }
+
+/* ==========================================
+   Responsive Styles - Chat Page
+   ========================================== */
+
+/* Tablet */
+@media (max-width: 992px) {
+    .chat-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .chat-sidebar {
+        width: 280px;
+    }
+
+    .chat-header-right {
+        margin-right: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+        height: auto;
+        min-height: calc(100vh - 70px);
+        margin: 0;
+    }
+
+    .chat-sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .chat-tabs {
+        padding: 12px;
+    }
+
+    .chat-tab-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .chat-list {
+        max-height: 35vh;
+    }
+
+    .chat-group-header {
+        padding: 10px 12px;
+    }
+
+    .chat-item {
+        padding: 8px 12px 8px 50px;
+    }
+
+    .chat-main {
+        flex: 1;
+        min-height: 60vh;
+    }
+
+    .chat-header {
+        padding: 10px 12px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .chat-header-left {
+        gap: 8px;
+    }
+
+    .chat-header-avatar,
+    .chat-header-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+    }
+
+    .chat-header-item-image,
+    .chat-header-item-placeholder {
+        width: 32px;
+        height: 32px;
+    }
+
+    .chat-header-title {
+        font-size: 14px;
+    }
+
+    .chat-header-subtitle {
+        font-size: 12px;
+    }
+
+    .chat-header-right {
+        margin-right: 0;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .chat-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .chat-btn-pill {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .chat-messages {
+        padding: 12px;
+        min-height: 300px;
+        border-right: none;
+    }
+
+    .chat-message-bubble {
+        max-width: 85%;
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .chat-message-avatar,
+    .chat-message-avatar-placeholder {
+        width: 28px;
+        height: 28px;
+    }
+
+    .chat-message-image img {
+        max-width: 200px;
+        max-height: 160px;
+    }
+
+    .chat-input-area {
+        padding: 12px;
+    }
+
+    .chat-input {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .chat-trade-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .chat-send-btn,
+    .chat-attach-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .chat-file-preview {
+        padding: 10px 12px;
+    }
+
+    .chat-image-preview {
+        max-width: 150px;
+        max-height: 100px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .chat-sidebar {
+        max-height: 35vh;
+    }
+
+    .chat-group-avatar,
+    .chat-group-avatar-placeholder {
+        width: 32px;
+        height: 32px;
+    }
+
+    .chat-group-name {
+        font-size: 13px;
+    }
+
+    .chat-item-image,
+    .chat-item-image-placeholder {
+        width: 28px;
+        height: 28px;
+    }
+
+    .chat-item-title {
+        font-size: 12px;
+    }
+
+    .chat-item-preview {
+        font-size: 11px;
+    }
+
+    .chat-header-actions-row {
+        gap: 6px;
+    }
+
+    .chat-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .chat-message-bubble {
+        max-width: 90%;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .chat-input-row {
+        gap: 6px;
+    }
+
+    .chat-trade-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}
+
+/* ==========================================
+   TradeModal Styles
+   ========================================== */
+
+/* Desktop Layout - Horizontal */
+.trade-items-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.exchange-arrow-desktop {
+    display: flex;
+}
+
+.exchange-arrow-mobile {
+    display: none !important;
+}
+
+/* TradeModal Mobile - Keep horizontal but smaller */
+@media (max-width: 768px) {
+    .trade-items-container {
+        display: grid !important;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 10px;
+    }
+
+    .exchange-arrow-desktop {
+        display: flex !important;
+    }
+
+    .exchange-arrow-mobile {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .trade-items-container {
+        gap: 6px;
+    }
+}

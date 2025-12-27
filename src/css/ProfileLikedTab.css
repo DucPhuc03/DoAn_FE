@@ -130,3 +130,67 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* ==========================================
+   Responsive Styles - ProfileLikedTab
+   ========================================== */
+
+@media (max-width: 768px) {
+    .profile-liked-empty {
+        padding: 40px 16px;
+    }
+
+    .profile-liked-empty-icon {
+        font-size: 48px;
+    }
+
+    .profile-liked-empty-title {
+        font-size: 16px;
+    }
+
+    .profile-liked-card {
+        border-radius: 12px;
+    }
+
+    .profile-liked-image,
+    .profile-liked-fallback {
+        height: 120px;
+    }
+
+    .profile-liked-content {
+        padding: 10px;
+    }
+
+    .profile-liked-title {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .profile-liked-footer {
+        gap: 6px;
+    }
+
+    .profile-liked-likes {
+        font-size: 10px;
+    }
+
+    .profile-liked-category {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .profile-liked-image,
+    .profile-liked-fallback {
+        height: 100px;
+    }
+
+    .profile-liked-title {
+        font-size: 12px;
+    }
+
+    .profile-liked-category {
+        font-size: 11px;
+    }
+}

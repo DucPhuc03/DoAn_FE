@@ -35,22 +35,14 @@ const GoogleCallBack = () => {
         }
 
         if (token) {
-          Cookies.set("access_token", token, { expires: 70 });
+          Cookies.set("access_token", token, { expires: 7 });
         }
         if (user) {
           localStorage.setItem("user", JSON.stringify(user));
         }
 
-        // Điều hướng dựa theo role và trạng thái user
-        if (user && user.role === "ADMIN") {
-          navigate("/admin/pending_management");
-          return;
-        } else if (user && user.userNew === true) {
-          navigate("/select-interests");
-        } else {
-          navigate("/");
-          connectNotificationWebSocket();
-        }
+        connectNotificationWebSocket();
+        navigate("/explore");
       } catch (e) {
         console.error(e);
       }

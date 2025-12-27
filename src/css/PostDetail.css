@@ -463,7 +463,24 @@
 
 @media (max-width: 480px) {
     .similar-products-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .similar-product-image-wrapper {
+        height: 100px;
+    }
+
+    .similar-product-content {
+        padding: 8px;
+    }
+
+    .similar-product-title {
+        font-size: 0.75rem;
+    }
+
+    .similar-product-meta {
+        font-size: 0.7rem;
     }
 }
 
@@ -615,4 +632,228 @@
 
 .map-inline-error {
     color: #f59e0b;
+}
+
+/* ==========================================
+   Comments Section Layout
+   ========================================== */
+.postdetail-comments-section {
+    margin-top: -250px;
+}
+
+/* ==========================================
+   Responsive Styles - PostDetail Page
+   ========================================== */
+
+/* Tablet */
+@media (max-width: 992px) {
+    .postdetail-container {
+        padding: 20px 12px;
+    }
+
+    .postdetail-gallery {
+        height: 400px;
+    }
+
+    .postdetail-thumbnails {
+        max-height: 400px;
+    }
+
+    .postdetail-comment-form {
+        width: 70%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .postdetail-container {
+        padding: 16px 10px;
+    }
+
+    .postdetail-title {
+        font-size: 1.25rem;
+        margin-bottom: 16px;
+    }
+
+    .postdetail-gallery-container {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .postdetail-thumbnails {
+        flex-direction: row;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-right: 0;
+        padding-bottom: 4px;
+        gap: 8px;
+    }
+
+    .postdetail-thumbnail {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+    }
+
+    .postdetail-gallery {
+        height: 300px;
+    }
+
+    .postdetail-gallery-nav {
+        width: 36px;
+        height: 36px;
+    }
+
+    .postdetail-poster {
+        padding: 10px 8px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .postdetail-avatar {
+        width: 42px;
+        height: 42px;
+    }
+
+    .postdetail-info-title {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+
+    .postdetail-info-section {
+        margin-bottom: 10px;
+    }
+
+    .postdetail-info-label {
+        font-size: 0.9rem;
+    }
+
+    .postdetail-info-value {
+        font-size: 0.9rem;
+    }
+
+    .postdetail-actions {
+        flex-direction: column;
+    }
+
+    .postdetail-exchange-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .postdetail-status-btn {
+        min-width: 100%;
+        padding: 10px;
+    }
+
+    /* Comments */
+    .postdetail-comments {
+        margin-top: 24px;
+    }
+
+    /* Fix comments section - reset negative margin on mobile */
+    .postdetail-comments-section {
+        margin-top: 20px !important;
+    }
+
+    /* Ensure main content rows stack properly */
+    .postdetail-page .row.g-5 {
+        flex-direction: column;
+    }
+
+    .postdetail-page .row.g-5>[class*="col-lg"] {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .postdetail-comments-title {
+        font-size: 1.1rem;
+    }
+
+    .postdetail-comment-form {
+        width: 100%;
+    }
+
+    .postdetail-comment-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .postdetail-comment-input {
+        font-size: 0.85rem;
+    }
+
+    .comments-container {
+        max-width: 100%;
+    }
+
+    .comments-list {
+        max-height: 300px;
+    }
+
+    .comment-item {
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .comment-submit-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    /* Map */
+    .map-inline-wrapper {
+        height: 200px;
+    }
+
+    .map-inline-header {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .map-inline-address {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .postdetail-gallery {
+        height: 250px;
+    }
+
+    .postdetail-thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+
+    .postdetail-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .postdetail-info-title {
+        font-size: 1rem;
+    }
+
+    .postdetail-like-btn {
+        font-size: 1rem;
+    }
+
+    .postdetail-exchange-btn {
+        font-size: 0.85rem;
+    }
+
+    .postdetail-comment-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .map-inline-wrapper {
+        height: 180px;
+    }
 }

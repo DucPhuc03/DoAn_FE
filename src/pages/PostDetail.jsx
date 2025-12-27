@@ -632,7 +632,7 @@ const PostDetail = () => {
         </div>
 
         {/* Comments Section */}
-        <div className="row  g-4" style={{ marginTop: "-250px" }}>
+        <div className="row g-4 postdetail-comments-section">
           {/* Comments Section */}
           <div className="col-12">
             <h4 className="fw-bold text-dark mb-4">

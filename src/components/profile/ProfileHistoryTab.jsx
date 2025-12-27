@@ -31,6 +31,11 @@ const ProfileHistoryTab = ({ trades, loadingTrades, onRefreshTrades }) => {
   };
 
   const handleCompleteTrade = async (tradeId) => {
+    if (
+      !window.confirm("Bạn có chắc chắn muốn hoàn thành trao đổi này không?")
+    ) {
+      return;
+    }
     try {
       setSubmittingTradeId(tradeId);
       const response = await updateTradeStatus(tradeId);
