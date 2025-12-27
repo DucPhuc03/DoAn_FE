@@ -816,6 +816,43 @@ const Chat = () => {
       setHeaderActionLoading(true);
       const response = await updateTradeStatus(selectedConversation.tradeId);
       if (response?.code === 1000) {
+        // Send SYSTEM message via WebSocket if connected
+        if (stompClientRef.current && stompClientRef.current.connected && selectedConversationId) {
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
+          const systemMessageContent = `✅ GIAO DỊCH ĐÃ HOÀN THÀNH\n\n📦 Sản phẩm: ${selectedConversation.itemTitle || "Không xác định"}\n🎉 Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!`;
+
+          const messagePayload = {
+            senderId: user?.id,
+            content: systemMessageContent,
+            type: "SYSTEM",
+          };
+
+          const destination = `/app/chat.sendMessage/${selectedConversationId}`;
+          try {
+            stompClientRef.current.send(destination, {}, JSON.stringify(messagePayload));
+            console.log("Sent SYSTEM message for trade completion");
+
+            // Optimistic update: Add message to local state immediately
+            const optimisticMessage = {
+              ...messagePayload,
+              timestamp: new Date(),
+              read: true,
+            };
+            setConversations((prev) =>
+              prev.map((conversation) =>
+                conversation.conversationId === selectedConversationId
+                  ? {
+                      ...conversation,
+                      messages: [...conversation.messages, optimisticMessage],
+                    }
+                  : conversation
+              )
+            );
+          } catch (msgError) {
+            console.error("Error sending SYSTEM message:", msgError);
+          }
+        }
+
         alert("Đã cập nhật trạng thái trao đổi");
         await refreshConversations();
       } else {
